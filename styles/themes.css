@@ -1,0 +1,95 @@
+:root,
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --oc-bg-page: var(--oc-palette-ink-950);
+  --oc-bg-surface: var(--oc-palette-ink-900);
+  --oc-bg-elevated: var(--oc-palette-ink-850);
+
+  --oc-accent-primary: var(--oc-palette-coral-dark-bright);
+  --oc-accent-primary-hover: var(--oc-palette-coral-dark-mid);
+  --oc-accent-primary-deep: var(--oc-palette-coral-dark-deep);
+  --oc-accent-secondary: var(--oc-palette-sea-dark-bright);
+  --oc-accent-secondary-deep: var(--oc-palette-sea-dark-mid);
+
+  --oc-text-primary: var(--oc-palette-ink-50);
+  --oc-text-secondary: var(--oc-palette-ink-300);
+  --oc-text-muted: var(--oc-palette-ink-500);
+  --oc-text-on-accent: var(--oc-palette-ink-950);
+
+  --oc-border-subtle: rgb(154 154 162 / 0.18);
+  --oc-border-accent: rgb(245 101 74 / 0.4);
+
+  --oc-surface-card: rgb(25 25 28 / 0.72);
+  --oc-surface-card-strong: rgb(25 25 28 / 0.9);
+  --oc-surface-overlay: rgb(0 0 0 / 0.3);
+  --oc-surface-interactive: rgb(237 237 237 / 0.08);
+  --oc-surface-interactive-hover: rgb(237 237 237 / 0.16);
+  --oc-surface-accent-soft: rgb(245 101 74 / 0.14);
+  --oc-surface-secondary-soft: rgb(79 200 174 / 0.14);
+  --oc-chart-line: rgb(237 237 237 / 0.09);
+  --oc-selection-bg: rgb(245 101 74 / 0.28);
+  --oc-focus-ring: rgb(79 200 174 / 0.72);
+
+  /* Compatibility aliases retained for zero-diff openclaw.ai extraction. */
+  --bg-deep: var(--oc-bg-page);
+  --bg-surface: var(--oc-bg-surface);
+  --bg-elevated: var(--oc-bg-elevated);
+  --coral-bright: var(--oc-accent-primary);
+  --coral-mid: var(--oc-accent-primary-hover);
+  --coral-dark: var(--oc-accent-primary-deep);
+  --cyan-bright: var(--oc-accent-secondary);
+  --cyan-mid: var(--oc-accent-secondary-deep);
+  --cyan-glow: rgb(79 200 174 / 0.35);
+  --text-primary: var(--oc-text-primary);
+  --text-secondary: var(--oc-text-secondary);
+  --text-muted: var(--oc-text-muted);
+  --on-accent: var(--oc-text-on-accent);
+  --border-subtle: var(--oc-border-subtle);
+  --border-accent: var(--oc-border-accent);
+  --surface-card: var(--oc-surface-card);
+  --surface-card-strong: var(--oc-surface-card-strong);
+  --surface-overlay: var(--oc-surface-overlay);
+  --surface-interactive: var(--oc-surface-interactive);
+  --surface-interactive-hover: var(--oc-surface-interactive-hover);
+  --surface-coral-soft: var(--oc-surface-accent-soft);
+  --surface-cyan-soft: var(--oc-surface-secondary-soft);
+  --surface-inset-highlight: rgb(237 237 237 / 0.05);
+  --chart-line: var(--oc-chart-line);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+
+  --oc-bg-page: var(--oc-palette-paper-100);
+  --oc-bg-surface: var(--oc-palette-paper-200);
+  --oc-bg-elevated: var(--oc-palette-paper-50);
+
+  --oc-accent-primary: var(--oc-palette-coral-light-bright);
+  --oc-accent-primary-hover: var(--oc-palette-coral-light-mid);
+  --oc-accent-primary-deep: var(--oc-palette-coral-light-deep);
+  --oc-accent-secondary: var(--oc-palette-sea-light-bright);
+  --oc-accent-secondary-deep: var(--oc-palette-sea-light-mid);
+
+  --oc-text-primary: var(--oc-palette-paper-950);
+  --oc-text-secondary: var(--oc-palette-paper-700);
+  --oc-text-muted: var(--oc-palette-paper-600);
+  --oc-text-on-accent: var(--oc-palette-paper-50);
+
+  --oc-border-subtle: rgb(23 23 26 / 0.14);
+  --oc-border-accent: rgb(216 74 49 / 0.42);
+
+  --oc-surface-card: rgb(255 255 255 / 0.8);
+  --oc-surface-card-strong: rgb(255 255 255 / 0.95);
+  --oc-surface-overlay: rgb(23 23 26 / 0.08);
+  --oc-surface-interactive: rgb(23 23 26 / 0.07);
+  --oc-surface-interactive-hover: rgb(23 23 26 / 0.14);
+  --oc-surface-accent-soft: rgb(216 74 49 / 0.12);
+  --oc-surface-secondary-soft: rgb(20 128 110 / 0.13);
+  --oc-chart-line: rgb(23 23 26 / 0.12);
+  --oc-selection-bg: rgb(216 74 49 / 0.2);
+  --oc-focus-ring: rgb(20 128 110 / 0.58);
+
+  --cyan-glow: rgb(20 128 110 / 0.24);
+  --surface-inset-highlight: rgb(23 23 26 / 0.05);
+}

@@ -1,0 +1,59 @@
+@theme {
+  --color-bg: var(--oc-bg-page);
+  --color-bg-soft: var(--oc-bg-surface);
+  --color-surface: var(--oc-bg-elevated);
+  --color-surface-muted: var(--oc-bg-surface);
+  --color-ink: var(--oc-text-primary);
+  --color-ink-soft: var(--oc-text-secondary);
+  --color-ink-muted: var(--oc-text-muted);
+  --color-accent: var(--oc-accent-primary);
+  --color-accent-fg: var(--oc-text-on-accent);
+  --color-accent-deep: var(--oc-accent-primary-hover);
+  --color-seafoam: var(--oc-accent-secondary);
+  --color-line: var(--oc-border-subtle);
+  --color-status-success-bg: var(--oc-status-success-bg);
+  --color-status-success-fg: var(--oc-status-success-fg);
+  --color-status-warning-bg: var(--oc-status-warning-bg);
+  --color-status-warning-fg: var(--oc-status-warning-fg);
+  --color-status-error-bg: var(--oc-status-error-bg);
+  --color-status-error-fg: var(--oc-status-error-fg);
+  --color-input-border: var(--oc-input-border);
+  --color-input-bg: var(--oc-input-bg);
+  --color-input-placeholder: var(--oc-input-placeholder);
+  --color-input-focus-border: var(--oc-input-focus-border);
+  --color-input-focus-ring: var(--oc-input-focus-ring);
+
+  --spacing-space-1: var(--oc-space-1);
+  --spacing-space-2: var(--oc-space-2);
+  --spacing-space-3: var(--oc-space-3);
+  --spacing-space-4: var(--oc-space-4);
+  --spacing-space-5: var(--oc-space-5);
+  --spacing-space-6: var(--oc-space-6);
+  --spacing-space-7: var(--oc-space-7);
+  --spacing-space-8: var(--oc-space-8);
+
+  --font-size-fs-xs: var(--oc-font-size-xs);
+  --font-size-fs-sm: var(--oc-font-size-sm);
+  --font-size-fs-base: var(--oc-font-size-base);
+  --font-size-fs-md: var(--oc-font-size-md);
+  --font-size-fs-lg: var(--oc-font-size-lg);
+  --font-size-fs-xl: var(--oc-font-size-xl);
+  --font-size-fs-2xl: var(--oc-font-size-2xl);
+  --font-size-fs-3xl: var(--oc-font-size-3xl);
+
+  --radius-sm: var(--oc-radius-sm);
+  --radius-md: var(--oc-radius-md);
+  --radius-lg: var(--oc-radius-lg);
+  --radius-xl: var(--oc-radius-xl);
+  --radius-full: var(--oc-radius-full);
+
+  --font-display: var(--oc-font-display);
+  --font-body: var(--oc-font-body);
+  --font-mono: var(--oc-font-mono);
+
+  --shadow-sm: var(--oc-shadow-sm);
+  --shadow-md: var(--oc-shadow-md);
+  --shadow-lg: var(--oc-shadow-lg);
+}
+
+@custom-variant dark (&:where(html[data-theme="dark"], html[data-theme="dark"] *, [data-theme-resolved="dark"], [data-theme-resolved="dark"] *));

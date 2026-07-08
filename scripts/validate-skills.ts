@@ -1,0 +1,78 @@
+import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
+import { dirname, join, relative } from "node:path";
+import { parse } from "yaml";
+
+const root = process.cwd();
+const skillFiles = [
+  "SKILL.md",
+  "openclaw-brand/SKILL.md",
+  "openclaw-design-system/SKILL.md",
+  "openclaw-marketing-pages/SKILL.md",
+  "openclaw-design-audit/SKILL.md",
+];
+
+function parseFrontmatter(source: string, path: string) {
+  const match = source.match(/^---\n([\s\S]*?)\n---\n/);
+  if (!match) {
+    throw new Error(`${path} is missing YAML frontmatter`);
+  }
+
+  const frontmatter = parse(match[1]) as {
+    description?: unknown;
+    name?: unknown;
+  };
+
+  if (typeof frontmatter.name !== "string" || !/^[a-z0-9-]+$/.test(frontmatter.name)) {
+    throw new Error(`${path} has an invalid skill name`);
+  }
+  if (typeof frontmatter.description !== "string" || frontmatter.description.length < 30) {
+    throw new Error(`${path} needs a useful description`);
+  }
+}
+
+for (const skillFile of skillFiles) {
+  const source = await readFile(skillFile, "utf8");
+  parseFrontmatter(source, skillFile);
+
+  if (source.includes("[TODO") || source.includes("TODO:")) {
+    throw new Error(`${skillFile} still contains scaffold TODOs`);
+  }
+
+  for (const match of source.matchAll(/\[[^\]]+\]\(([^)]+\.md)\)/g)) {
+    const target = match[1];
+    if (/^https?:\/\//.test(target)) continue;
+
+    const resolved = join(root, dirname(skillFile), target);
+    if (!existsSync(resolved)) {
+      throw new Error(
+        `${skillFile} links to missing reference ${relative(root, resolved)}`,
+      );
+    }
+  }
+
+  const agentConfig = join(dirname(skillFile), "agents/openai.yaml");
+  if (!existsSync(agentConfig)) {
+    throw new Error(`${skillFile} is missing ${agentConfig}`);
+  }
+
+  const agentSource = await readFile(agentConfig, "utf8");
+  const agentConfigData = parse(agentSource) as {
+    interface?: {
+      default_prompt?: unknown;
+      display_name?: unknown;
+      short_description?: unknown;
+    };
+  };
+  const metadata = agentConfigData.interface;
+  if (
+    typeof metadata?.display_name !== "string" ||
+    typeof metadata.short_description !== "string" ||
+    typeof metadata.default_prompt !== "string"
+  ) {
+    throw new Error(`${agentConfig} has incomplete interface metadata`);
+  }
+}
+
+console.log(`Validated ${skillFiles.length} skills`);
+

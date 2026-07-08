@@ -1,0 +1,49 @@
+{
+  "name": "@openclaw/design-system",
+  "version": "0.1.0",
+  "description": "Canonical web design tokens, styles, and agent guidance for OpenClaw.",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openclaw/design-system.git"
+  },
+  "homepage": "https://github.com/openclaw/design-system#readme",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "styles",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": "./styles/styles.css",
+    "./styles.css": "./styles/styles.css",
+    "./tokens.css": "./styles/tokens.css",
+    "./themes.css": "./styles/themes.css",
+    "./themes/product.css": "./styles/themes/product.css",
+    "./typography.css": "./styles/typography.css",
+    "./base.css": "./styles/base.css",
+    "./tailwind.css": "./styles/tailwind.css",
+    "./compat/clawhub.css": "./styles/compat/clawhub.css",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "check": "bun run test && bun run skills:check && bun run pack:check",
+    "test": "bun test",
+    "skills:check": "bun scripts/validate-skills.ts",
+    "pack:check": "bun scripts/check-package.ts",
+    "release:check": "bun scripts/check-release-version.ts"
+  },
+  "devDependencies": {
+    "lightningcss": "1.30.2",
+    "tailwindcss": "4.3.1",
+    "yaml": "2.9.0"
+  },
+  "engines": {
+    "bun": ">=1.3.0"
+  },
+  "packageManager": "bun@1.3.11"
+}

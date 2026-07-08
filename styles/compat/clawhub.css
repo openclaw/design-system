@@ -1,0 +1,126 @@
+:root {
+  --bg: var(--oc-bg-page);
+  --bg-soft: var(--oc-bg-surface);
+  --surface: var(--oc-bg-elevated);
+  --surface-muted: var(--oc-bg-surface);
+  --nav-bg: var(--oc-bg-page);
+  --ink: var(--oc-text-primary);
+  --ink-soft: var(--oc-text-secondary);
+  --ink-muted: var(--oc-text-muted);
+  --accent: var(--oc-accent-primary);
+  --accent-fg: var(--oc-text-on-accent);
+  --accent-deep: var(--oc-accent-primary-hover);
+  --accent-subtle: var(--oc-surface-accent-soft);
+  --seafoam: var(--oc-accent-secondary);
+  --line: var(--oc-border-subtle);
+  --border-ui: var(--oc-border-subtle);
+  --border-ui-hover: color-mix(in srgb, var(--oc-text-primary) 20%, transparent);
+  --border-ui-active: var(--oc-border-accent);
+  --input-border: var(--oc-input-border);
+  --input-bg: var(--oc-input-bg);
+  --input-placeholder: var(--oc-input-placeholder);
+  --input-focus-border: var(--oc-input-focus-border);
+  --input-focus-ring: var(--oc-input-focus-ring);
+  --label-fg: var(--oc-text-secondary);
+  --hover-bg: var(--oc-surface-interactive);
+  --active-bg: var(--oc-surface-accent-soft);
+  --overlay-bg: var(--oc-surface-overlay);
+
+  --status-success-bg: var(--oc-status-success-bg);
+  --status-success-fg: var(--oc-status-success-fg);
+  --status-warning-bg: var(--oc-status-warning-bg);
+  --status-warning-fg: var(--oc-status-warning-fg);
+  --status-error-bg: var(--oc-status-error-bg);
+  --status-error-fg: var(--oc-status-error-fg);
+  --official-bg: var(--oc-status-info-bg);
+  --official-fg: var(--oc-status-info-fg);
+
+  --diff-added: var(--oc-diff-added);
+  --diff-added-strong: var(--oc-diff-added-strong);
+  --diff-removed: var(--oc-diff-removed);
+  --diff-removed-strong: var(--oc-diff-removed-strong);
+
+  --space-1: var(--oc-space-1);
+  --space-2: var(--oc-space-2);
+  --space-3: var(--oc-space-3);
+  --space-4: var(--oc-space-4);
+  --space-5: var(--oc-space-5);
+  --space-6: var(--oc-space-6);
+  --space-7: var(--oc-space-7);
+  --space-8: var(--oc-space-8);
+
+  --fs-xs: var(--oc-font-size-xs);
+  --fs-sm: var(--oc-font-size-sm);
+  --fs-base: var(--oc-font-size-base);
+  --fs-md: var(--oc-font-size-md);
+  --fs-lg: var(--oc-font-size-lg);
+  --fs-xl: var(--oc-font-size-xl);
+  --fs-2xl: var(--oc-font-size-2xl);
+  --fs-3xl: var(--oc-font-size-3xl);
+
+  --r-xs: var(--oc-radius-md);
+  --r-sm: var(--oc-radius-md);
+  --r-md: var(--oc-radius-md);
+  --r-lg: var(--oc-radius-md);
+  --r-pill: var(--oc-radius-md);
+}
+
+[data-theme-family="claw"][data-theme-resolved="light"] {
+  color-scheme: light;
+
+  --oc-bg-page: var(--oc-palette-paper-100);
+  --oc-bg-surface: var(--oc-palette-paper-200);
+  --oc-bg-elevated: var(--oc-palette-paper-50);
+  --oc-accent-primary: var(--oc-palette-coral-light-bright);
+  --oc-accent-primary-hover: var(--oc-palette-coral-light-mid);
+  --oc-accent-primary-deep: var(--oc-palette-coral-light-deep);
+  --oc-accent-secondary: var(--oc-palette-sea-light-bright);
+  --oc-accent-secondary-deep: var(--oc-palette-sea-light-mid);
+  --oc-text-primary: var(--oc-palette-paper-950);
+  --oc-text-secondary: var(--oc-palette-paper-700);
+  --oc-text-muted: var(--oc-palette-paper-600);
+  --oc-text-on-accent: var(--oc-palette-paper-50);
+  --oc-border-subtle: rgb(23 23 26 / 0.14);
+  --oc-border-accent: rgb(216 74 49 / 0.42);
+  --oc-surface-card: rgb(255 255 255 / 0.8);
+  --oc-surface-card-strong: rgb(255 255 255 / 0.95);
+  --oc-surface-overlay: rgb(23 23 26 / 0.08);
+  --oc-surface-interactive: rgb(23 23 26 / 0.07);
+  --oc-surface-interactive-hover: rgb(23 23 26 / 0.14);
+  --oc-surface-accent-soft: rgb(216 74 49 / 0.12);
+  --oc-surface-secondary-soft: rgb(20 128 110 / 0.13);
+  --oc-chart-line: rgb(23 23 26 / 0.12);
+  --oc-selection-bg: rgb(216 74 49 / 0.2);
+  --oc-focus-ring: rgb(20 128 110 / 0.58);
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme-family="claw"][data-theme-mode="system"] {
+    color-scheme: light;
+
+    --oc-bg-page: var(--oc-palette-paper-100);
+    --oc-bg-surface: var(--oc-palette-paper-200);
+    --oc-bg-elevated: var(--oc-palette-paper-50);
+    --oc-accent-primary: var(--oc-palette-coral-light-bright);
+    --oc-accent-primary-hover: var(--oc-palette-coral-light-mid);
+    --oc-accent-primary-deep: var(--oc-palette-coral-light-deep);
+    --oc-accent-secondary: var(--oc-palette-sea-light-bright);
+    --oc-accent-secondary-deep: var(--oc-palette-sea-light-mid);
+    --oc-text-primary: var(--oc-palette-paper-950);
+    --oc-text-secondary: var(--oc-palette-paper-700);
+    --oc-text-muted: var(--oc-palette-paper-600);
+    --oc-text-on-accent: var(--oc-palette-paper-50);
+    --oc-border-subtle: rgb(23 23 26 / 0.14);
+    --oc-border-accent: rgb(216 74 49 / 0.42);
+    --oc-surface-card: rgb(255 255 255 / 0.8);
+    --oc-surface-card-strong: rgb(255 255 255 / 0.95);
+    --oc-surface-overlay: rgb(23 23 26 / 0.08);
+    --oc-surface-interactive: rgb(23 23 26 / 0.07);
+    --oc-surface-interactive-hover: rgb(23 23 26 / 0.14);
+    --oc-surface-accent-soft: rgb(216 74 49 / 0.12);
+    --oc-surface-secondary-soft: rgb(20 128 110 / 0.13);
+    --oc-chart-line: rgb(23 23 26 / 0.12);
+    --oc-selection-bg: rgb(216 74 49 / 0.2);
+    --oc-focus-ring: rgb(20 128 110 / 0.58);
+  }
+}
