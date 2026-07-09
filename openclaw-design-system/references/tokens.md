@@ -10,6 +10,7 @@ exports when the consumer must control reset and adapter order.
 | Palette | `--oc-palette-*` | Fixed source colors; rare direct use |
 | Semantic | `--oc-bg-*`, `--oc-text-*`, `--oc-accent-*` | Theme-aware UI intent |
 | Scale | `--oc-space-*`, `--oc-font-size-*`, `--oc-radius-*` | Shared dimensions |
+| Motion | `--oc-duration-*`, `--oc-ease-*` | Shared interaction timing |
 | Product | `--oc-status-*`, `--oc-input-*`, `--oc-diff-*` | Opt-in operational UI |
 | Consumer alias | Unprefixed legacy names | Migration compatibility only |
 
@@ -38,5 +39,6 @@ status, filtering, or segmented-control semantics.
 
 ## Ownership
 
-Consumer repositories own component geometry, page layout, and application
-states. This package owns stable visual foundations and thin migration aliases.
+Consumer repositories own page composition and application states. This package
+owns stable visual foundations, framework-neutral component primitives, and
+thin migration aliases.

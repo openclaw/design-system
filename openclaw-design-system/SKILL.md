@@ -5,8 +5,8 @@ description: Build or modify OpenClaw application UI using canonical semantic to
 
 # OpenClaw Design System
 
-Use the shared package for foundations and the consumer repository for product
-components and layouts.
+Use the shared package for foundations and framework-neutral visual primitives.
+Keep consumer-specific behavior, data, routes, and layout composition local.
 
 ## Workflow
 
@@ -20,6 +20,7 @@ components and layouts.
 ## Interface Rules
 
 - Import the complete CSS contract or its focused exported entry points.
+- Compose shared classes from `components.css` before adding a one-off visual implementation.
 - Use local shared primitives before raw controls or one-off component implementations.
 - Keep one primary action per decision area.
 - Use familiar icons for icon-only commands and provide accessible names.
@@ -33,6 +34,7 @@ components and layouts.
 
 ## Ownership
 
-Move an implementation into this repository only when at least two consumers need
-the same interface and behavior. Token aliases and thin framework adapters are
-shared; application components remain local by default.
+Move visual implementation into this repository when its interface is
+framework-neutral and useful across consumers. Keep runtime behavior and
+framework adapters local until at least two consumers need the same interface
+and behavior.

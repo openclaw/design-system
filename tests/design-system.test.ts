@@ -66,6 +66,23 @@ describe("CSS contract", () => {
     expect(themes).toContain('html[data-theme="dark"]');
   });
 
+  test("shared component primitives only consume canonical tokens", async () => {
+    const components = await readFile("styles/components.css", "utf8");
+    const references = customProperties(components, /var\((--[\w-]+)/g);
+
+    expect([...references].filter((name) => !name.startsWith("--oc-"))).toEqual([]);
+    for (const className of [
+      ".oc-app-surface",
+      ".oc-hero",
+      ".oc-section-header",
+      ".oc-card",
+      ".oc-action",
+      ".oc-segmented",
+    ]) {
+      expect(components).toContain(className);
+    }
+  });
+
   test("ClawHub compatibility covers explicit and system light modes", async () => {
     const compatibility = await readFile("styles/compat/clawhub.css", "utf8");
     expect(compatibility).toContain(
