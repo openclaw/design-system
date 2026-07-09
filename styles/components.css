@@ -266,6 +266,18 @@
   line-height: 1;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .oc-card-interactive {
+    transition: none;
+  }
+
+  .oc-card-interactive:hover,
+  .oc-card-interactive:focus-visible,
+  .oc-card-interactive:active {
+    transform: none;
+  }
+}
+
 @media (max-width: 42rem) {
   .oc-section-header {
     align-items: start;
