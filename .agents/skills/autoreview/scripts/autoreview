@@ -88,6 +88,67 @@ MAX_BUNDLE_TEXT_BYTES = 180_000
 SECRET_SCAN_CHUNK_CHARS = 64_000
 SECRET_SCAN_OVERLAP_CHARS = 512
 DEFAULT_ENGINE_PATHS = ("/usr/local/bin", "/usr/bin", "/bin")
+SAFE_ENGINE_ENV_KEYS = {
+    "APPDATA",
+    "CI",
+    "CLAUDE_CONFIG_DIR",
+    "CODEX_HOME",
+    "COLORTERM",
+    "COMSPEC",
+    "COLUMNS",
+    "CURL_CA_BUNDLE",
+    "DBUS_SESSION_BUS_ADDRESS",
+    "GH_CONFIG_DIR",
+    "HOME",
+    "HOMEDRIVE",
+    "HOMEPATH",
+    "LANG",
+    "LC_ALL",
+    "LC_ADDRESS",
+    "LC_COLLATE",
+    "LC_CTYPE",
+    "LC_IDENTIFICATION",
+    "LC_MEASUREMENT",
+    "LC_MESSAGES",
+    "LC_MONETARY",
+    "LC_NAME",
+    "LC_NUMERIC",
+    "LC_PAPER",
+    "LC_TELEPHONE",
+    "LC_TIME",
+    "LINES",
+    "LOCALAPPDATA",
+    "LOGNAME",
+    "NODE_EXTRA_CA_CERTS",
+    "NO_COLOR",
+    "PATHEXT",
+    "PROGRAMDATA",
+    "PROGRAMFILES",
+    "PROGRAMFILES(X86)",
+    "PROGRAMW6432",
+    "REQUESTS_CA_BUNDLE",
+    "SHELL",
+    "SSL_CERT_DIR",
+    "SSL_CERT_FILE",
+    "SYSTEMDRIVE",
+    "SYSTEMROOT",
+    "TEMP",
+    "TERM",
+    "TMP",
+    "TMPDIR",
+    "TZ",
+    "USER",
+    "USERDOMAIN",
+    "USERNAME",
+    "USERPROFILE",
+    "WINDIR",
+    "XDG_CACHE_HOME",
+    "XDG_CONFIG_HOME",
+    "XDG_DATA_HOME",
+    "XDG_RUNTIME_DIR",
+    "XDG_STATE_HOME",
+}
+SAFE_ENGINE_ENV_PREFIXES = ("AUTOREVIEW_FAKE_",)
 DEFAULT_MODEL_BY_ENGINE = {
     "codex": "gpt-5.5",
     "claude": "claude-fable-5",
@@ -252,27 +313,22 @@ def safe_engine_env(
     extra_paths: list[Path] | None = None,
     extra: dict[str, str] | None = None,
 ) -> dict[str, str]:
-    blocked_exact = {
-        "BASH_ENV",
-        "ENV",
-        "GIT_CONFIG",
-        "GIT_CONFIG_GLOBAL",
-        "GIT_CONFIG_NOSYSTEM",
-        "GIT_CONFIG_SYSTEM",
-        "GIT_OPTIONAL_LOCKS",
-        "GIT_TERMINAL_PROMPT",
-        "LD_PRELOAD",
-        "NODE_OPTIONS",
-        "PYTHONHOME",
-        "PYTHONPATH",
-    }
-    blocked_prefixes = ("GIT_", "DYLD_")
+    # Reviewer tools inherit the CLI process environment. Keep this list
+    # path/config-only so unrelated host credentials cannot reach the model.
     env = {
         key: value
         for key, value in os.environ.items()
-        if key not in blocked_exact and not any(key.startswith(prefix) for prefix in blocked_prefixes)
+        if key in SAFE_ENGINE_ENV_KEYS
+        or any(key.startswith(prefix) for prefix in SAFE_ENGINE_ENV_PREFIXES)
     }
-    env["PATH"] = safe_engine_path(repo, extra_paths)
+    env.update({
+        "GIT_CONFIG_GLOBAL": os.devnull,
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_SYSTEM": os.devnull,
+        "GIT_OPTIONAL_LOCKS": "0",
+        "GIT_TERMINAL_PROMPT": "0",
+        "PATH": safe_engine_path(repo, extra_paths),
+    })
     env["GIT_CONFIG_COUNT"] = str(len(ENGINE_GIT_CONFIG_OVERRIDES))
     for index, (key, value) in enumerate(ENGINE_GIT_CONFIG_OVERRIDES):
         env[f"GIT_CONFIG_KEY_{index}"] = key
@@ -1137,6 +1193,16 @@ def codex_config_isolation_flags(repo: Path) -> list[str]:
         "project_doc_max_bytes=0",
         "-c",
         f"projects.{toml_quoted_key_segment(str(repo.resolve()))}.trust_level=\"untrusted\"",
+        "-c",
+        'shell_environment_policy.inherit="core"',
+        "-c",
+        "shell_environment_policy.ignore_default_excludes=false",
+        "-c",
+        "shell_environment_policy.set={}",
+        "-c",
+        "shell_environment_policy.use_profile=false",
+        "-c",
+        "allow_login_shell=false",
     ]
 
 

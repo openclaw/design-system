@@ -300,23 +300,47 @@ class AutoreviewHardeningTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tempdir:
             repo = init_repo(Path(tempdir))
             try:
+                os.environ["CODEX_HOME"] = str(Path(tempdir) / "codex-home")
                 os.environ["GIT_DIR"] = "/tmp/unsafe-git-dir"
                 os.environ["GIT_CONFIG_COUNT"] = "99"
                 os.environ["DYLD_INSERT_LIBRARIES"] = "/tmp/unsafe.dylib"
                 os.environ["NODE_OPTIONS"] = "--require=/tmp/unsafe.js"
+                os.environ["LC_SECRET_TOKEN"] = "blocked"
+                os.environ["LC_TIME"] = "C"
+                os.environ["OPENAI_API_KEY"] = "blocked"
+                os.environ["UNRELATED_ENV"] = "blocked"
 
                 env = self.helper["safe_engine_env"](repo)
 
                 self.assertNotEqual(env.get("GIT_DIR"), "/tmp/unsafe-git-dir")
+                self.assertEqual(env["CODEX_HOME"], str(Path(tempdir) / "codex-home"))
                 self.assertEqual(
                     env["GIT_CONFIG_COUNT"],
                     str(len(self.helper["ENGINE_GIT_CONFIG_OVERRIDES"])),
                 )
                 self.assertNotIn("DYLD_INSERT_LIBRARIES", env)
                 self.assertNotIn("NODE_OPTIONS", env)
+                self.assertNotIn("LC_SECRET_TOKEN", env)
+                self.assertEqual(env["LC_TIME"], "C")
+                self.assertNotIn("OPENAI_API_KEY", env)
+                self.assertNotIn("UNRELATED_ENV", env)
             finally:
                 os.environ.clear()
                 os.environ.update(old)
+
+    def test_codex_isolation_restricts_tool_environment(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = init_repo(Path(tempdir))
+            flags = self.helper["codex_config_isolation_flags"](repo)
+
+        for required in (
+            'shell_environment_policy.inherit="core"',
+            "shell_environment_policy.ignore_default_excludes=false",
+            "shell_environment_policy.set={}",
+            "shell_environment_policy.use_profile=false",
+            "allow_login_shell=false",
+        ):
+            self.assertIn(required, flags)
 
     def test_safe_engine_env_excludes_repo_local_path_entries(self) -> None:
         old_path = os.environ.get("PATH", "")
