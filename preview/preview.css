@@ -16,11 +16,7 @@ html {
 }
 
 body {
-  background:
-    linear-gradient(var(--oc-chart-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--oc-chart-line) 1px, transparent 1px),
-    var(--oc-bg-page);
-  background-size: 48px 48px;
+  background: var(--oc-bg-page);
 }
 
 button,
@@ -156,9 +152,8 @@ html[data-theme="dark"] .theme-control [data-theme-choice="dark"] {
 .shell {
   display: grid;
   grid-template-columns: var(--preview-rail-width) minmax(0, 1fr);
-  width: min(100%, calc(var(--preview-content) + var(--preview-rail-width)));
+  width: 100%;
   min-height: calc(100vh - var(--preview-topbar-height));
-  margin: 0 auto;
 }
 
 .sidebar {
