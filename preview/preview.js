@@ -15,6 +15,10 @@ const tokenGrid = document.querySelector("[data-token-grid]");
 const themeButtons = document.querySelectorAll("[data-theme-choice]");
 const dialog = document.querySelector("dialog");
 const dialogTrigger = document.querySelector("[data-open-dialog]");
+const previewNavLinks = document.querySelectorAll("[data-preview-link]");
+const previewSections = [...document.querySelectorAll("[data-preview-section]")];
+const previewContextTitle = document.querySelector("[data-preview-context-title]");
+const previewContextMeta = document.querySelector("[data-preview-context-meta]");
 
 function renderTokens() {
   const styles = getComputedStyle(root);
@@ -46,5 +50,57 @@ for (const button of themeButtons) {
 }
 
 dialogTrigger.addEventListener("click", () => dialog.showModal());
+
+function setActivePreviewSection(section) {
+  const target = section.id ? `#${section.id}` : null;
+
+  for (const link of previewNavLinks) {
+    const active = target && link.getAttribute("href") === target;
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  }
+
+  if (previewContextTitle) {
+    previewContextTitle.textContent = section.dataset.previewTitle || "Overview";
+  }
+
+  if (previewContextMeta) {
+    previewContextMeta.textContent = section.dataset.previewMeta || "OpenClaw design system";
+  }
+}
+
+function syncPreviewNavigation() {
+  const focusLine = window.innerHeight * 0.32;
+  const activeSection = previewSections.reduce(
+    (active, section) => (section.getBoundingClientRect().top <= focusLine ? section : active),
+    previewSections[0],
+  );
+
+  if (activeSection) setActivePreviewSection(activeSection);
+}
+
+if (previewSections.length > 0) {
+  let pendingSync = false;
+  const scheduleNavigationSync = () => {
+    if (pendingSync) return;
+    pendingSync = true;
+    requestAnimationFrame(() => {
+      pendingSync = false;
+      syncPreviewNavigation();
+    });
+  };
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(scheduleNavigationSync, {
+      rootMargin: "-18% 0px -64% 0px",
+      threshold: [0, 0.2, 0.8],
+    });
+    for (const section of previewSections) observer.observe(section);
+  }
+
+  window.addEventListener("scroll", scheduleNavigationSync, { passive: true });
+  window.addEventListener("resize", scheduleNavigationSync);
+  scheduleNavigationSync();
+}
 
 renderTokens();

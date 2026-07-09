@@ -24,9 +24,9 @@
         </span>
       </a>
       <nav class="topnav" aria-label="Preview sections">
-        <a href="#foundations">Foundations</a>
-        <a href="#product">Product</a>
-        <a href="#content">Content</a>
+        <a href="#foundations" data-preview-link>Foundations</a>
+        <a href="#product" data-preview-link>Product</a>
+        <a href="#content" data-preview-link>Content</a>
       </nav>
       <div class="theme-control" aria-label="Color theme">
         <button type="button" data-theme-choice="light">Light</button>
@@ -36,14 +36,25 @@
 
     <div class="shell">
       <aside class="sidebar">
-        <p class="eyebrow">Reference</p>
+        <div class="sidebar-heading">
+          <p class="eyebrow">Reference</p>
+        </div>
         <nav aria-label="Component index">
-          <a href="#foundations">Color and type</a>
-          <a href="#dimensions">Dimensions</a>
-          <a href="#controls">Controls</a>
-          <a href="#product">Product surface</a>
-          <a href="#content">Content surface</a>
-          <a href="#composition">Public composition</a>
+          <div class="nav-group">
+            <p class="nav-label">Foundations</p>
+            <a href="#foundations" data-preview-link>Color and type</a>
+            <a href="#dimensions" data-preview-link>Dimensions</a>
+          </div>
+          <div class="nav-group">
+            <p class="nav-label">Interface</p>
+            <a href="#controls" data-preview-link>Controls</a>
+            <a href="#product" data-preview-link>Product surface</a>
+          </div>
+          <div class="nav-group">
+            <p class="nav-label">Composition</p>
+            <a href="#content" data-preview-link>Content surface</a>
+            <a href="#composition" data-preview-link>Public composition</a>
+          </div>
         </nav>
         <div class="version">
           <span>Release</span>
@@ -51,8 +62,22 @@
         </div>
       </aside>
 
-      <main>
-        <section class="intro" aria-labelledby="preview-title">
+      <main class="preview-main">
+        <header class="canvas-header">
+          <div>
+            <p class="canvas-title" data-preview-context-title>Overview</p>
+          </div>
+          <p class="canvas-meta" data-preview-context-meta>OpenClaw design system</p>
+        </header>
+
+        <div class="preview-stage">
+        <section
+          class="intro"
+          aria-labelledby="preview-title"
+          data-preview-section
+          data-preview-title="Overview"
+          data-preview-meta="Canonical contract"
+        >
           <p class="eyebrow">Canonical contract</p>
           <h1 id="preview-title">One visual foundation for OpenClaw.</h1>
           <p>
@@ -67,7 +92,13 @@
           </div>
         </section>
 
-        <section id="foundations" aria-labelledby="foundations-title">
+        <section
+          id="foundations"
+          aria-labelledby="foundations-title"
+          data-preview-section
+          data-preview-title="Foundations"
+          data-preview-meta="Color and typography"
+        >
           <div class="section-heading">
             <div>
               <p class="eyebrow">Foundations</p>
@@ -101,7 +132,13 @@
           </div>
         </section>
 
-        <section id="dimensions" aria-labelledby="dimensions-title">
+        <section
+          id="dimensions"
+          aria-labelledby="dimensions-title"
+          data-preview-section
+          data-preview-title="Dimensions"
+          data-preview-meta="Spacing, radius, and shadow"
+        >
           <div class="section-heading">
             <div>
               <p class="eyebrow">Dimensions</p>
@@ -128,7 +165,13 @@
           </div>
         </section>
 
-        <section id="controls" aria-labelledby="controls-title">
+        <section
+          id="controls"
+          aria-labelledby="controls-title"
+          data-preview-section
+          data-preview-title="Controls"
+          data-preview-meta="Interaction states"
+        >
           <div class="section-heading">
             <div>
               <p class="eyebrow">Interaction</p>
@@ -177,7 +220,13 @@
           </div>
         </section>
 
-        <section id="product" aria-labelledby="product-title">
+        <section
+          id="product"
+          aria-labelledby="product-title"
+          data-preview-section
+          data-preview-title="Product surface"
+          data-preview-meta="Dense, quiet, operational"
+        >
           <div class="section-heading">
             <div>
               <p class="eyebrow">Product surface</p>
@@ -229,7 +278,13 @@
           </div>
         </section>
 
-        <section id="content" aria-labelledby="content-title">
+        <section
+          id="content"
+          aria-labelledby="content-title"
+          data-preview-section
+          data-preview-title="Content surface"
+          data-preview-meta="Readable technical guidance"
+        >
           <div class="section-heading">
             <div>
               <p class="eyebrow">Content surface</p>
@@ -254,7 +309,13 @@
           </article>
         </section>
 
-        <section id="composition" aria-labelledby="composition-title">
+        <section
+          id="composition"
+          aria-labelledby="composition-title"
+          data-preview-section
+          data-preview-title="Public composition"
+          data-preview-meta="OpenClaw in context"
+        >
           <div class="section-heading">
             <div>
               <p class="eyebrow">Public composition</p>
@@ -277,6 +338,7 @@
             </div>
           </div>
         </section>
+        </div>
       </main>
     </div>
 
