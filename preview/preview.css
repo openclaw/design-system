@@ -57,17 +57,9 @@ a {
 }
 
 .brand-mark {
-  display: inline-grid;
   width: 28px;
   height: 28px;
-  place-items: center;
-  border: 1px solid var(--oc-border-accent);
-  border-radius: var(--oc-radius-control);
-  background: var(--oc-surface-accent-soft);
-  color: var(--oc-accent-primary);
-  font-family: var(--oc-font-mono);
-  font-size: 12px;
-  font-weight: 700;
+  object-fit: contain;
 }
 
 .brand strong,
