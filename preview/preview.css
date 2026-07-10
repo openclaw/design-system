@@ -2651,7 +2651,7 @@ body:is([data-preview-page="interface-primitives"], [data-page-kind="example"])
   }
 
   body[data-page-kind="reference"] .reference-page {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   body[data-page-kind="reference"]
@@ -2662,7 +2662,7 @@ body:is([data-preview-page="interface-primitives"], [data-page-kind="example"])
   }
 
   body[data-preview-page="resource-adapters"] .reference-page {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   body[data-preview-page="resource-adapters"] .reference-page > section {

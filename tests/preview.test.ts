@@ -356,6 +356,7 @@ describe("preview", () => {
     expect(mobileStyles).toContain(".home-start-list a");
     expect(mobileStyles).toContain('body[data-page-kind="index"] .reference-card');
     expect(mobileStyles).toContain(".code-block-header button");
+    expect(css).toContain("grid-template-columns: minmax(0, 1fr)");
     expect(mobileStyles).toContain("min-height: 44px");
   });
 });
