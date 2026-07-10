@@ -220,4 +220,18 @@ describe("preview", () => {
     }
     expect(mobileStyles.match(/min-height: 44px/g)?.length).toBeGreaterThanOrEqual(6);
   });
+
+  test("adapts shell materials and browser chrome to system display preferences", async () => {
+    const [css, preview] = await Promise.all([
+      readFile("preview/preview.css", "utf8"),
+      readFile("preview/preview.js", "utf8"),
+    ]);
+
+    expect(css).toContain("@media (prefers-reduced-transparency: reduce)");
+    expect(css).toContain("@media (prefers-contrast: more)");
+    expect(css).toContain("backdrop-filter: none");
+    expect(css).toContain("font-variant-numeric: tabular-nums");
+    expect(preview).toContain('meta[name="theme-color"]');
+    expect(preview).toContain('getPropertyValue("--oc-bg-page")');
+  });
 });

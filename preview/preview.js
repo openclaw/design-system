@@ -19,6 +19,17 @@ const previewSections = [...document.querySelectorAll("[data-preview-section]")]
 const previewContextTitle = document.querySelector("[data-preview-context-title]");
 const previewContextMeta = document.querySelector("[data-preview-context-meta]");
 
+function syncThemeColor() {
+  let themeColor = document.querySelector('meta[name="theme-color"]');
+  if (!themeColor) {
+    themeColor = document.createElement("meta");
+    themeColor.name = "theme-color";
+    document.head.append(themeColor);
+  }
+
+  themeColor.content = getComputedStyle(root).getPropertyValue("--oc-bg-page").trim();
+}
+
 function tokenProperty(sample, variable) {
   if (sample === "text") return "color";
   if (sample === "border") return "border-color";
@@ -274,6 +285,7 @@ function setTheme(theme) {
   localStorage.setItem("openclaw-preview-theme", theme);
   syncThemeControls(theme);
   renderTokens();
+  syncThemeColor();
 }
 
 for (const button of themeButtons) {
@@ -365,3 +377,4 @@ document.addEventListener("click", async (event) => {
 });
 
 renderTokens();
+syncThemeColor();
