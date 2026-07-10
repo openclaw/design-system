@@ -467,20 +467,17 @@ a {
 }
 
 .version span {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+  display: block;
 }
 
 .version span::before {
-  width: 5px;
-  height: 5px;
-  background: var(--oc-status-success-fg);
-  content: "";
+  display: none;
+  background: var(--oc-border-accent);
+  content: none;
 }
 
 .version strong {
-  color: var(--oc-text-secondary);
+  color: inherit;
   font-weight: 500;
 }
 
@@ -1951,6 +1948,10 @@ dialog .button-row {
 .reference-page > section {
   padding: 56px 0;
   border-bottom: 1px solid var(--oc-border-subtle);
+}
+
+body[data-page-kind="catalog"] .reference-page > section {
+  padding-block: 48px;
 }
 
 .reference-intro {

@@ -260,4 +260,20 @@ describe("preview", () => {
     expect(css).toContain("margin: 8px 0 14px");
     expect(css).toContain("font-size: 16px");
   });
+
+  test("assigns shell page archetypes without changing canonical content", async () => {
+    const [shell, css] = await Promise.all([
+      readFile("preview/shell.js", "utf8"),
+      readFile("preview/preview.css", "utf8"),
+    ]);
+
+    expect(shell).toContain('overview: "home"');
+    expect(shell).toContain('"foundation-tokens": "catalog"');
+    expect(shell).toContain('"primitive-app-surface": "reference"');
+    expect(shell).toContain('"composition-product": "composition"');
+    expect(shell).toContain('document.body.dataset.pageKind =');
+    expect(css).toContain('body[data-page-kind="catalog"]');
+    expect(css).toContain(".version span::before");
+    expect(css).toContain("background: var(--oc-border-accent)");
+  });
 });

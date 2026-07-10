@@ -4,6 +4,44 @@ import { tokenDefinitions } from "./token-catalog.js";
 
 let feedbackTimeout;
 
+const pageKinds = {
+  overview: "home",
+  foundations: "index",
+  interface: "index",
+  compositions: "index",
+  resources: "index",
+  "foundation-tokens": "catalog",
+  "foundation-colors": "catalog",
+  "foundation-typography": "catalog",
+  "foundation-layout": "catalog",
+  "foundation-shape-depth": "catalog",
+  "foundation-motion": "catalog",
+  "interface-primitives": "index",
+  "primitive-app-surface": "reference",
+  "primitive-hero": "reference",
+  "primitive-section": "reference",
+  "primitive-card": "reference",
+  "primitive-action": "reference",
+  "primitive-segmented": "reference",
+  "primitive-pill": "reference",
+  "interface-examples": "example",
+  "composition-product": "composition",
+  "composition-content": "composition",
+  "composition-public": "composition",
+  "resource-getting-started": "guide",
+  "resource-theming": "guide",
+  "resource-adapters": "guide",
+  "resource-tailwind": "guide",
+  "resource-skills": "guide",
+  "resource-accessibility": "guide",
+  "resource-release": "release",
+};
+
+function applyPageKind() {
+  const currentId = document.body.dataset.previewPage || document.body.dataset.previewRoute;
+  document.body.dataset.pageKind = pageKinds[currentId] || "reference";
+}
+
 export function showShellFeedback(message) {
   const feedback = document.querySelector("[data-shell-feedback]");
   if (!feedback) return;
@@ -523,6 +561,7 @@ function bindNavigation() {
 }
 
 export function renderShell() {
+  applyPageKind();
   const main = document.querySelector("main");
   if (main) {
     main.id = "main-content";
