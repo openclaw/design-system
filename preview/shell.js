@@ -79,7 +79,7 @@ function renderSidebar() {
 
       return `
         <div class="sidebar-area${activeArea ? " is-active" : ""}">
-          <a class="sidebar-area-link" href="${hrefFor(area.path)}"${area.id === currentId ? ' aria-current="page"' : ""}>
+          <a class="sidebar-area-link" href="${hrefFor(area.path)}">
             <span>${area.label}</span>
           </a>
           ${children}
@@ -95,7 +95,9 @@ function renderSidebar() {
         <button class="mobile-nav-close" type="button" data-close-navigation aria-label="Close navigation">×</button>
       </div>
       <nav aria-label="Design system reference">${areas}</nav>
-      <div class="version"><span>Release</span><strong>v0.0.1</strong></div>
+      <a class="version" href="${hrefFor("resources/release/")}" aria-label="Release v0.0.1">
+        <span>Release</span><strong>v0.0.1</strong>
+      </a>
     </aside>
     <button class="navigation-backdrop" type="button" data-close-navigation aria-label="Close navigation"></button>
   `;
@@ -319,6 +321,15 @@ function bindNavigation() {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && navigation.classList.contains("is-open")) setOpen(false);
   });
+
+  const current = navigation.querySelector('[aria-current="page"]');
+  const nav = navigation.querySelector("nav");
+  if (current && nav) {
+    const navRect = nav.getBoundingClientRect();
+    const currentRect = current.getBoundingClientRect();
+    if (currentRect.top < navRect.top) nav.scrollTop -= navRect.top - currentRect.top;
+    if (currentRect.bottom > navRect.bottom) nav.scrollTop += currentRect.bottom - navRect.bottom;
+  }
 }
 
 export function renderShell() {
