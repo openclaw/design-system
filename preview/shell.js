@@ -1,8 +1,15 @@
-import { getReferenceArea, getReferencePage, referenceAreas } from "./navigation.js";
+import {
+  getReferenceArea,
+  getReferencePage,
+  introductionPage,
+  referenceAreas,
+} from "./navigation.js";
+import { icon } from "./icons.js";
 import { groupSearchResults, rankSearchEntries } from "./search.js";
 import { tokenDefinitions } from "./token-catalog.js";
 
 let feedbackTimeout;
+const sidebarDisclosureStorageKey = "openclaw.preview.sidebar.openAreas";
 
 const pageKinds = {
   overview: "home",
@@ -16,6 +23,7 @@ const pageKinds = {
   "foundation-layout": "catalog",
   "foundation-shape-depth": "catalog",
   "foundation-motion": "catalog",
+  "foundation-base": "guide",
   "interface-primitives": "index",
   "primitive-app-surface": "reference",
   "primitive-hero": "reference",
@@ -29,10 +37,14 @@ const pageKinds = {
   "composition-content": "composition",
   "composition-public": "composition",
   "resource-getting-started": "guide",
+  "resource-package-exports": "guide",
   "resource-theming": "guide",
   "resource-adapters": "guide",
   "resource-tailwind": "guide",
   "resource-skills": "guide",
+  "resource-brand": "guide",
+  "resource-governance": "guide",
+  "resource-design-audit": "guide",
   "resource-accessibility": "guide",
   "resource-release": "release",
 };
@@ -56,12 +68,29 @@ function hrefFor(path) {
   return `${document.body.dataset.previewRoot || "./"}${path}`;
 }
 
+function readOpenSidebarAreas() {
+  try {
+    const value = window.localStorage.getItem(sidebarDisclosureStorageKey);
+    const ids = JSON.parse(value || "[]");
+    return new Set(Array.isArray(ids) ? ids : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function writeOpenSidebarAreas(openAreas) {
+  try {
+    window.localStorage.setItem(sidebarDisclosureStorageKey, JSON.stringify([...openAreas]));
+  } catch {
+    // Sidebar disclosure still works for the current page when storage is unavailable.
+  }
+}
+
 function renderThemeControl() {
   return `
-    <div class="oc-segmented theme-control" role="group" aria-label="Color theme">
-      <button class="oc-segmented-item shell-control" type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-      <button class="oc-segmented-item shell-control" type="button" data-theme-choice="dark" aria-pressed="true">Dark</button>
-    </div>
+    <button class="theme-control shell-control" type="button" data-theme-toggle aria-label="Color theme: Dark. Activate to switch to system." title="Dark theme">
+      <span class="theme-control-icon">${icon("moon")}</span>
+    </button>
   `;
 }
 
@@ -83,16 +112,16 @@ function renderTopbar() {
         <span class="brand-context">Design System</span>
       </a>
       <button class="search-trigger shell-control" type="button" data-open-search aria-label="Search reference" aria-haspopup="dialog">
-        <span>Search reference</span><kbd>⌘&nbsp;K</kbd>
+        <span class="search-trigger-label">${icon("search")}<span>Search reference</span></span><kbd>⌘K</kbd>
       </button>
       <div class="topbar-actions">
-        <a class="github-link" href="https://github.com/openclaw/design-system" rel="noreferrer">GitHub</a>
+        <a class="github-link" href="https://github.com/openclaw/design-system" rel="noreferrer">${icon("github")}<span>GitHub</span></a>
         ${renderThemeControl()}
       </div>
     </header>
     <dialog class="search-dialog" data-search-dialog aria-label="Search design system reference">
       <div class="search-field">
-        <span aria-hidden="true">⌕</span>
+        <span class="search-field-icon">${icon("search")}</span>
         <input id="reference-search" type="search" role="combobox" aria-autocomplete="list" aria-controls="search-results" aria-expanded="false" aria-haspopup="listbox" data-search-input aria-label="Search reference" placeholder="Search routes, tokens, and primitives…" autocomplete="off" />
         <kbd>Esc</kbd>
       </div>
@@ -113,9 +142,12 @@ function renderSidebar() {
 
   const currentId = document.body.dataset.previewPage || document.body.dataset.previewRoute;
   const currentArea = getReferenceArea(currentId);
+  const openAreas = readOpenSidebarAreas();
+  if (currentArea) openAreas.add(currentArea.id);
   const areas = referenceAreas
     .map((area) => {
       const activeArea = currentArea?.id === area.id;
+      const expanded = openAreas.has(area.id);
       const pageLink = (page) =>
         `<a href="${hrefFor(page.path)}"${page.id === currentId ? ' aria-current="page"' : ""}>${page.label}</a>`;
       const standalonePages = area.pages.filter((page) => !page.group).map(pageLink).join("");
@@ -130,11 +162,11 @@ function renderSidebar() {
       const panelId = `sidebar-area-${area.id}`;
 
       return `
-        <div class="sidebar-area${activeArea ? " is-current" : ""}" data-sidebar-area>
-          <button class="sidebar-area-toggle shell-control" type="button" data-sidebar-area-toggle aria-expanded="${activeArea}" aria-controls="${panelId}">
+        <div class="sidebar-area${activeArea ? " is-current" : ""}" data-sidebar-area data-sidebar-area-id="${area.id}">
+          <button class="sidebar-area-toggle shell-control" type="button" data-sidebar-area-toggle aria-expanded="${expanded}" aria-controls="${panelId}">
             <span>${area.label}</span>
           </button>
-          <div class="sidebar-pages" id="${panelId}" data-sidebar-area-panel${activeArea ? "" : " hidden"}>
+          <div class="sidebar-pages" id="${panelId}" data-sidebar-area-panel${expanded ? "" : " hidden"}>
             ${standalonePages}${groupedPages}
           </div>
         </div>
@@ -147,7 +179,10 @@ function renderSidebar() {
       <div class="sidebar-heading">
         <button class="mobile-nav-close shell-control" type="button" data-close-navigation aria-label="Close navigation">×</button>
       </div>
-      <nav aria-label="Design system reference">${areas}</nav>
+      <nav aria-label="Design system reference">
+        <a class="sidebar-introduction" href="${hrefFor(introductionPage.path)}"${currentId === introductionPage.id ? ' aria-current="page"' : ""}>${introductionPage.label}</a>
+        ${areas}
+      </nav>
       <a class="version" href="${hrefFor("resources/release/")}" aria-label="Release v0.0.1" translate="no">
         <span>Release</span><strong>v0.0.1</strong>
       </a>
@@ -158,6 +193,13 @@ function renderSidebar() {
 
 function bindSidebarDisclosures() {
   const toggles = [...document.querySelectorAll("[data-sidebar-area-toggle]")];
+  const openAreas = readOpenSidebarAreas();
+  document.querySelectorAll("[data-sidebar-area].is-current").forEach((area) => {
+    if (area instanceof HTMLElement && area.dataset.sidebarAreaId) {
+      openAreas.add(area.dataset.sidebarAreaId);
+    }
+  });
+
   const setExpanded = (toggle, expanded) => {
     const panel = document.getElementById(toggle.getAttribute("aria-controls"));
     if (!panel) return;
@@ -168,36 +210,22 @@ function bindSidebarDisclosures() {
   toggles.forEach((toggle) => {
     toggle.addEventListener("click", () => {
       const expand = toggle.getAttribute("aria-expanded") !== "true";
-      toggles.forEach((candidate) => setExpanded(candidate, candidate === toggle && expand));
+      setExpanded(toggle, expand);
+      const area = toggle.closest("[data-sidebar-area]");
+      if (area instanceof HTMLElement && area.dataset.sidebarAreaId) {
+        if (expand) {
+          openAreas.add(area.dataset.sidebarAreaId);
+        } else {
+          openAreas.delete(area.dataset.sidebarAreaId);
+        }
+        writeOpenSidebarAreas(openAreas);
+      }
     });
   });
 }
 
 function renderPageContext() {
-  const currentId = document.body.dataset.previewPage || document.body.dataset.previewRoute;
-  const page = getReferencePage(currentId);
-  const area = getReferenceArea(currentId);
-  const title = document.querySelector("[data-preview-context-title]");
-  const meta = document.querySelector("[data-preview-context-meta]");
-
-  if (title && page) title.textContent = page.label;
-  if (meta && area) meta.textContent = area.label;
-
-  const header = document.querySelector(".canvas-header");
-  if (header && currentId !== "overview" && !header.querySelector("[data-copy-page]")) {
-    const actions = document.createElement("div");
-    actions.className = "canvas-actions";
-    if (meta) actions.append(meta);
-
-    const copy = document.createElement("button");
-    copy.type = "button";
-    copy.className = "shell-control";
-    copy.dataset.copyPage = "";
-    copy.setAttribute("aria-label", "Copy page text");
-    copy.textContent = "Copy text";
-    actions.append(copy);
-    header.append(actions);
-  }
+  document.querySelector(".canvas-header")?.remove();
 }
 
 function renderPageNavigation() {
@@ -226,6 +254,7 @@ function renderTableOfContents() {
   const mount = document.querySelector("[data-page-toc]");
   const headings = [...document.querySelectorAll(".reference-page section h2[id]")];
   if (!mount || headings.length < 2) {
+    mount?.parentElement?.classList.add("page-layout-no-toc");
     mount?.remove();
     return;
   }
@@ -274,6 +303,13 @@ function bindGlobalSearch() {
   if (!dialog || !trigger || !input || !results || !status || !empty) return;
 
   const entries = [
+    {
+      label: introductionPage.label,
+      detail: "Design system",
+      type: "Page",
+      href: hrefFor(introductionPage.path),
+      keywords: introductionPage.keywords,
+    },
     ...referenceAreas.flatMap((area) =>
       area.pages.map((page) => ({
         label: page.label,
@@ -287,7 +323,7 @@ function bindGlobalSearch() {
       label: token.variable,
       detail: "Canonical variable",
       type: "Token",
-      href: `${hrefFor("foundations/tokens/")}?q=${encodeURIComponent(token.variable)}`,
+      href: `${hrefFor("foundations/tokens/")}#token-${token.variable.slice(2)}`,
       keywords: token.group,
     })),
   ];
@@ -349,6 +385,7 @@ function bindGlobalSearch() {
         link.setAttribute("aria-selected", "false");
         link.tabIndex = -1;
         link.dataset.searchResult = "";
+        link.dataset.searchType = match.type.toLowerCase();
 
         const content = document.createElement("span");
         const label = document.createElement("strong");
@@ -421,30 +458,6 @@ function bindGlobalSearch() {
   });
 }
 
-function getPageCopyText(page) {
-  if (!page) return "";
-
-  const clone = page.cloneNode(true);
-  clone.querySelectorAll(".page-navigation, .inline-toc, [data-copy-code]").forEach((node) =>
-    node.remove(),
-  );
-  clone.setAttribute("aria-hidden", "true");
-  clone.inert = true;
-  clone.style.position = "fixed";
-  clone.style.top = "0";
-  clone.style.left = "-100000px";
-  clone.style.width = `${Math.max(page.getBoundingClientRect().width, 320)}px`;
-  clone.style.opacity = "0";
-  clone.style.pointerEvents = "none";
-  document.body.append(clone);
-
-  try {
-    return clone.innerText.trim();
-  } finally {
-    clone.remove();
-  }
-}
-
 function bindCopyActions() {
   const copyText = async (value) => {
     try {
@@ -460,19 +473,6 @@ function bindCopyActions() {
     if (codeButton) {
       const code = codeButton.closest(".code-block")?.querySelector("code")?.textContent || "";
       if (await copyText(code)) showShellFeedback("Code copied.");
-      else showShellFeedback("Clipboard access unavailable.");
-      return;
-    }
-
-    const pageButton = event.target.closest("[data-copy-page]");
-    if (pageButton) {
-      const page = document.querySelector(".reference-page, .preview-stage");
-      const value = getPageCopyText(page);
-      if (!value) {
-        showShellFeedback("Page text unavailable.");
-        return;
-      }
-      if (await copyText(value)) showShellFeedback("Page text copied.");
       else showShellFeedback("Clipboard access unavailable.");
     }
   });

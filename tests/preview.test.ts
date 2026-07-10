@@ -1,8 +1,10 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, test } from "bun:test";
-import { referencePages } from "../preview/navigation.js";
+import { introductionPage, referencePages } from "../preview/navigation.js";
+import { icon } from "../preview/icons.js";
 import { referenceContentIds } from "../preview/reference-content.js";
 import { groupSearchResults, rankSearchEntries } from "../preview/search.js";
+import { nextThemeMode, resolveThemeMode, themeModes } from "../preview/theme.js";
 import { tokenDefinitions, tokenGroups } from "../preview/token-catalog.js";
 
 describe("preview", () => {
@@ -41,8 +43,26 @@ describe("preview", () => {
 
     const config = await readFile("preview/vite.config.ts", "utf8");
     const shell = await readFile("preview/shell.js", "utf8");
-    expect(shell).toContain("data-theme-choice");
+    expect(shell).toContain("data-theme-toggle");
+    expect(shell).not.toContain("data-theme-choice");
     expect(config).toContain("collectHtmlInputs(previewRoot)");
+  });
+
+  test("cycles one theme control through light, dark, and system modes", () => {
+    expect(themeModes).toEqual(["light", "dark", "system"]);
+    expect(themeModes.map(nextThemeMode)).toEqual(["dark", "system", "light"]);
+    expect(resolveThemeMode("light", true)).toBe("light");
+    expect(resolveThemeMode("dark", false)).toBe("dark");
+    expect(resolveThemeMode("system", true)).toBe("dark");
+    expect(resolveThemeMode("system", false)).toBe("light");
+  });
+
+  test("uses one shared icon source for shell and catalog controls", () => {
+    for (const name of ["search", "github", "sun", "moon", "system"] as const) {
+      expect(icon(name)).toContain("<svg");
+      expect(icon(name)).toContain('aria-hidden="true"');
+      expect(icon(name)).toMatch(/<(path|circle|rect)/);
+    }
   });
 
   test("lists every canonical token exactly once", async () => {
@@ -86,6 +106,39 @@ describe("preview", () => {
       .filter((id) => !overviewIds.has(id))
       .sort();
     expect([...referenceContentIds].sort()).toEqual(deepPageIds);
+  });
+
+  test("exposes the introduction and repository-backed guidance in navigation", async () => {
+    const [shell, content, packageSource] = await Promise.all([
+      readFile("preview/shell.js", "utf8"),
+      readFile("preview/reference-content.js", "utf8"),
+      readFile("package.json", "utf8"),
+    ]);
+    const packageJson = JSON.parse(packageSource) as { exports: Record<string, string> };
+    const pageIds = new Set(referencePages.map(({ id }) => id));
+
+    expect(introductionPage).toMatchObject({ id: "overview", label: "Introduction", path: "" });
+    expect(shell).toContain("introductionPage");
+    for (const id of [
+      "foundation-base",
+      "resource-package-exports",
+      "resource-brand",
+      "resource-governance",
+      "resource-design-audit",
+    ]) {
+      expect(pageIds).toContain(id);
+    }
+    for (const specifier of Object.keys(packageJson.exports)) {
+      expect(content).toContain(specifier);
+    }
+    for (const skill of [
+      "openclaw-brand",
+      "openclaw-design-system",
+      "openclaw-marketing-pages",
+      "openclaw-design-audit",
+    ]) {
+      expect(content).toContain(skill);
+    }
   });
 
   test("keeps shell keyboard landmarks and anchor offsets explicit", async () => {
@@ -140,22 +193,16 @@ describe("preview", () => {
     expect(rankSearchEntries(pages, "dark mode", 12).matches[0]?.label).toBe("Theming");
   });
 
-  test("keeps page copy output clean and the mobile sticky budget explicit", async () => {
+  test("removes the redundant canvas header across every route", async () => {
     const [shell, css] = await Promise.all([
       readFile("preview/shell.js", "utf8"),
       readFile("preview/preview.css", "utf8"),
     ]);
 
-    expect(shell).toContain('copy.textContent = "Copy text"');
-    expect(shell).toContain('copy.setAttribute("aria-label", "Copy page text")');
-    expect(shell).toContain(
-      'clone.querySelectorAll(".page-navigation, .inline-toc, [data-copy-code]")',
-    );
-    expect(shell).toContain("document.body.append(clone)");
-    expect(shell).toContain("return clone.innerText.trim()");
-    expect(shell).toContain('showShellFeedback("Page text copied.")');
-    expect(css).toContain("--preview-canvas-header-height: 48px");
-    expect(css).toContain("min-height: var(--preview-canvas-header-height)");
+    expect(shell).toContain('document.querySelector(".canvas-header")?.remove()');
+    expect(shell).not.toContain('copy.textContent = "Copy text"');
+    expect(css).toContain("--preview-canvas-header-height: 0px");
+    expect(css).not.toContain(".canvas-actions button");
   });
 
   test("gives shell controls immediate feedback without leaking motion preferences", async () => {
@@ -165,11 +212,10 @@ describe("preview", () => {
     ]);
 
     for (const marker of [
-      "oc-segmented-item shell-control",
+      "theme-control shell-control",
       "mobile-nav-trigger shell-control",
       "search-trigger shell-control",
       "mobile-nav-close shell-control",
-      'copy.className = "shell-control"',
     ]) {
       expect(shell).toContain(marker);
     }
@@ -202,7 +248,9 @@ describe("preview", () => {
 
     expect(shell).toContain('translate="no"');
     expect(shell).toContain('fetchpriority="high"');
-    expect(shell).toContain("⌘&nbsp;K");
+    expect(shell).toContain("⌘K");
+    expect(shell).toContain('icon("search")');
+    expect(shell).toContain('icon("github")');
     expect(css).toContain(".search-field:focus-within");
     expect(css).toContain("overscroll-behavior: contain");
 
@@ -213,8 +261,7 @@ describe("preview", () => {
       ".mobile-nav-trigger,",
       ".brand {",
       ".search-trigger {",
-      ".theme-control .oc-segmented-item",
-      ".canvas-actions button",
+      ".theme-control {",
       ".inline-toc nav a",
     ]) {
       expect(mobileStyles).toContain(marker);
@@ -244,20 +291,54 @@ describe("preview", () => {
 
     expect(shell).toContain("data-sidebar-area-toggle");
     expect(shell).toContain("data-sidebar-area-panel");
+    expect(shell).toContain("openclaw.preview.sidebar.openAreas");
+    expect(shell).toContain("data-sidebar-area-id");
+    expect(shell).toContain("if (currentArea) openAreas.add(currentArea.id)");
     expect(shell).toContain('toggle.setAttribute("aria-expanded", String(expanded))');
     expect(shell).toContain("panel.hidden = !expanded");
+    expect(shell).toContain("setExpanded(toggle, expand)");
+    expect(shell).toContain("writeOpenSidebarAreas(openAreas)");
+    expect(shell).not.toContain("toggles.forEach((candidate) => setExpanded(candidate");
     expect(shell).not.toContain('<a class="sidebar-area-link"');
     expect(shell).not.toContain('<p class="eyebrow">Reference</p>');
     expect(css).toContain(".sidebar-area-toggle");
     expect(css).toContain('.sidebar-area-toggle[aria-expanded="true"]::after');
     expect(css).toContain(".sidebar-pages[hidden]");
+    expect(css).not.toContain(".sidebar-area.is-current > .sidebar-area-toggle::before");
+    expect(css).not.toContain(".version span::before");
+  });
+
+  test("keeps shell geometry and the light canvas centralized", async () => {
+    const css = await readFile("preview/preview.css", "utf8");
+
+    expect(css).toContain("--preview-content: 1040px");
+    expect(css).toContain("--preview-rail-width: 280px");
+    expect(css).toContain("--preview-topbar-height: 64px");
+    expect(css).toContain("--preview-toc-width: 220px");
+    expect(css).toContain("--preview-shell-bg: var(--oc-palette-paper-50)");
+    expect(css).toContain(".page-layout-no-toc");
+    expect(css).toContain("justify-content: center");
+    expect(css).toContain("minmax(0, 860px) var(--preview-toc-width)");
+    expect(css).toContain("left: calc(var(--preview-rail-width) - 1px)");
+    expect(css).toContain("--preview-nav-surface: var(--oc-palette-paper-50)");
+  });
+
+  test("keeps shell typography legible and the token index structured", async () => {
+    const css = await readFile("preview/preview.css", "utf8");
+
+    expect(css).toContain(".home-action {");
+    expect(css).toContain("font-size: 14px");
+    expect(css).toContain(".search-trigger {");
+    expect(css).toContain("font-size: 13px");
+    expect(css).toContain("grid-template-columns: 176px minmax(0, 1fr)");
+    expect(css).toContain(".theme-control-icon");
   });
 
   test("keeps reference page heroes compact", async () => {
     const css = await readFile("preview/preview.css", "utf8");
 
     expect(css).toContain("padding: 34px 0 26px");
-    expect(css).toContain("font-size: clamp(40px, 5vw, 60px)");
+    expect(css).toContain("font-size: clamp(34px, 3.5vw, 48px)");
     expect(css).toContain("margin: 8px 0 14px");
     expect(css).toContain("font-size: 16px");
   });
@@ -274,8 +355,6 @@ describe("preview", () => {
     expect(shell).toContain('"composition-product": "composition"');
     expect(shell).toContain('document.body.dataset.pageKind =');
     expect(css).toContain('body[data-page-kind="catalog"]');
-    expect(css).toContain(".version span::before");
-    expect(css).toContain("background: var(--oc-border-accent)");
   });
 
   test("publishes a complete design system homepage", async () => {
@@ -285,13 +364,14 @@ describe("preview", () => {
     ]);
 
     expect(home).toContain('class="home-hero"');
-    expect(home).toContain('class="home-metrics"');
+    expect(home).not.toContain('class="home-metrics"');
     expect(home).toContain('aria-labelledby="home-reference-title"');
     expect(home).toContain('aria-labelledby="home-start-title"');
     expect(home).toContain('href="./foundations/tokens/"');
     expect(home).toContain('href="./interface/primitives/"');
     expect(home).toContain('href="./resources/getting-started/"');
     expect(css).toContain(".home-hero");
+    expect(css).toContain("font-size: clamp(42px, 4.2vw, 58px)");
     expect(css).toContain(".home-reference-grid");
   });
 
@@ -305,21 +385,26 @@ describe("preview", () => {
     expect(css).toContain("min-height: 88px");
   });
 
-  test("keeps long token catalogs navigable and URL-addressable", async () => {
-    const [content, preview, css] = await Promise.all([
+  test("keeps long token catalogs indexed and URL-addressable", async () => {
+    const [content, preview, shell, css] = await Promise.all([
       readFile("preview/reference-content.js", "utf8"),
       readFile("preview/preview.js", "utf8"),
+      readFile("preview/shell.js", "utf8"),
       readFile("preview/preview.css", "utf8"),
     ]);
 
-    expect(content).toContain('name="token-filter"');
-    expect(content).toContain('placeholder="Search by token name or group…"');
-    expect(preview).toContain("function syncTokenFilterUrl");
+    expect(content).toContain('class="token-reference-layout"');
+    expect(content).toContain('class="token-index"');
+    expect(content).toContain("<span data-token-count></span> tokens");
+    expect(content).not.toContain("data-token-filter");
+    expect(preview).toContain('["Token", "Value"]');
+    expect(preview).toContain('row.id = `token-${token.variable.slice(2)}`');
+    expect(shell).toContain("#token-${token.variable.slice(2)}");
     expect(preview).toContain('link.setAttribute("aria-current", "location")');
     expect(preview).toContain("observeTokenGroups()");
     expect(css).toContain("position: sticky");
-    expect(css).toContain("content-visibility: auto");
-    expect(css).toContain('.token-group-nav a[aria-current="location"]');
+    expect(css).not.toContain("content-visibility: auto");
+    expect(css).toContain('.token-index a[aria-current="location"]');
   });
 
   test("uses a responsive documentation layout around canonical primitive specimens", async () => {
@@ -351,7 +436,7 @@ describe("preview", () => {
     const css = await readFile("preview/preview.css", "utf8");
     const mobileStyles = css.slice(css.indexOf("@media (max-width: 680px)"));
 
-    expect(mobileStyles).toContain("width: 110px");
+    expect(mobileStyles).toContain("width: 44px");
     expect(mobileStyles).toContain(".home-hero");
     expect(mobileStyles).toContain(".home-reference-grid");
     expect(mobileStyles).toContain(".home-start-list a");

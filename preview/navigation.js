@@ -1,3 +1,10 @@
+export const introductionPage = {
+  id: "overview",
+  label: "Introduction",
+  path: "",
+  keywords: "home overview design system visual contract",
+};
+
 export const referenceAreas = [
   {
     id: "foundations",
@@ -46,6 +53,12 @@ export const referenceAreas = [
         label: "Motion",
         path: "foundations/motion/",
         keywords: "duration easing transition animation",
+      },
+      {
+        id: "foundation-base",
+        label: "Base styles",
+        path: "foundations/base/",
+        keywords: "reset focus selection screen reader reduced motion baseline",
       },
     ],
   },
@@ -176,6 +189,12 @@ export const referenceAreas = [
         keywords: "install setup usage quickstart",
       },
       {
+        id: "resource-package-exports",
+        label: "Package exports",
+        path: "resources/package-exports/",
+        keywords: "entry points imports css package contract",
+      },
+      {
         id: "resource-theming",
         label: "Theming",
         path: "resources/theming/",
@@ -198,6 +217,24 @@ export const referenceAreas = [
         label: "Skills",
         path: "resources/skills/",
         keywords: "agent guidance audit",
+      },
+      {
+        id: "resource-brand",
+        label: "Brand and assets",
+        path: "resources/brand-and-assets/",
+        keywords: "identity voice typography logo imagery license rights",
+      },
+      {
+        id: "resource-governance",
+        label: "Governance",
+        path: "resources/governance/",
+        keywords: "ownership consumers promotion contribution compatibility",
+      },
+      {
+        id: "resource-design-audit",
+        label: "Design audit",
+        path: "resources/design-audit/",
+        keywords: "compliance drift rubric severity report fix policy",
       },
       {
         id: "resource-accessibility",

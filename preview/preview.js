@@ -1,6 +1,8 @@
 import { groupTokenDefinitions } from "./token-catalog.js";
+import { icon } from "./icons.js";
 import { renderReferenceContent } from "./reference-content.js";
 import { renderShell, showShellFeedback } from "./shell.js";
+import { nextThemeMode, resolveThemeMode, themeModes } from "./theme.js";
 
 renderReferenceContent();
 renderShell();
@@ -8,10 +10,8 @@ renderShell();
 const root = document.documentElement;
 const tokenGrid = document.querySelector("[data-token-grid]");
 const tokenCount = document.querySelector("[data-token-count]");
-const tokenFilter = document.querySelector("[data-token-filter]");
-const tokenFilterClear = document.querySelector("[data-clear-token-filter]");
 const tokenGroupNav = document.querySelector("[data-token-group-nav]");
-const themeButtons = document.querySelectorAll("[data-theme-choice]");
+const themeToggle = document.querySelector("[data-theme-toggle]");
 const dialog = document.querySelector("dialog");
 const dialogTrigger = document.querySelector("[data-open-dialog]");
 const previewNavLinks = document.querySelectorAll("[data-preview-link]");
@@ -19,6 +19,7 @@ const previewSections = [...document.querySelectorAll("[data-preview-section]")]
 const previewContextTitle = document.querySelector("[data-preview-context-title]");
 const previewContextMeta = document.querySelector("[data-preview-context-meta]");
 let tokenGroupObserver;
+let tokenHashSynced = false;
 
 function syncThemeColor() {
   let themeColor = document.querySelector('meta[name="theme-color"]');
@@ -117,8 +118,11 @@ function createTokenGroup(group, resolver) {
 
   const count = document.createElement("span");
   count.textContent = `${group.tokens.length} token${group.tokens.length === 1 ? "" : "s"}`;
+  const rule = document.createElement("span");
+  rule.className = "token-group-rule";
+  rule.setAttribute("aria-hidden", "true");
   headingCopy.append(title, description);
-  heading.append(headingCopy, count);
+  heading.append(headingCopy, rule, count);
 
   const tableWrap = document.createElement("div");
   tableWrap.className = "token-table-wrap";
@@ -129,7 +133,7 @@ function createTokenGroup(group, resolver) {
 
   const head = document.createElement("thead");
   const headRow = document.createElement("tr");
-  const headings = group.comparison ? ["Token", "Light", "Dark"] : ["Token", "Preview", "Value"];
+  const headings = group.comparison ? ["Token", "Light", "Dark"] : ["Token", "Value"];
   for (const label of headings) {
     const cell = document.createElement("th");
     cell.scope = "col";
@@ -145,9 +149,13 @@ function createTokenGroup(group, resolver) {
 
   for (const token of group.tokens) {
     const row = document.createElement("tr");
+    row.id = `token-${token.variable.slice(2)}`;
     const name = document.createElement("th");
     name.scope = "row";
     name.className = "token-name";
+
+    const nameContent = document.createElement("span");
+    nameContent.className = "token-name-content";
 
     const variable = document.createElement("button");
     variable.type = "button";
@@ -155,7 +163,11 @@ function createTokenGroup(group, resolver) {
     variable.setAttribute("aria-label", `Copy token name ${token.variable}`);
     variable.textContent = token.variable;
     variable.title = token.variable;
-    name.append(variable);
+    nameContent.append(variable);
+    if (!group.comparison) {
+      nameContent.append(createTokenPreview(group.sample, activeValues.get(token.variable)));
+    }
+    name.append(nameContent);
     row.append(name);
 
     if (group.comparison) {
@@ -169,10 +181,6 @@ function createTokenGroup(group, resolver) {
       }
     } else {
       const value = activeValues.get(token.variable);
-      const previewCell = document.createElement("td");
-      previewCell.className = "token-preview-cell";
-      previewCell.append(createTokenPreview(group.sample, value));
-
       const valueCell = document.createElement("td");
       const resolvedValue = document.createElement("button");
       resolvedValue.type = "button";
@@ -183,7 +191,7 @@ function createTokenGroup(group, resolver) {
       resolvedValue.title = value;
       valueCell.append(resolvedValue);
 
-      row.append(previewCell, valueCell);
+      row.append(valueCell);
     }
 
     body.append(row);
@@ -240,24 +248,6 @@ function observeTokenGroups() {
   if (sections[0]) setActive(sections[0].querySelector("h2")?.id);
 }
 
-function createTokenEmptyState() {
-  const empty = document.createElement("div");
-  empty.className = "token-empty";
-
-  const title = document.createElement("h2");
-  title.textContent = "No tokens found";
-
-  const copy = document.createElement("p");
-  copy.textContent = "Try another token name or group.";
-
-  const clear = document.createElement("button");
-  clear.type = "button";
-  clear.dataset.clearTokenFilter = "";
-  clear.textContent = "Clear filter";
-  empty.append(title, copy, clear);
-  return empty;
-}
-
 function renderTokens() {
   if (!tokenGrid) return;
 
@@ -272,62 +262,62 @@ function renderTokens() {
       .map((group) => group.trim())
       .filter(Boolean),
   );
-  const query = tokenFilter?.value.trim().toLowerCase() || "";
   const groups = groupTokenDefinitions()
     .filter((group) => requestedGroups.size === 0 || requestedGroups.has(group.id))
-    .map((group) => ({
-      ...group,
-      tokens: group.tokens.filter(
-        (token) =>
-          !query ||
-          `${token.variable} ${group.id} ${group.label} ${group.description}`
-            .toLowerCase()
-            .includes(query),
-      ),
-    }))
     .filter((group) => group.tokens.length > 0);
   const count = groups.reduce((total, group) => total + group.tokens.length, 0);
 
   if (tokenCount) tokenCount.textContent = String(count);
-  if (tokenFilterClear) tokenFilterClear.hidden = query.length === 0;
   renderTokenGroupNavigation(groups);
-  tokenGrid.replaceChildren(
-    ...(groups.length > 0
-      ? groups.map((group) => createTokenGroup(group, resolver))
-      : [createTokenEmptyState()]),
-  );
+  tokenGrid.replaceChildren(...groups.map((group) => createTokenGroup(group, resolver)));
   observeTokenGroups();
   resolver.remove();
-}
 
-function syncTokenFilterUrl() {
-  if (!tokenFilter) return;
-  const url = new URL(window.location.href);
-  const query = tokenFilter.value.trim();
-  if (query) url.searchParams.set("q", query);
-  else url.searchParams.delete("q");
-  window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
-}
-
-function syncThemeControls(theme) {
-  for (const button of themeButtons) {
-    button.setAttribute("aria-pressed", String(button.dataset.themeChoice === theme));
+  if (!tokenHashSynced && window.location.hash.startsWith("#token-")) {
+    tokenHashSynced = true;
+    window.requestAnimationFrame(() => {
+      document.getElementById(window.location.hash.slice(1))?.scrollIntoView({ block: "start" });
+    });
   }
 }
 
-function setTheme(theme) {
-  if (theme !== "light" && theme !== "dark") return;
+const colorScheme = window.matchMedia("(prefers-color-scheme: dark)");
 
+function syncThemeControl(mode) {
+  if (!themeToggle) return;
+  const labels = { light: "Light", dark: "Dark", system: "System" };
+  const next = nextThemeMode(mode);
+  themeToggle.querySelector(".theme-control-icon").innerHTML = icon(
+    mode === "light" ? "sun" : mode === "dark" ? "moon" : "system",
+  );
+  themeToggle.setAttribute(
+    "aria-label",
+    `Color theme: ${labels[mode]}. Activate to switch to ${labels[next].toLowerCase()}.`,
+  );
+  themeToggle.title = `${labels[mode]} theme`;
+}
+
+function setThemeMode(mode) {
+  if (!themeModes.includes(mode)) return;
+
+  const theme = resolveThemeMode(mode, colorScheme.matches);
   root.dataset.theme = theme;
+  localStorage.setItem("openclaw-preview-theme-mode", mode);
   localStorage.setItem("openclaw-preview-theme", theme);
-  syncThemeControls(theme);
+  syncThemeControl(mode);
   renderTokens();
   syncThemeColor();
 }
 
-for (const button of themeButtons) {
-  button.addEventListener("click", () => setTheme(button.dataset.themeChoice));
-}
+let themeMode = localStorage.getItem("openclaw-preview-theme-mode");
+if (!themeModes.includes(themeMode)) themeMode = root.dataset.theme === "light" ? "light" : "dark";
+themeToggle?.addEventListener("click", () => {
+  themeMode = nextThemeMode(themeMode);
+  setThemeMode(themeMode);
+});
+colorScheme.addEventListener("change", () => {
+  if (themeMode === "system") setThemeMode(themeMode);
+});
 
 if (dialog && dialogTrigger) {
   dialogTrigger.addEventListener("click", () => dialog.showModal());
@@ -385,23 +375,7 @@ if (previewSections.length > 0) {
   scheduleNavigationSync();
 }
 
-syncThemeControls(root.dataset.theme);
-if (tokenFilter) {
-  tokenFilter.value = new URLSearchParams(window.location.search).get("q") || "";
-  tokenFilter.addEventListener("input", () => {
-    syncTokenFilterUrl();
-    renderTokens();
-  });
-}
-
-document.addEventListener("click", (event) => {
-  const clear = event.target.closest("[data-clear-token-filter]");
-  if (!clear || !tokenFilter) return;
-  tokenFilter.value = "";
-  tokenFilter.focus();
-  syncTokenFilterUrl();
-  renderTokens();
-});
+setThemeMode(themeMode);
 
 document.addEventListener("click", async (event) => {
   const button = event.target.closest("[data-copy-token]");
