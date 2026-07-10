@@ -276,4 +276,21 @@ describe("preview", () => {
     expect(css).toContain(".version span::before");
     expect(css).toContain("background: var(--oc-border-accent)");
   });
+
+  test("publishes a complete design system homepage", async () => {
+    const [home, css] = await Promise.all([
+      readFile("preview/index.html", "utf8"),
+      readFile("preview/preview.css", "utf8"),
+    ]);
+
+    expect(home).toContain('class="home-hero"');
+    expect(home).toContain('class="home-metrics"');
+    expect(home).toContain('aria-labelledby="home-reference-title"');
+    expect(home).toContain('aria-labelledby="home-start-title"');
+    expect(home).toContain('href="./foundations/tokens/"');
+    expect(home).toContain('href="./interface/primitives/"');
+    expect(home).toContain('href="./resources/getting-started/"');
+    expect(css).toContain(".home-hero");
+    expect(css).toContain(".home-reference-grid");
+  });
 });

@@ -19,37 +19,54 @@
 
       <main class="preview-main">
         <header class="canvas-header">
-          <p class="canvas-title">Overview</p>
-          <p class="canvas-meta">OpenClaw design system</p>
+          <p class="canvas-title">Design system</p>
+          <p class="canvas-meta">Canonical web contract</p>
         </header>
 
         <div class="preview-stage">
-          <section class="intro" aria-labelledby="preview-title">
-            <p class="eyebrow">Canonical contract</p>
-            <h1 id="preview-title">One visual foundation for OpenClaw.</h1>
-            <p>
-              Browse the token contract, interface states, and reusable compositions
-              as distinct reference areas.
-            </p>
-            <div class="route-grid">
-              <a class="route-card" href="./foundations/">
-                <span>Foundations</span>
-                <strong>Tokens and type</strong>
-              </a>
-              <a class="route-card" href="./interface/">
-                <span>Interface</span>
-                <strong>Controls and states</strong>
-              </a>
-              <a class="route-card" href="./compositions/">
-                <span>Compositions</span>
-                <strong>Content and public surfaces</strong>
-              </a>
-              <a class="route-card" href="./resources/">
-                <span>Resources</span>
-                <strong>Adoption and guidance</strong>
-              </a>
-            </div>
-          </section>
+          <div class="home-page">
+            <header class="home-hero">
+              <div class="home-hero-copy">
+                <p class="eyebrow">OpenClaw design system</p>
+                <h1 id="preview-title">One visual contract, from foundation to interface.</h1>
+                <p>Canonical tokens, framework-neutral primitives, composition guidance, and adoption resources for OpenClaw web surfaces.</p>
+                <div class="home-actions">
+                  <a class="home-action home-action-primary" href="./foundations/">Explore the system</a>
+                  <a class="home-action" href="./resources/getting-started/">Get started</a>
+                </div>
+              </div>
+              <dl class="home-metrics" aria-label="Design system coverage">
+                <div><dt>Variables</dt><dd>100</dd></div>
+                <div><dt>Primitives</dt><dd>7</dd></div>
+                <div><dt>Reference areas</dt><dd>4</dd></div>
+                <div><dt>Release</dt><dd>v0.0.1</dd></div>
+              </dl>
+            </header>
+
+            <section class="home-reference" aria-labelledby="home-reference-title">
+              <div class="home-section-heading">
+                <div><p class="eyebrow">Reference</p><h2 id="home-reference-title">Explore by responsibility</h2></div>
+                <p>Move from the canonical source to implementation and adoption.</p>
+              </div>
+              <div class="home-reference-grid">
+                <a href="./foundations/"><span>01 · Foundations</span><strong>Tokens, type, layout, geometry, and motion</strong><p>Inspect the complete visual contract by role.</p></a>
+                <a href="./interface/"><span>02 · Interface</span><strong>Shared primitives and interaction states</strong><p>Use exported classes without moving consumer behavior.</p></a>
+                <a href="./compositions/"><span>03 · Compositions</span><strong>Patterns at representative interface scale</strong><p>Study product, content, and public surfaces.</p></a>
+                <a href="./resources/"><span>04 · Resources</span><strong>Installation, adapters, skills, and release guidance</strong><p>Adopt and validate the contract across consumers.</p></a>
+              </div>
+            </section>
+
+            <section class="home-start" aria-labelledby="home-start-title">
+              <div class="home-section-heading">
+                <div><p class="eyebrow">Start here</p><h2 id="home-start-title">Choose the path that matches the work</h2></div>
+              </div>
+              <nav class="home-start-list" aria-label="Common starting points">
+                <a href="./foundations/tokens/"><span>Inspect</span><strong>Browse every canonical token</strong><small>Foundations → Design tokens</small></a>
+                <a href="./interface/primitives/"><span>Build</span><strong>Use shared interface primitives</strong><small>Interface → Shared primitives</small></a>
+                <a href="./resources/getting-started/"><span>Adopt</span><strong>Install the versioned contract</strong><small>Resources → Getting started</small></a>
+              </nav>
+            </section>
+          </div>
         </div>
       </main>
     </div>

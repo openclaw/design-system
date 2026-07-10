@@ -570,6 +570,202 @@ a {
   margin-top: 28px;
 }
 
+.home-page {
+  width: 100%;
+}
+
+.home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.42fr);
+  gap: clamp(48px, 7vw, 96px);
+  align-items: end;
+  padding: 58px 0 52px;
+  border-bottom: 1px solid var(--oc-border-subtle);
+}
+
+.home-hero-copy h1 {
+  max-width: 800px;
+  margin: 12px 0 18px;
+  font-family: var(--oc-font-display);
+  font-size: clamp(52px, 6vw, 78px);
+  letter-spacing: -0.05em;
+  line-height: 0.96;
+  text-wrap: balance;
+}
+
+.home-hero-copy > p:not(.eyebrow) {
+  max-width: 680px;
+  color: var(--oc-text-secondary);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.home-action {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  padding: 0 15px;
+  border: 1px solid var(--oc-border-subtle);
+  background: var(--oc-bg-surface);
+  color: var(--oc-text-primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.home-action-primary {
+  border-color: var(--oc-accent-primary);
+  background: var(--oc-accent-primary);
+  color: var(--oc-text-on-accent);
+}
+
+.home-action:hover,
+.home-reference-grid a:hover,
+.home-start-list a:hover {
+  background: var(--oc-surface-interactive-hover);
+}
+
+.home-action-primary:hover {
+  background: var(--oc-accent-primary-hover);
+}
+
+.home-action:focus-visible,
+.home-reference-grid a:focus-visible,
+.home-start-list a:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--oc-focus-ring);
+  outline-offset: -2px;
+}
+
+.home-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border: 1px solid var(--oc-border-subtle);
+  background: var(--oc-border-subtle);
+  gap: 1px;
+}
+
+.home-metrics div {
+  display: grid;
+  min-height: 112px;
+  align-content: space-between;
+  padding: 16px;
+  background: var(--oc-bg-surface);
+}
+
+.home-metrics dt {
+  color: var(--oc-text-muted);
+  font-family: var(--oc-font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.home-metrics dd {
+  margin: 0;
+  color: var(--oc-text-primary);
+  font-family: var(--oc-font-display);
+  font-size: 28px;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-reference,
+.home-start {
+  padding: 52px 0;
+  border-bottom: 1px solid var(--oc-border-subtle);
+}
+
+.home-section-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+  align-items: end;
+  margin-bottom: 24px;
+}
+
+.home-section-heading h2 {
+  margin: 6px 0 0;
+  font-family: var(--oc-font-display);
+  font-size: 30px;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.home-section-heading > p {
+  max-width: 360px;
+  margin: 0;
+  color: var(--oc-text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.home-reference-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--oc-border-subtle);
+  background: var(--oc-border-subtle);
+}
+
+.home-reference-grid a {
+  display: grid;
+  min-height: 176px;
+  align-content: end;
+  gap: 8px;
+  padding: 22px;
+  background: var(--oc-bg-surface);
+  color: var(--oc-text-primary);
+  text-decoration: none;
+}
+
+.home-reference-grid span,
+.home-start-list span,
+.home-start-list small {
+  color: var(--oc-text-muted);
+  font-family: var(--oc-font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.home-reference-grid strong,
+.home-start-list strong {
+  font-family: var(--oc-font-display);
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.home-reference-grid p {
+  margin: 0;
+  color: var(--oc-text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.home-start-list {
+  display: grid;
+  border-top: 1px solid var(--oc-border-subtle);
+}
+
+.home-start-list a {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) minmax(180px, 0.45fr);
+  gap: 24px;
+  min-height: 76px;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--oc-border-subtle);
+  color: var(--oc-text-primary);
+  text-decoration: none;
+}
+
 .route-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
