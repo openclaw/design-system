@@ -63,6 +63,7 @@ describe("preview", () => {
     const groupIds = new Set(tokenGroups.map(({ id }) => id));
 
     expect(listed).toHaveLength(listedSet.size);
+    expect(tokenGroups.every(({ description }) => description.length > 0)).toBe(true);
     expect(tokenDefinitions.filter(({ group }) => !groupIds.has(group))).toEqual([]);
     expect([...listedSet].sort()).toEqual([...canonical].sort());
   });

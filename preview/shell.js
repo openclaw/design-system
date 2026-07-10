@@ -10,6 +10,18 @@ const primitiveEntries = [
   { label: "Pill", detail: ".oc-pill", hash: "#primitive-selection" },
 ];
 
+let feedbackTimeout;
+
+export function showShellFeedback(message) {
+  const feedback = document.querySelector("[data-shell-feedback]");
+  if (!feedback) return;
+
+  window.clearTimeout(feedbackTimeout);
+  feedback.textContent = message;
+  feedback.classList.add("is-visible");
+  feedbackTimeout = window.setTimeout(() => feedback.classList.remove("is-visible"), 1400);
+}
+
 function hrefFor(path) {
   return `${document.body.dataset.previewRoot || "./"}${path}`;
 }
@@ -54,6 +66,7 @@ function renderTopbar() {
       </div>
       <div class="search-results" data-search-results></div>
     </dialog>
+    <div class="shell-feedback" role="status" aria-live="polite" data-shell-feedback></div>
   `;
 }
 

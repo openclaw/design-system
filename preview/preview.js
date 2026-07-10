@@ -1,6 +1,6 @@
 import { groupTokenDefinitions } from "./token-catalog.js";
 import { renderReferenceContent } from "./reference-content.js";
-import { renderShell } from "./shell.js";
+import { renderShell, showShellFeedback } from "./shell.js";
 
 renderReferenceContent();
 renderShell();
@@ -9,6 +9,8 @@ const root = document.documentElement;
 const tokenGrid = document.querySelector("[data-token-grid]");
 const tokenCount = document.querySelector("[data-token-count]");
 const tokenFilter = document.querySelector("[data-token-filter]");
+const tokenFilterClear = document.querySelector("[data-clear-token-filter]");
+const tokenGroupNav = document.querySelector("[data-token-group-nav]");
 const themeButtons = document.querySelectorAll("[data-theme-choice]");
 const dialog = document.querySelector("dialog");
 const dialogTrigger = document.querySelector("[data-open-dialog]");
@@ -67,7 +69,7 @@ function createTokenPreview(sample, value) {
   return preview;
 }
 
-function createTokenValue(sample, value) {
+function createTokenValue(sample, value, variable, context) {
   const valueCell = document.createElement("span");
   valueCell.className = "token-value-cell";
 
@@ -75,6 +77,7 @@ function createTokenValue(sample, value) {
   resolvedValue.type = "button";
   resolvedValue.className = "token-value";
   resolvedValue.dataset.copyToken = value;
+  resolvedValue.setAttribute("aria-label", `Copy ${context} value ${value} for ${variable}`);
   resolvedValue.textContent = value;
   resolvedValue.title = value;
 
@@ -90,13 +93,20 @@ function createTokenGroup(group, resolver) {
   const heading = document.createElement("header");
   heading.className = "token-group-heading";
 
+  const headingCopy = document.createElement("div");
+  headingCopy.className = "token-group-copy";
+
   const title = document.createElement("h2");
   title.id = `token-group-${group.id}`;
   title.textContent = group.label;
 
+  const description = document.createElement("p");
+  description.textContent = group.description;
+
   const count = document.createElement("span");
   count.textContent = `${group.tokens.length} token${group.tokens.length === 1 ? "" : "s"}`;
-  heading.append(title, count);
+  headingCopy.append(title, description);
+  heading.append(headingCopy, count);
 
   const tableWrap = document.createElement("div");
   tableWrap.className = "token-table-wrap";
@@ -130,15 +140,19 @@ function createTokenGroup(group, resolver) {
     const variable = document.createElement("button");
     variable.type = "button";
     variable.dataset.copyToken = token.variable;
+    variable.setAttribute("aria-label", `Copy token name ${token.variable}`);
     variable.textContent = token.variable;
     variable.title = token.variable;
     name.append(variable);
     row.append(name);
 
     if (group.comparison) {
-      for (const value of [lightValues.get(token.variable), darkValues.get(token.variable)]) {
+      for (const [theme, value] of [
+        ["light", lightValues.get(token.variable)],
+        ["dark", darkValues.get(token.variable)],
+      ]) {
         const cell = document.createElement("td");
-        cell.append(createTokenValue(group.sample, value));
+        cell.append(createTokenValue(group.sample, value, token.variable, theme));
         row.append(cell);
       }
     } else {
@@ -152,6 +166,7 @@ function createTokenGroup(group, resolver) {
       resolvedValue.type = "button";
       resolvedValue.className = "token-value";
       resolvedValue.dataset.copyToken = value;
+      resolvedValue.setAttribute("aria-label", `Copy resolved value ${value} for ${token.variable}`);
       resolvedValue.textContent = value;
       resolvedValue.title = value;
       valueCell.append(resolvedValue);
@@ -166,6 +181,43 @@ function createTokenGroup(group, resolver) {
   tableWrap.append(table);
   section.append(heading, tableWrap);
   return section;
+}
+
+function renderTokenGroupNavigation(groups) {
+  if (!tokenGroupNav) return;
+
+  tokenGroupNav.replaceChildren(
+    ...groups.map((group) => {
+      const link = document.createElement("a");
+      link.href = `#token-group-${group.id}`;
+
+      const label = document.createElement("span");
+      label.textContent = group.label;
+
+      const count = document.createElement("small");
+      count.textContent = String(group.tokens.length);
+      link.append(label, count);
+      return link;
+    }),
+  );
+}
+
+function createTokenEmptyState() {
+  const empty = document.createElement("div");
+  empty.className = "token-empty";
+
+  const title = document.createElement("h2");
+  title.textContent = "No tokens found";
+
+  const copy = document.createElement("p");
+  copy.textContent = "Try another token name or group.";
+
+  const clear = document.createElement("button");
+  clear.type = "button";
+  clear.dataset.clearTokenFilter = "";
+  clear.textContent = "Clear filter";
+  empty.append(title, copy, clear);
+  return empty;
 }
 
 function renderTokens() {
@@ -188,14 +240,24 @@ function renderTokens() {
     .map((group) => ({
       ...group,
       tokens: group.tokens.filter(
-        (token) => !query || `${token.variable} ${group.id} ${group.label}`.toLowerCase().includes(query),
+        (token) =>
+          !query ||
+          `${token.variable} ${group.id} ${group.label} ${group.description}`
+            .toLowerCase()
+            .includes(query),
       ),
     }))
     .filter((group) => group.tokens.length > 0);
   const count = groups.reduce((total, group) => total + group.tokens.length, 0);
 
   if (tokenCount) tokenCount.textContent = String(count);
-  tokenGrid.replaceChildren(...groups.map((group) => createTokenGroup(group, resolver)));
+  if (tokenFilterClear) tokenFilterClear.hidden = query.length === 0;
+  renderTokenGroupNavigation(groups);
+  tokenGrid.replaceChildren(
+    ...(groups.length > 0
+      ? groups.map((group) => createTokenGroup(group, resolver))
+      : [createTokenEmptyState()]),
+  );
   resolver.remove();
 }
 
@@ -280,15 +342,25 @@ if (tokenFilter) {
   tokenFilter.addEventListener("input", renderTokens);
 }
 
+document.addEventListener("click", (event) => {
+  const clear = event.target.closest("[data-clear-token-filter]");
+  if (!clear || !tokenFilter) return;
+  tokenFilter.value = "";
+  tokenFilter.focus();
+  renderTokens();
+});
+
 document.addEventListener("click", async (event) => {
   const button = event.target.closest("[data-copy-token]");
   if (!button) return;
   try {
     await navigator.clipboard.writeText(button.dataset.copyToken);
     button.classList.add("is-copied");
+    showShellFeedback(`Copied ${button.dataset.copyToken}`);
     window.setTimeout(() => button.classList.remove("is-copied"), 800);
   } catch {
     button.title = "Copy unavailable in this browser";
+    showShellFeedback("Copy unavailable in this browser");
   }
 });
 
