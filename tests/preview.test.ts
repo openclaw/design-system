@@ -320,4 +320,18 @@ describe("preview", () => {
     expect(css).toContain("content-visibility: auto");
     expect(css).toContain('.token-group-nav a[aria-current="location"]');
   });
+
+  test("uses a responsive documentation layout around canonical primitive specimens", async () => {
+    const [content, css] = await Promise.all([
+      readFile("preview/reference-content.js", "utf8"),
+      readFile("preview/preview.css", "utf8"),
+    ]);
+
+    expect(content).toContain('data-section-kind="preview"');
+    expect(content).toContain('data-section-kind="markup"');
+    expect(content).toContain('data-section-kind="guidance"');
+    expect(css).toContain('body[data-page-kind="reference"] .reference-page');
+    expect(css).toContain('[data-section-kind="preview"]');
+    expect(css).toContain("grid-column: 1 / -1");
+  });
 });
