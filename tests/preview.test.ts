@@ -234,4 +234,19 @@ describe("preview", () => {
     expect(preview).toContain('meta[name="theme-color"]');
     expect(preview).toContain('getPropertyValue("--oc-bg-page")');
   });
+
+  test("uses real sidebar disclosures without navigating area headings", async () => {
+    const [shell, css] = await Promise.all([
+      readFile("preview/shell.js", "utf8"),
+      readFile("preview/preview.css", "utf8"),
+    ]);
+
+    expect(shell).toContain("data-sidebar-area-toggle");
+    expect(shell).toContain("data-sidebar-area-panel");
+    expect(shell).toContain('toggle.setAttribute("aria-expanded", String(expanded))');
+    expect(shell).toContain("panel.hidden = !expanded");
+    expect(shell).not.toContain('<a class="sidebar-area-link"');
+    expect(css).toContain(".sidebar-area-toggle");
+    expect(css).toContain('.sidebar-area-toggle[aria-expanded="true"]::after');
+  });
 });

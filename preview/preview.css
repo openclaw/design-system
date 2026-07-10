@@ -321,19 +321,25 @@ a {
   margin-top: 2px;
 }
 
-.sidebar-area-link {
+.sidebar-area-toggle {
   position: relative;
   display: flex;
+  width: 100%;
   min-height: 40px !important;
   justify-content: space-between;
   align-items: center;
+  border: 0;
   padding: 9px 10px !important;
+  background: transparent;
   color: var(--oc-text-primary) !important;
+  cursor: pointer;
+  font: inherit;
   font-weight: 650;
   letter-spacing: -0.01em;
+  text-align: left;
 }
 
-.sidebar-area-link::after {
+.sidebar-area-toggle::after {
   color: var(--oc-text-muted);
   content: "›";
   font-family: var(--oc-font-mono);
@@ -342,11 +348,11 @@ a {
   line-height: 1;
 }
 
-.sidebar-area.is-active > .sidebar-area-link {
+.sidebar-area.is-current > .sidebar-area-toggle {
   color: var(--oc-text-primary) !important;
 }
 
-.sidebar-area.is-active > .sidebar-area-link::before {
+.sidebar-area.is-current > .sidebar-area-toggle::before {
   position: absolute;
   top: 50%;
   left: 0;
@@ -357,13 +363,18 @@ a {
   transform: translateY(-50%);
 }
 
-.sidebar-area.is-active > .sidebar-area-link::after {
+.sidebar-area-toggle[aria-expanded="true"]::after {
   color: var(--oc-accent-primary);
   transform: rotate(90deg);
 }
 
-.sidebar-area-link:hover {
+.sidebar-area-toggle:hover {
   background: var(--oc-surface-interactive);
+}
+
+.sidebar-area-toggle:focus-visible {
+  outline: 2px solid var(--oc-focus-ring);
+  outline-offset: -2px;
 }
 
 .sidebar-pages {
@@ -2346,7 +2357,7 @@ dialog .button-row {
     padding-top: 14px;
   }
 
-  .sidebar-area-link {
+  .sidebar-area-toggle {
     min-height: 44px !important;
   }
 

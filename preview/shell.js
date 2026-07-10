@@ -89,16 +89,16 @@ function renderSidebar() {
           return `<div class="sidebar-page-group" role="group" aria-labelledby="${groupId}"><p class="sidebar-pages-label" id="${groupId}">${group}</p>${pages}</div>`;
         })
         .join("");
-      const children = activeArea
-        ? `<div class="sidebar-pages">${standalonePages}${groupedPages}</div>`
-        : "";
+      const panelId = `sidebar-area-${area.id}`;
 
       return `
-        <div class="sidebar-area${activeArea ? " is-active" : ""}">
-          <a class="sidebar-area-link" href="${hrefFor(area.path)}">
+        <div class="sidebar-area${activeArea ? " is-current" : ""}" data-sidebar-area>
+          <button class="sidebar-area-toggle shell-control" type="button" data-sidebar-area-toggle aria-expanded="${activeArea}" aria-controls="${panelId}">
             <span>${area.label}</span>
-          </a>
-          ${children}
+          </button>
+          <div class="sidebar-pages" id="${panelId}" data-sidebar-area-panel${activeArea ? "" : " hidden"}>
+            ${standalonePages}${groupedPages}
+          </div>
         </div>
       `;
     })
@@ -117,6 +117,23 @@ function renderSidebar() {
     </aside>
     <button class="navigation-backdrop" type="button" data-close-navigation aria-label="Close navigation"></button>
   `;
+}
+
+function bindSidebarDisclosures() {
+  const toggles = [...document.querySelectorAll("[data-sidebar-area-toggle]")];
+  const setExpanded = (toggle, expanded) => {
+    const panel = document.getElementById(toggle.getAttribute("aria-controls"));
+    if (!panel) return;
+    toggle.setAttribute("aria-expanded", String(expanded));
+    panel.hidden = !expanded;
+  };
+
+  toggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      const expand = toggle.getAttribute("aria-expanded") !== "true";
+      toggles.forEach((candidate) => setExpanded(candidate, candidate === toggle && expand));
+    });
+  });
 }
 
 function renderPageContext() {
@@ -480,7 +497,7 @@ function bindNavigation() {
 
     if (event.key === "Tab") {
       const focusable = [...navigation.querySelectorAll(focusableSelector)].filter(
-        (element) => !element.hidden,
+        (element) => !element.closest("[hidden]"),
       );
       const first = focusable[0];
       const last = focusable.at(-1);
@@ -517,6 +534,7 @@ export function renderShell() {
   renderPageContext();
   renderPageNavigation();
   renderTableOfContents();
+  bindSidebarDisclosures();
   bindNavigation();
   bindGlobalSearch();
   bindCopyActions();
