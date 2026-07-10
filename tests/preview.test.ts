@@ -345,4 +345,17 @@ describe("preview", () => {
     expect(css).toContain('body[data-preview-page="composition-content"] .prose-sample');
     expect(css).toContain('body[data-page-kind="release"] .release-panel');
   });
+
+  test("keeps the expanded shell within the mobile viewport", async () => {
+    const css = await readFile("preview/preview.css", "utf8");
+    const mobileStyles = css.slice(css.indexOf("@media (max-width: 680px)"));
+
+    expect(mobileStyles).toContain("width: 110px");
+    expect(mobileStyles).toContain(".home-hero");
+    expect(mobileStyles).toContain(".home-reference-grid");
+    expect(mobileStyles).toContain(".home-start-list a");
+    expect(mobileStyles).toContain('body[data-page-kind="index"] .reference-card');
+    expect(mobileStyles).toContain(".code-block-header button");
+    expect(mobileStyles).toContain("min-height: 44px");
+  });
 });
