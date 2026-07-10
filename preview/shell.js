@@ -107,7 +107,6 @@ function renderSidebar() {
   mount.outerHTML = `
     <aside class="sidebar" id="reference-navigation" data-navigation>
       <div class="sidebar-heading">
-        <p class="eyebrow">Reference</p>
         <button class="mobile-nav-close shell-control" type="button" data-close-navigation aria-label="Close navigation">×</button>
       </div>
       <nav aria-label="Design system reference">${areas}</nav>

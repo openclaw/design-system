@@ -277,17 +277,7 @@ a {
 }
 
 .sidebar-heading {
-  display: flex;
-  min-height: 58px;
-  flex: 0 0 auto;
-  align-items: center;
-  padding: 0 12px;
-  border-bottom: 1px solid var(--oc-border-subtle);
-}
-
-.sidebar-heading .eyebrow {
-  margin: 0;
-  color: var(--oc-text-muted);
+  display: none;
 }
 
 .sidebar nav {

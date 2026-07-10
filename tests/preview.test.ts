@@ -246,6 +246,7 @@ describe("preview", () => {
     expect(shell).toContain('toggle.setAttribute("aria-expanded", String(expanded))');
     expect(shell).toContain("panel.hidden = !expanded");
     expect(shell).not.toContain('<a class="sidebar-area-link"');
+    expect(shell).not.toContain('<p class="eyebrow">Reference</p>');
     expect(css).toContain(".sidebar-area-toggle");
     expect(css).toContain('.sidebar-area-toggle[aria-expanded="true"]::after');
     expect(css).toContain(".sidebar-pages[hidden]");
