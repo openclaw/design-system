@@ -385,6 +385,10 @@ a {
   border-left: 1px solid var(--oc-border-subtle);
 }
 
+.sidebar-pages[hidden] {
+  display: none;
+}
+
 .sidebar-pages a {
   position: relative;
   min-height: 34px;

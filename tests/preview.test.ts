@@ -248,6 +248,7 @@ describe("preview", () => {
     expect(shell).not.toContain('<a class="sidebar-area-link"');
     expect(css).toContain(".sidebar-area-toggle");
     expect(css).toContain('.sidebar-area-toggle[aria-expanded="true"]::after');
+    expect(css).toContain(".sidebar-pages[hidden]");
   });
 
   test("keeps reference page heroes compact", async () => {
