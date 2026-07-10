@@ -8,7 +8,7 @@
 :root {
   --preview-content: 1120px;
   --preview-rail-width: 272px;
-  --preview-topbar-height: 56px;
+  --preview-topbar-height: 52px;
 }
 
 html {
@@ -40,10 +40,10 @@ a {
   z-index: 30;
   top: 0;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: calc(var(--preview-rail-width) - 14px) minmax(0, 1fr) auto;
   align-items: center;
   min-height: var(--preview-topbar-height);
-  padding: 8px 16px;
+  padding: 6px 14px;
   border-bottom: 1px solid var(--oc-border-subtle);
   background: color-mix(in srgb, var(--oc-bg-page) 94%, transparent);
   backdrop-filter: blur(16px);
@@ -100,31 +100,35 @@ a {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: fit-content;
   text-decoration: none;
 }
 
 .brand-mark {
-  width: 34px;
-  height: 34px;
+  width: 26px;
+  height: 26px;
   object-fit: contain;
 }
 
 .brand-wordmark {
   color: var(--oc-text-primary);
   font-family: var(--oc-font-display);
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.03em;
+  line-height: 1.1;
 }
 
 .brand-context {
-  padding: 4px 7px;
+  display: inline-flex;
+  min-height: 20px;
+  align-items: center;
+  padding: 3px 6px;
   border: 1px solid var(--oc-border-accent);
   color: var(--oc-text-secondary);
   font-family: var(--oc-font-mono);
-  font-size: 10px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.08em;
   line-height: 1;
@@ -2154,12 +2158,12 @@ dialog .button-row {
   }
 
   .brand-mark {
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
   }
 
   .brand-wordmark {
-    font-size: 18px;
+    font-size: 17px;
   }
 
   .github-link {
