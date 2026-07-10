@@ -249,4 +249,13 @@ describe("preview", () => {
     expect(css).toContain(".sidebar-area-toggle");
     expect(css).toContain('.sidebar-area-toggle[aria-expanded="true"]::after');
   });
+
+  test("keeps reference page heroes compact", async () => {
+    const css = await readFile("preview/preview.css", "utf8");
+
+    expect(css).toContain("padding: 34px 0 26px");
+    expect(css).toContain("font-size: clamp(40px, 5vw, 60px)");
+    expect(css).toContain("margin: 8px 0 14px");
+    expect(css).toContain("font-size: 16px");
+  });
 });
