@@ -11,81 +11,179 @@ const previewSections = [...document.querySelectorAll("[data-preview-section]")]
 const previewContextTitle = document.querySelector("[data-preview-context-title]");
 const previewContextMeta = document.querySelector("[data-preview-context-meta]");
 
-function createTokenSample(sample, value) {
-  const element = document.createElement("div");
-  element.className = `token-sample token-sample--${sample}`;
-  element.style.setProperty("--token-value", value);
-  element.setAttribute("aria-hidden", "true");
-
-  if (sample === "text" || sample === "type-scale" || sample === "font") {
-    element.textContent = "Ag";
-  } else if (sample === "motion") {
-    element.textContent = "↗";
+function tokenProperty(sample, variable) {
+  if (sample === "text") return "color";
+  if (sample === "border") return "border-color";
+  if (sample === "space") return "width";
+  if (sample === "type-scale") return "font-size";
+  if (sample === "font") return "font-family";
+  if (sample === "radius") return "border-radius";
+  if (sample === "shadow") return "box-shadow";
+  if (sample === "motion") {
+    return variable.includes("ease") ? "transition-timing-function" : "transition-duration";
   }
-
-  return element;
+  if (sample === "content") return "max-width";
+  return "background-color";
 }
 
-function createTokenCard(token, sample, styles) {
-  const value = styles.getPropertyValue(token.variable).trim();
-  const card = document.createElement("article");
-  card.className = "token-card";
+function readTokenValue(token, sample, resolver) {
+  const property = tokenProperty(sample, token.variable);
+  resolver.style.cssText = "";
+  resolver.style.setProperty(property, `var(${token.variable})`);
 
-  const meta = document.createElement("div");
-  meta.className = "token-meta";
+  return getComputedStyle(resolver).getPropertyValue(property).trim();
+}
 
-  const variable = document.createElement("code");
-  variable.className = "token-variable";
-  variable.textContent = token.variable;
-  variable.title = token.variable;
+function valuesForTheme(group, theme, resolver) {
+  const previousTheme = root.dataset.theme;
+  root.dataset.theme = theme;
+
+  const values = new Map(
+    group.tokens.map((token) => [token.variable, readTokenValue(token, group.sample, resolver)]),
+  );
+
+  root.dataset.theme = previousTheme;
+  return values;
+}
+
+function createTokenPreview(sample, value) {
+  const preview = document.createElement("span");
+  preview.className = `token-preview token-preview--${sample}`;
+  preview.style.setProperty("--token-preview-value", value);
+  preview.setAttribute("aria-hidden", "true");
+
+  if (sample === "text" || sample === "type-scale" || sample === "font") {
+    preview.textContent = "Ag";
+  } else if (sample === "motion") {
+    preview.textContent = "↗";
+  }
+
+  return preview;
+}
+
+function createTokenValue(sample, value) {
+  const valueCell = document.createElement("span");
+  valueCell.className = "token-value-cell";
 
   const resolvedValue = document.createElement("code");
   resolvedValue.className = "token-value";
   resolvedValue.textContent = value;
   resolvedValue.title = value;
 
-  meta.append(variable, resolvedValue);
-  card.append(createTokenSample(sample, value), meta);
-  return card;
+  valueCell.append(createTokenPreview(sample, value), resolvedValue);
+  return valueCell;
 }
 
-function createTokenGroup(group, styles) {
+function createTokenGroup(group, resolver) {
   const section = document.createElement("section");
   section.className = "token-group";
+  section.setAttribute("aria-labelledby", `token-group-${group.id}`);
 
   const heading = document.createElement("header");
   heading.className = "token-group-heading";
 
-  const title = document.createElement("h3");
+  const title = document.createElement("h2");
+  title.id = `token-group-${group.id}`;
   title.textContent = group.label;
 
   const count = document.createElement("span");
   count.textContent = `${group.tokens.length} token${group.tokens.length === 1 ? "" : "s"}`;
-
   heading.append(title, count);
 
-  const grid = document.createElement("div");
-  grid.className = "token-group-grid";
-  grid.append(...group.tokens.map((token) => createTokenCard(token, group.sample, styles)));
+  const tableWrap = document.createElement("div");
+  tableWrap.className = "token-table-wrap";
 
-  section.append(heading, grid);
+  const table = document.createElement("table");
+  table.className = "token-table";
+  table.classList.toggle("token-table--comparison", Boolean(group.comparison));
+
+  const head = document.createElement("thead");
+  const headRow = document.createElement("tr");
+  const headings = group.comparison ? ["Token", "Light", "Dark"] : ["Token", "Preview", "Value"];
+  for (const label of headings) {
+    const cell = document.createElement("th");
+    cell.scope = "col";
+    cell.textContent = label;
+    headRow.append(cell);
+  }
+  head.append(headRow);
+
+  const body = document.createElement("tbody");
+  const activeValues = valuesForTheme(group, root.dataset.theme, resolver);
+  const lightValues = group.comparison ? valuesForTheme(group, "light", resolver) : null;
+  const darkValues = group.comparison ? valuesForTheme(group, "dark", resolver) : null;
+
+  for (const token of group.tokens) {
+    const row = document.createElement("tr");
+    const name = document.createElement("th");
+    name.scope = "row";
+    name.className = "token-name";
+
+    const variable = document.createElement("code");
+    variable.textContent = token.variable;
+    variable.title = token.variable;
+    name.append(variable);
+    row.append(name);
+
+    if (group.comparison) {
+      for (const value of [lightValues.get(token.variable), darkValues.get(token.variable)]) {
+        const cell = document.createElement("td");
+        cell.append(createTokenValue(group.sample, value));
+        row.append(cell);
+      }
+    } else {
+      const value = activeValues.get(token.variable);
+      const previewCell = document.createElement("td");
+      previewCell.className = "token-preview-cell";
+      previewCell.append(createTokenPreview(group.sample, value));
+
+      const valueCell = document.createElement("td");
+      const resolvedValue = document.createElement("code");
+      resolvedValue.className = "token-value";
+      resolvedValue.textContent = value;
+      resolvedValue.title = value;
+      valueCell.append(resolvedValue);
+
+      row.append(previewCell, valueCell);
+    }
+
+    body.append(row);
+  }
+
+  table.append(head, body);
+  tableWrap.append(table);
+  section.append(heading, tableWrap);
   return section;
 }
 
 function renderTokens() {
   if (!tokenGrid) return;
 
-  const styles = getComputedStyle(root);
+  const resolver = document.createElement("span");
+  resolver.className = "token-value-resolver";
+  resolver.setAttribute("aria-hidden", "true");
+  document.body.append(resolver);
+
   const groups = groupTokenDefinitions();
   const count = groups.reduce((total, group) => total + group.tokens.length, 0);
 
   if (tokenCount) tokenCount.textContent = String(count);
-  tokenGrid.replaceChildren(...groups.map((group) => createTokenGroup(group, styles)));
+  tokenGrid.replaceChildren(...groups.map((group) => createTokenGroup(group, resolver)));
+  resolver.remove();
+}
+
+function syncThemeControls(theme) {
+  for (const button of themeButtons) {
+    button.setAttribute("aria-pressed", String(button.dataset.themeChoice === theme));
+  }
 }
 
 function setTheme(theme) {
+  if (theme !== "light" && theme !== "dark") return;
+
   root.dataset.theme = theme;
   localStorage.setItem("openclaw-preview-theme", theme);
+  syncThemeControls(theme);
   renderTokens();
 }
 
@@ -93,7 +191,9 @@ for (const button of themeButtons) {
   button.addEventListener("click", () => setTheme(button.dataset.themeChoice));
 }
 
-dialogTrigger.addEventListener("click", () => dialog.showModal());
+if (dialog && dialogTrigger) {
+  dialogTrigger.addEventListener("click", () => dialog.showModal());
+}
 
 function setActivePreviewSection(section) {
   const target = section.id ? `#${section.id}` : null;
@@ -147,4 +247,5 @@ if (previewSections.length > 0) {
   scheduleNavigationSync();
 }
 
+syncThemeControls(root.dataset.theme);
 renderTokens();

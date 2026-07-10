@@ -16,13 +16,28 @@ describe("preview", () => {
     }
   });
 
-  test("covers the three consumer surface categories", async () => {
-    const html = await readFile("preview/index.html", "utf8");
-    expect(html).toContain('id="product"');
-    expect(html).toContain('id="content"');
-    expect(html).toContain('id="composition"');
-    expect(html).toContain("data-theme-choice");
-    expect(html).toContain("data-open-dialog");
+  test("publishes the reference areas as separate routes", async () => {
+    const pages = await Promise.all(
+      [
+        ["overview", "preview/index.html"],
+        ["foundations", "preview/foundations/index.html"],
+        ["interface", "preview/interface/index.html"],
+        ["compositions", "preview/compositions/index.html"],
+      ].map(async ([route, path]) => ({
+        route,
+        html: await readFile(path, "utf8"),
+      })),
+    );
+
+    for (const { route, html } of pages) {
+      expect(html).toContain(`data-preview-route="${route}"`);
+      expect(html).toContain("data-theme-choice");
+    }
+
+    const config = await readFile("preview/vite.config.ts", "utf8");
+    expect(config).toContain('foundations: resolve(previewRoot, "foundations/index.html")');
+    expect(config).toContain('interface: resolve(previewRoot, "interface/index.html")');
+    expect(config).toContain('compositions: resolve(previewRoot, "compositions/index.html")');
   });
 
   test("lists every canonical token exactly once", async () => {
