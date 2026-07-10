@@ -11,7 +11,7 @@ function pageIntro(eyebrow, title, lede) {
 }
 
 function tokenSection(groups = "") {
-  return `<section aria-labelledby="token-reference-title"><div class="section-heading"><div><p class="eyebrow">Token reference</p><h2 id="token-reference-title">Canonical variables</h2></div><p><span data-token-count></span> variables in this view.</p></div><div class="token-catalog" data-token-grid${groups ? ` data-token-groups="${groups}"` : ""}></div></section>`;
+  return `<section aria-labelledby="token-reference-title"><div class="section-heading"><div><p class="eyebrow">Token reference</p><h2 id="token-reference-title">Canonical variables</h2></div><p><span data-token-count></span> variables in this view.</p></div><label class="token-filter"><span>Filter variables</span><input type="search" data-token-filter placeholder="Search by token name or group" autocomplete="off" /></label><div class="token-catalog" data-token-grid${groups ? ` data-token-groups="${groups}"` : ""}></div></section>`;
 }
 
 function guidanceList(items) {

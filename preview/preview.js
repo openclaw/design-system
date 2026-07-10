@@ -8,6 +8,7 @@ renderShell();
 const root = document.documentElement;
 const tokenGrid = document.querySelector("[data-token-grid]");
 const tokenCount = document.querySelector("[data-token-count]");
+const tokenFilter = document.querySelector("[data-token-filter]");
 const themeButtons = document.querySelectorAll("[data-theme-choice]");
 const dialog = document.querySelector("dialog");
 const dialogTrigger = document.querySelector("[data-open-dialog]");
@@ -70,8 +71,10 @@ function createTokenValue(sample, value) {
   const valueCell = document.createElement("span");
   valueCell.className = "token-value-cell";
 
-  const resolvedValue = document.createElement("code");
+  const resolvedValue = document.createElement("button");
+  resolvedValue.type = "button";
   resolvedValue.className = "token-value";
+  resolvedValue.dataset.copyToken = value;
   resolvedValue.textContent = value;
   resolvedValue.title = value;
 
@@ -124,7 +127,9 @@ function createTokenGroup(group, resolver) {
     name.scope = "row";
     name.className = "token-name";
 
-    const variable = document.createElement("code");
+    const variable = document.createElement("button");
+    variable.type = "button";
+    variable.dataset.copyToken = token.variable;
     variable.textContent = token.variable;
     variable.title = token.variable;
     name.append(variable);
@@ -143,8 +148,10 @@ function createTokenGroup(group, resolver) {
       previewCell.append(createTokenPreview(group.sample, value));
 
       const valueCell = document.createElement("td");
-      const resolvedValue = document.createElement("code");
+      const resolvedValue = document.createElement("button");
+      resolvedValue.type = "button";
       resolvedValue.className = "token-value";
+      resolvedValue.dataset.copyToken = value;
       resolvedValue.textContent = value;
       resolvedValue.title = value;
       valueCell.append(resolvedValue);
@@ -175,9 +182,16 @@ function renderTokens() {
       .map((group) => group.trim())
       .filter(Boolean),
   );
-  const groups = groupTokenDefinitions().filter(
-    (group) => requestedGroups.size === 0 || requestedGroups.has(group.id),
-  );
+  const query = tokenFilter?.value.trim().toLowerCase() || "";
+  const groups = groupTokenDefinitions()
+    .filter((group) => requestedGroups.size === 0 || requestedGroups.has(group.id))
+    .map((group) => ({
+      ...group,
+      tokens: group.tokens.filter(
+        (token) => !query || `${token.variable} ${group.id} ${group.label}`.toLowerCase().includes(query),
+      ),
+    }))
+    .filter((group) => group.tokens.length > 0);
   const count = groups.reduce((total, group) => total + group.tokens.length, 0);
 
   if (tokenCount) tokenCount.textContent = String(count);
@@ -261,4 +275,21 @@ if (previewSections.length > 0) {
 }
 
 syncThemeControls(root.dataset.theme);
+if (tokenFilter) {
+  tokenFilter.value = new URLSearchParams(window.location.search).get("q") || "";
+  tokenFilter.addEventListener("input", renderTokens);
+}
+
+document.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-copy-token]");
+  if (!button) return;
+  try {
+    await navigator.clipboard.writeText(button.dataset.copyToken);
+    button.classList.add("is-copied");
+    window.setTimeout(() => button.classList.remove("is-copied"), 800);
+  } catch {
+    button.title = "Copy unavailable in this browser";
+  }
+});
+
 renderTokens();

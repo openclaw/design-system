@@ -1,4 +1,14 @@
 import { getReferenceArea, getReferencePage, referenceAreas } from "./navigation.js";
+import { tokenDefinitions } from "./token-catalog.js";
+
+const primitiveEntries = [
+  { label: "Hero", detail: ".oc-hero", hash: "#primitive-surfaces" },
+  { label: "Section", detail: ".oc-section", hash: "#primitive-surfaces" },
+  { label: "Card", detail: ".oc-card", hash: "#primitive-surfaces" },
+  { label: "Actions", detail: ".oc-action", hash: "#primitive-actions" },
+  { label: "Segmented control", detail: ".oc-segmented", hash: "#primitive-selection" },
+  { label: "Pill", detail: ".oc-pill", hash: "#primitive-selection" },
+];
 
 function hrefFor(path) {
   return `${document.body.dataset.previewRoot || "./"}${path}`;
@@ -27,11 +37,22 @@ function renderTopbar() {
         <span class="brand-wordmark">OpenClaw</span>
         <span class="brand-context">Design System</span>
       </a>
+      <button class="search-trigger" type="button" data-open-search>
+        <span>Search reference</span><kbd>⌘ K</kbd>
+      </button>
       <div class="topbar-actions">
         <a class="github-link" href="https://github.com/openclaw/design-system" rel="noreferrer">GitHub</a>
         ${renderThemeControl()}
       </div>
     </header>
+    <dialog class="search-dialog" data-search-dialog aria-label="Search design system reference">
+      <div class="search-field">
+        <span aria-hidden="true">⌕</span>
+        <input type="search" data-search-input placeholder="Search routes, tokens, and primitives" autocomplete="off" />
+        <kbd>Esc</kbd>
+      </div>
+      <div class="search-results" data-search-results></div>
+    </dialog>
   `;
 }
 
@@ -87,6 +108,190 @@ function renderPageContext() {
 
   if (title && page) title.textContent = page.label;
   if (meta && area) meta.textContent = area.label;
+
+  const header = document.querySelector(".canvas-header");
+  if (header && currentId !== "overview" && !header.querySelector("[data-copy-page]")) {
+    const actions = document.createElement("div");
+    actions.className = "canvas-actions";
+    if (meta) actions.append(meta);
+
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.dataset.copyPage = "";
+    copy.textContent = "Copy page";
+    actions.append(copy);
+    header.append(actions);
+  }
+}
+
+function renderPageNavigation() {
+  const currentId = document.body.dataset.previewPage || document.body.dataset.previewRoute;
+  const area = getReferenceArea(currentId);
+  const currentIndex = area?.pages.findIndex((page) => page.id === currentId) ?? -1;
+  const mount = document.querySelector(".preview-stage");
+  if (!mount || currentIndex < 0 || mount.querySelector(".page-navigation")) return;
+
+  const previous = area.pages[currentIndex - 1];
+  const next = area.pages[currentIndex + 1];
+  if (!previous && !next) return;
+
+  const navigation = document.createElement("nav");
+  navigation.className = "page-navigation";
+  navigation.setAttribute("aria-label", "Adjacent reference pages");
+  navigation.innerHTML = `
+    ${previous ? `<a class="page-navigation-previous" href="${hrefFor(previous.path)}"><span>Previous</span><strong>${previous.label}</strong></a>` : "<span></span>"}
+    ${next ? `<a class="page-navigation-next" href="${hrefFor(next.path)}"><span>Next</span><strong>${next.label}</strong></a>` : ""}
+  `;
+  mount.append(navigation);
+}
+
+function renderTableOfContents() {
+  const mount = document.querySelector("[data-page-toc]");
+  const headings = [...document.querySelectorAll(".reference-page section h2[id]")];
+  if (!mount || headings.length < 2) {
+    mount?.remove();
+    return;
+  }
+
+  mount.innerHTML = `<p>On this page</p><nav>${headings
+    .map((heading) => `<a href="#${heading.id}">${heading.textContent}</a>`)
+    .join("")}</nav>`;
+
+  if (!("IntersectionObserver" in window)) return;
+  const links = [...mount.querySelectorAll("a")];
+  const setActive = (id) => {
+    for (const link of links) {
+      link.toggleAttribute("aria-current", link.hash === `#${id}`);
+    }
+  };
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.find((entry) => entry.isIntersecting);
+      if (visible) setActive(visible.target.id);
+    },
+    { rootMargin: "-18% 0px -72% 0px", threshold: [0, 1] },
+  );
+  headings.forEach((heading) => observer.observe(heading));
+  setActive(headings[0].id);
+}
+
+function bindGlobalSearch() {
+  const dialog = document.querySelector("[data-search-dialog]");
+  const trigger = document.querySelector("[data-open-search]");
+  const input = document.querySelector("[data-search-input]");
+  const results = document.querySelector("[data-search-results]");
+  if (!dialog || !trigger || !input || !results) return;
+
+  const entries = [
+    ...referenceAreas.flatMap((area) =>
+      area.pages.map((page) => ({
+        label: page.label,
+        detail: area.label,
+        type: "Page",
+        href: hrefFor(page.path),
+        keywords: `${area.label} ${area.description}`,
+      })),
+    ),
+    ...tokenDefinitions.map((token) => ({
+      label: token.variable,
+      detail: "Canonical variable",
+      type: "Token",
+      href: `${hrefFor("foundations/tokens/")}?q=${encodeURIComponent(token.variable)}`,
+      keywords: token.group,
+    })),
+    ...primitiveEntries.map((primitive) => ({
+      ...primitive,
+      type: "Primitive",
+      href: `${hrefFor("interface/primitives/")}${primitive.hash}`,
+      keywords: primitive.detail,
+    })),
+  ];
+
+  const renderResults = () => {
+    const query = input.value.trim().toLowerCase();
+    const matches = entries
+      .filter((entry) => !query || `${entry.label} ${entry.detail} ${entry.keywords}`.toLowerCase().includes(query))
+      .slice(0, query ? 12 : 8);
+
+    results.replaceChildren();
+    if (matches.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "search-empty";
+      empty.textContent = "No matching reference.";
+      results.append(empty);
+      return;
+    }
+
+    for (const match of matches) {
+      const link = document.createElement("a");
+      link.href = match.href;
+      link.className = "search-result";
+
+      const content = document.createElement("span");
+      const label = document.createElement("strong");
+      const detail = document.createElement("small");
+      label.textContent = match.label;
+      detail.textContent = match.detail;
+      content.append(label, detail);
+
+      const type = document.createElement("span");
+      type.className = "search-result-type";
+      type.textContent = match.type;
+      link.append(content, type);
+      results.append(link);
+    }
+  };
+
+  const openSearch = () => {
+    renderResults();
+    dialog.showModal();
+    input.focus();
+  };
+
+  trigger.addEventListener("click", openSearch);
+  input.addEventListener("input", renderResults);
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  document.addEventListener("keydown", (event) => {
+    const shortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k";
+    const slash = event.key === "/" && !event.metaKey && !event.ctrlKey && !event.altKey;
+    const typing = ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName);
+    if ((shortcut || (slash && !typing)) && !dialog.open) {
+      event.preventDefault();
+      openSearch();
+    }
+  });
+}
+
+function bindCopyActions() {
+  const copyText = async (button, value) => {
+    const previous = button.textContent;
+    try {
+      await navigator.clipboard.writeText(value);
+      button.textContent = "Copied";
+    } catch {
+      button.textContent = "Copy unavailable";
+    }
+    window.setTimeout(() => {
+      button.textContent = previous;
+    }, 1200);
+  };
+
+  document.addEventListener("click", (event) => {
+    const codeButton = event.target.closest("[data-copy-code]");
+    if (codeButton) {
+      const code = codeButton.closest(".code-block")?.querySelector("code")?.textContent || "";
+      copyText(codeButton, code);
+      return;
+    }
+
+    const pageButton = event.target.closest("[data-copy-page]");
+    if (pageButton) {
+      const page = document.querySelector(".reference-page, .preview-stage");
+      copyText(pageButton, page?.innerText || "");
+    }
+  });
 }
 
 function bindNavigation() {
@@ -112,5 +317,9 @@ export function renderShell() {
   renderTopbar();
   renderSidebar();
   renderPageContext();
+  renderPageNavigation();
+  renderTableOfContents();
   bindNavigation();
+  bindGlobalSearch();
+  bindCopyActions();
 }
