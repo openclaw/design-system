@@ -9,11 +9,14 @@
   --preview-content: 1120px;
   --preview-rail-width: 272px;
   --preview-topbar-height: 52px;
+  --preview-canvas-header-height: 66px;
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--preview-topbar-height) + 24px);
+  scroll-padding-top: calc(
+    var(--preview-topbar-height) + var(--preview-canvas-header-height) + 24px
+  );
 }
 
 body {
@@ -468,7 +471,7 @@ a {
   justify-content: space-between;
   gap: 24px;
   align-items: center;
-  min-height: 66px;
+  min-height: var(--preview-canvas-header-height);
   padding: 10px clamp(24px, 5vw, 72px);
   border-bottom: 1px solid var(--oc-border-subtle);
   background: color-mix(in srgb, var(--oc-bg-page) 92%, transparent);
@@ -609,12 +612,16 @@ a {
 }
 
 .token-group {
-  scroll-margin-top: calc(var(--preview-topbar-height) + 88px);
+  scroll-margin-top: calc(
+    var(--preview-topbar-height) + var(--preview-canvas-header-height) + 24px
+  );
 }
 
 .reference-page [id],
 .preview-stage > section[id] {
-  scroll-margin-top: calc(var(--preview-topbar-height) + 90px);
+  scroll-margin-top: calc(
+    var(--preview-topbar-height) + var(--preview-canvas-header-height) + 24px
+  );
 }
 
 .token-group-heading {
@@ -1120,7 +1127,7 @@ a {
 
 .page-toc {
   position: sticky;
-  top: calc(var(--preview-topbar-height) + 66px + 28px);
+  top: calc(var(--preview-topbar-height) + var(--preview-canvas-header-height) + 28px);
   align-self: start;
   padding-top: 54px;
 }
@@ -2179,6 +2186,10 @@ dialog .button-row {
 }
 
 @media (max-width: 900px) {
+  :root {
+    --preview-canvas-header-height: 48px;
+  }
+
   .topbar {
     grid-template-columns: auto auto minmax(80px, 1fr) auto;
     gap: 10px;
@@ -2187,8 +2198,8 @@ dialog .button-row {
   .mobile-nav-trigger,
   .mobile-nav-close {
     display: grid;
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
     place-items: center;
     padding: 0;
     border: 1px solid var(--oc-border-subtle);
@@ -2219,6 +2230,15 @@ dialog .button-row {
 
   .topbar-actions {
     grid-column: 4;
+  }
+
+  .canvas-header {
+    min-height: var(--preview-canvas-header-height);
+    padding-block: 6px;
+  }
+
+  .canvas-meta {
+    display: none;
   }
 
   .shell {
@@ -2265,7 +2285,7 @@ dialog .button-row {
   }
 
   .sidebar-pages a {
-    min-height: 40px;
+    min-height: 44px;
   }
 
   .mobile-nav-trigger:active,
@@ -2329,7 +2349,8 @@ dialog .button-row {
   }
 
   .search-trigger {
-    width: 36px;
+    width: 40px;
+    min-height: 40px;
     justify-content: center;
     justify-self: end;
     padding: 0;
@@ -2347,10 +2368,6 @@ dialog .button-row {
 
   .canvas-header {
     padding-inline: 18px;
-  }
-
-  .canvas-meta {
-    display: none;
   }
 
   .preview-stage {

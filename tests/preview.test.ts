@@ -139,4 +139,22 @@ describe("preview", () => {
     }));
     expect(rankSearchEntries(pages, "dark mode", 12).matches[0]?.label).toBe("Theming");
   });
+
+  test("keeps page copy output clean and the mobile sticky budget explicit", async () => {
+    const [shell, css] = await Promise.all([
+      readFile("preview/shell.js", "utf8"),
+      readFile("preview/preview.css", "utf8"),
+    ]);
+
+    expect(shell).toContain('copy.textContent = "Copy text"');
+    expect(shell).toContain('copy.setAttribute("aria-label", "Copy page text")');
+    expect(shell).toContain(
+      'clone.querySelectorAll(".page-navigation, .inline-toc, [data-copy-code]")',
+    );
+    expect(shell).toContain("document.body.append(clone)");
+    expect(shell).toContain("return clone.innerText.trim()");
+    expect(shell).toContain('showShellFeedback("Page text copied.")');
+    expect(css).toContain("--preview-canvas-header-height: 48px");
+    expect(css).toContain("min-height: var(--preview-canvas-header-height)");
+  });
 });

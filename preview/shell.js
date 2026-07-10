@@ -138,7 +138,8 @@ function renderPageContext() {
     const copy = document.createElement("button");
     copy.type = "button";
     copy.dataset.copyPage = "";
-    copy.textContent = "Copy page";
+    copy.setAttribute("aria-label", "Copy page text");
+    copy.textContent = "Copy text";
     actions.append(copy);
     header.append(actions);
   }
@@ -365,32 +366,59 @@ function bindGlobalSearch() {
   });
 }
 
+function getPageCopyText(page) {
+  if (!page) return "";
+
+  const clone = page.cloneNode(true);
+  clone.querySelectorAll(".page-navigation, .inline-toc, [data-copy-code]").forEach((node) =>
+    node.remove(),
+  );
+  clone.setAttribute("aria-hidden", "true");
+  clone.inert = true;
+  clone.style.position = "fixed";
+  clone.style.top = "0";
+  clone.style.left = "-100000px";
+  clone.style.width = `${Math.max(page.getBoundingClientRect().width, 320)}px`;
+  clone.style.opacity = "0";
+  clone.style.pointerEvents = "none";
+  document.body.append(clone);
+
+  try {
+    return clone.innerText.trim();
+  } finally {
+    clone.remove();
+  }
+}
+
 function bindCopyActions() {
-  const copyText = async (button, value) => {
-    const previous = button.textContent;
+  const copyText = async (value) => {
     try {
       await navigator.clipboard.writeText(value);
-      button.textContent = "Copied";
+      return true;
     } catch {
-      button.textContent = "Copy unavailable";
+      return false;
     }
-    window.setTimeout(() => {
-      button.textContent = previous;
-    }, 1200);
   };
 
-  document.addEventListener("click", (event) => {
+  document.addEventListener("click", async (event) => {
     const codeButton = event.target.closest("[data-copy-code]");
     if (codeButton) {
       const code = codeButton.closest(".code-block")?.querySelector("code")?.textContent || "";
-      copyText(codeButton, code);
+      if (await copyText(code)) showShellFeedback("Code copied.");
+      else showShellFeedback("Clipboard access unavailable.");
       return;
     }
 
     const pageButton = event.target.closest("[data-copy-page]");
     if (pageButton) {
       const page = document.querySelector(".reference-page, .preview-stage");
-      copyText(pageButton, page?.innerText || "");
+      const value = getPageCopyText(page);
+      if (!value) {
+        showShellFeedback("Page text unavailable.");
+        return;
+      }
+      if (await copyText(value)) showShellFeedback("Page text copied.");
+      else showShellFeedback("Clipboard access unavailable.");
     }
   });
 }
