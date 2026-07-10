@@ -11,42 +11,11 @@
     </script>
     <link rel="stylesheet" href="./preview.css" />
   </head>
-  <body data-preview-route="overview">
-    <header class="topbar">
-      <a class="brand" href="./" aria-label="OpenClaw design system overview">
-        <img class="brand-mark" src="https://openclaw.ai/favicon.svg" alt="" />
-        <span class="brand-wordmark">OpenClaw</span>
-        <span class="brand-context">Design System</span>
-      </a>
-      <nav class="topnav" aria-label="Reference areas">
-        <a href="./foundations/">Foundations</a>
-        <a href="./interface/">Interface</a>
-        <a href="./compositions/">Compositions</a>
-      </nav>
-      <div class="theme-control" role="group" aria-label="Color theme">
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="true">Dark</button>
-      </div>
-    </header>
+  <body data-preview-route="overview" data-preview-page="overview" data-preview-root="./">
+    <div data-shell-header></div>
 
     <div class="shell">
-      <aside class="sidebar">
-        <div class="sidebar-heading">
-          <p class="eyebrow">Reference</p>
-        </div>
-        <nav aria-label="Reference areas">
-          <div class="nav-group">
-            <p class="nav-label">Explore</p>
-            <a href="./foundations/">Foundations</a>
-            <a href="./interface/">Interface</a>
-            <a href="./compositions/">Compositions</a>
-          </div>
-        </nav>
-        <div class="version">
-          <span>Release</span>
-          <strong>v0.0.1</strong>
-        </div>
-      </aside>
+      <div data-shell-sidebar></div>
 
       <main class="preview-main">
         <header class="canvas-header">
@@ -74,6 +43,10 @@
               <a class="route-card" href="./compositions/">
                 <span>Compositions</span>
                 <strong>Content and public surfaces</strong>
+              </a>
+              <a class="route-card" href="./resources/">
+                <span>Resources</span>
+                <strong>Adoption and guidance</strong>
               </a>
             </div>
           </section>

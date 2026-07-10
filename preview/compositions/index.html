@@ -12,41 +12,11 @@
     </script>
     <link rel="stylesheet" href="../preview.css" />
   </head>
-  <body data-preview-route="compositions">
-    <header class="topbar">
-      <a class="brand" href="../" aria-label="OpenClaw design system overview">
-        <img class="brand-mark" src="https://openclaw.ai/favicon.svg" alt="" />
-        <span class="brand-wordmark">OpenClaw</span>
-        <span class="brand-context">Design System</span>
-      </a>
-      <nav class="topnav" aria-label="Reference areas">
-        <a href="../foundations/">Foundations</a>
-        <a href="../interface/">Interface</a>
-        <a href="../compositions/" aria-current="page">Compositions</a>
-      </nav>
-      <div class="theme-control" role="group" aria-label="Color theme">
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="true">Dark</button>
-      </div>
-    </header>
+  <body data-preview-route="compositions" data-preview-page="compositions" data-preview-root="../">
+    <div data-shell-header></div>
 
     <div class="shell">
-      <aside class="sidebar">
-        <div class="sidebar-heading">
-          <p class="eyebrow">Compositions</p>
-        </div>
-        <nav aria-label="Compositions index">
-          <div class="nav-group">
-            <p class="nav-label">Reference</p>
-            <a href="#content" data-preview-link aria-current="page">Content surface</a>
-            <a href="#composition" data-preview-link>Public composition</a>
-          </div>
-        </nav>
-        <div class="version">
-          <span>Release</span>
-          <strong>v0.0.1</strong>
-        </div>
-      </aside>
+      <div data-shell-sidebar></div>
 
       <main class="preview-main">
         <header class="canvas-header">
@@ -55,62 +25,14 @@
         </header>
 
         <div class="preview-stage">
-          <section
-            id="content"
-            aria-labelledby="content-title"
-            data-preview-section
-            data-preview-title="Content surface"
-            data-preview-meta="Readable technical guidance"
-          >
-            <div class="section-heading">
-              <div>
-                <p class="eyebrow">Content surface</p>
-                <h1 id="content-title">Readable technical guidance</h1>
-              </div>
-            </div>
-            <article class="prose-sample">
-              <p class="lead">
-                Skills are versioned instruction bundles that teach an agent how to
-                perform a focused workflow.
-              </p>
-              <h2>Install from a pinned source</h2>
-              <p>
-                Use an immutable tag so local development and automation resolve
-                the same design contract.
-              </p>
-              <pre><code>bun add "git+ssh://git@github.com/openclaw/design-system.git#v0.0.1"</code></pre>
-              <aside class="callout">
-                <strong>Private rollout</strong>
-                <p>CI needs a credential with read access until the repository is public.</p>
-              </aside>
-            </article>
-          </section>
-
-          <section
-            id="composition"
-            aria-labelledby="composition-title"
-            data-preview-section
-            data-preview-title="Public composition"
-            data-preview-meta="OpenClaw in context"
-          >
-            <div class="section-heading">
-              <div>
-                <p class="eyebrow">Public composition</p>
-                <h2 id="composition-title">OpenClaw</h2>
-              </div>
-            </div>
-            <div class="public-composition">
-              <div>
-                <p class="eyebrow">Personal AI infrastructure</p>
-                <h3>Your tools. Your channels. Your agent.</h3>
-                <p>Run an assistant that can meet you in the software you already use.</p>
-              </div>
-              <div class="signal-panel" aria-label="Connected services">
-                <span>Discord</span>
-                <span>GitHub</span>
-                <span>Notion</span>
-                <span>Terminal</span>
-              </div>
+          <section class="intro intro-compact" aria-labelledby="compositions-title">
+            <p class="eyebrow">Compositions</p>
+            <h1 id="compositions-title">Patterns at real interface scale.</h1>
+            <p>Study how canonical foundations behave in product, technical content, and public-facing contexts.</p>
+            <div class="reference-card-grid">
+              <a class="reference-card" href="./product/"><span>Operational</span><strong>Product surfaces</strong><p>Dense tools, filters, status, and data.</p></a>
+              <a class="reference-card" href="./content/"><span>Editorial</span><strong>Content surfaces</strong><p>Technical prose, code, and guidance.</p></a>
+              <a class="reference-card" href="./public/"><span>Public</span><strong>Public surfaces</strong><p>Literal value, open layouts, and clear actions.</p></a>
             </div>
           </section>
         </div>

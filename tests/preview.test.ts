@@ -23,6 +23,7 @@ describe("preview", () => {
         ["foundations", "preview/foundations/index.html"],
         ["interface", "preview/interface/index.html"],
         ["compositions", "preview/compositions/index.html"],
+        ["resources", "preview/resources/index.html"],
       ].map(async ([route, path]) => ({
         route,
         html: await readFile(path, "utf8"),
@@ -31,13 +32,13 @@ describe("preview", () => {
 
     for (const { route, html } of pages) {
       expect(html).toContain(`data-preview-route="${route}"`);
-      expect(html).toContain("data-theme-choice");
+      expect(html).toContain("data-shell-header");
     }
 
     const config = await readFile("preview/vite.config.ts", "utf8");
-    expect(config).toContain('foundations: resolve(previewRoot, "foundations/index.html")');
-    expect(config).toContain('interface: resolve(previewRoot, "interface/index.html")');
-    expect(config).toContain('compositions: resolve(previewRoot, "compositions/index.html")');
+    const shell = await readFile("preview/shell.js", "utf8");
+    expect(shell).toContain("data-theme-choice");
+    expect(config).toContain("collectHtmlInputs(previewRoot)");
   });
 
   test("lists every canonical token exactly once", async () => {

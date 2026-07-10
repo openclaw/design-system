@@ -1,4 +1,9 @@
 import { groupTokenDefinitions } from "./token-catalog.js";
+import { renderReferenceContent } from "./reference-content.js";
+import { renderShell } from "./shell.js";
+
+renderReferenceContent();
+renderShell();
 
 const root = document.documentElement;
 const tokenGrid = document.querySelector("[data-token-grid]");
@@ -164,7 +169,15 @@ function renderTokens() {
   resolver.setAttribute("aria-hidden", "true");
   document.body.append(resolver);
 
-  const groups = groupTokenDefinitions();
+  const requestedGroups = new Set(
+    (tokenGrid.dataset.tokenGroups || "")
+      .split(",")
+      .map((group) => group.trim())
+      .filter(Boolean),
+  );
+  const groups = groupTokenDefinitions().filter(
+    (group) => requestedGroups.size === 0 || requestedGroups.has(group.id),
+  );
   const count = groups.reduce((total, group) => total + group.tokens.length, 0);
 
   if (tokenCount) tokenCount.textContent = String(count);

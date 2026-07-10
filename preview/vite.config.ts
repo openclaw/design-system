@@ -1,7 +1,24 @@
-import { resolve } from "node:path";
+import { readdirSync } from "node:fs";
+import { relative, resolve } from "node:path";
 import { defineConfig } from "vite";
 
 const previewRoot = resolve(import.meta.dirname);
+
+function collectHtmlInputs(directory) {
+  const inputs = {};
+
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const path = resolve(directory, entry.name);
+    if (entry.isDirectory()) {
+      Object.assign(inputs, collectHtmlInputs(path));
+    } else if (entry.name === "index.html") {
+      const name = relative(previewRoot, directory).replaceAll("/", "-") || "overview";
+      inputs[name] = path;
+    }
+  }
+
+  return inputs;
+}
 
 export default defineConfig({
   root: previewRoot,
@@ -9,13 +26,6 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     outDir: resolve(previewRoot, "../dist/preview"),
-    rollupOptions: {
-      input: {
-        overview: resolve(previewRoot, "index.html"),
-        foundations: resolve(previewRoot, "foundations/index.html"),
-        interface: resolve(previewRoot, "interface/index.html"),
-        compositions: resolve(previewRoot, "compositions/index.html"),
-      },
-    },
+    rollupOptions: { input: collectHtmlInputs(previewRoot) },
   },
 });

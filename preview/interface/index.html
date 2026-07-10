@@ -12,41 +12,11 @@
     </script>
     <link rel="stylesheet" href="../preview.css" />
   </head>
-  <body data-preview-route="interface">
-    <header class="topbar">
-      <a class="brand" href="../" aria-label="OpenClaw design system overview">
-        <img class="brand-mark" src="https://openclaw.ai/favicon.svg" alt="" />
-        <span class="brand-wordmark">OpenClaw</span>
-        <span class="brand-context">Design System</span>
-      </a>
-      <nav class="topnav" aria-label="Reference areas">
-        <a href="../foundations/">Foundations</a>
-        <a href="../interface/" aria-current="page">Interface</a>
-        <a href="../compositions/">Compositions</a>
-      </nav>
-      <div class="theme-control" role="group" aria-label="Color theme">
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="true">Dark</button>
-      </div>
-    </header>
+  <body data-preview-route="interface" data-preview-page="interface" data-preview-root="../">
+    <div data-shell-header></div>
 
     <div class="shell">
-      <aside class="sidebar">
-        <div class="sidebar-heading">
-          <p class="eyebrow">Interface</p>
-        </div>
-        <nav aria-label="Interface index">
-          <div class="nav-group">
-            <p class="nav-label">Reference</p>
-            <a href="#controls" data-preview-link aria-current="page">Controls</a>
-            <a href="#product" data-preview-link>Product surface</a>
-          </div>
-        </nav>
-        <div class="version">
-          <span>Release</span>
-          <strong>v0.0.1</strong>
-        </div>
-      </aside>
+      <div data-shell-sidebar></div>
 
       <main class="preview-main">
         <header class="canvas-header">
@@ -55,139 +25,18 @@
         </header>
 
         <div class="preview-stage">
-          <section
-            id="controls"
-            aria-labelledby="controls-title"
-            data-preview-section
-            data-preview-title="Controls"
-            data-preview-meta="Interaction states"
-          >
-            <div class="section-heading">
-              <div>
-                <p class="eyebrow">Interaction</p>
-                <h1 id="controls-title">Controls and states</h1>
-              </div>
-              <button class="button button-secondary button-small" type="button" data-open-dialog>
-                Open dialog
-              </button>
-            </div>
-            <div class="control-grid">
-              <form class="form-sample">
-                <label>
-                  Search skills
-                  <input type="search" placeholder="Search by name or capability" />
-                </label>
-                <label>
-                  Category
-                  <select>
-                    <option>All categories</option>
-                    <option>Developer tools</option>
-                    <option>Communication</option>
-                  </select>
-                </label>
-                <label class="check-row">
-                  <input type="checkbox" checked />
-                  Include verified publishers
-                </label>
-                <div class="button-row">
-                  <button class="button button-primary" type="button">Apply filters</button>
-                  <button class="button button-secondary" type="reset">Reset</button>
-                </div>
-              </form>
-              <div class="state-sample">
-                <div class="segmented" aria-label="Display density">
-                  <button type="button" aria-pressed="true">Comfortable</button>
-                  <button type="button" aria-pressed="false">Compact</button>
-                </div>
-                <button class="button button-danger" type="button">Remove access</button>
-                <button class="button button-secondary" type="button" disabled>
-                  Processing
-                </button>
-                <div class="status-row">
-                  <span class="badge badge-success">Ready</span>
-                  <span class="badge badge-warning">Review</span>
-                  <span class="badge badge-error">Blocked</span>
-                  <span class="badge badge-info">Official</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section
-            id="product"
-            aria-labelledby="product-title"
-            data-preview-section
-            data-preview-title="Product surface"
-            data-preview-meta="Dense, quiet, operational"
-          >
-            <div class="section-heading">
-              <div>
-                <p class="eyebrow">Product surface</p>
-                <h2 id="product-title">Dense, quiet, operational</h2>
-              </div>
-              <button class="button button-secondary button-small" type="button">Export</button>
-            </div>
-            <div class="product-toolbar">
-              <div class="tabs" role="tablist" aria-label="Package view">
-                <button role="tab" aria-selected="true">Skills</button>
-                <button role="tab" aria-selected="false">Plugins</button>
-                <button role="tab" aria-selected="false">Publishers</button>
-              </div>
-              <span>24 results</span>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Package</th>
-                    <th scope="col">Publisher</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Updated</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><strong>design-audit</strong><small>UI compliance checks</small></td>
-                    <td>openclaw</td>
-                    <td><span class="badge badge-success">Verified</span></td>
-                    <td>2m ago</td>
-                  </tr>
-                  <tr>
-                    <td><strong>convex</strong><small>Backend workflow router</small></td>
-                    <td>openclaw</td>
-                    <td><span class="badge badge-info">Official</span></td>
-                    <td>1h ago</td>
-                  </tr>
-                  <tr>
-                    <td><strong>release-notes</strong><small>Draft release summaries</small></td>
-                    <td>community</td>
-                    <td><span class="badge badge-warning">Review</span></td>
-                    <td>Yesterday</td>
-                  </tr>
-                </tbody>
-              </table>
+          <section class="intro intro-compact" aria-labelledby="interface-title">
+            <p class="eyebrow">Interface</p>
+            <h1 id="interface-title">Shared visuals, explicit ownership.</h1>
+            <p>Use the framework-neutral classes as the contract. Treat richer controls as consumer-owned examples until reuse is proven.</p>
+            <div class="reference-card-grid reference-card-grid-two">
+              <a class="reference-card" href="./primitives/"><span>Canonical</span><strong>Shared primitives</strong><p>Heroes, sections, cards, actions, pills, and segmented controls.</p></a>
+              <a class="reference-card" href="./interaction-examples/"><span>Preview only</span><strong>Interaction examples</strong><p>Forms, states, dialogs, and operational density.</p></a>
             </div>
           </section>
         </div>
       </main>
     </div>
-
-    <dialog>
-      <form method="dialog">
-        <div class="dialog-heading">
-          <div>
-            <p class="eyebrow">Confirmation</p>
-            <h2>Publish this package?</h2>
-          </div>
-          <button class="icon-button" value="cancel" aria-label="Close dialog">x</button>
-        </div>
-        <p>The release will preserve the current semantic token and skill contract.</p>
-        <div class="button-row">
-          <button class="button button-secondary" value="cancel">Cancel</button>
-          <button class="button button-primary" value="confirm">Publish</button>
-        </div>
-      </form>
-    </dialog>
 
     <script type="module" src="../preview.js"></script>
   </body>
