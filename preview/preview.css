@@ -2222,6 +2222,62 @@ body[data-page-kind="catalog"] .reference-page > section {
   padding-block: 48px;
 }
 
+body[data-page-kind="guide"] .reference-page > section,
+body[data-page-kind="release"] .reference-page > section {
+  padding-block: 44px;
+}
+
+body[data-page-kind="guide"] .reference-page .section-copy {
+  max-width: 680px;
+}
+
+body[data-preview-page="resource-adapters"] .reference-page {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 32px;
+}
+
+body[data-preview-page="resource-adapters"]
+  :is(.reference-intro, .inline-toc, section:first-of-type, .page-navigation) {
+  grid-column: 1 / -1;
+}
+
+body[data-preview-page="resource-adapters"] .reference-page > section:not(:first-of-type) {
+  min-width: 0;
+  padding-block: 40px;
+}
+
+body[data-preview-page="resource-skills"] .principle-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body[data-preview-page="resource-accessibility"] .reference-page > section {
+  padding-block: 40px;
+}
+
+body[data-page-kind="release"] .release-panel {
+  margin-top: 0;
+  padding: 26px;
+}
+
+body[data-page-kind="composition"] .reference-page > section {
+  padding-block: 48px;
+}
+
+body[data-preview-page="composition-content"] .prose-sample {
+  max-width: 680px;
+}
+
+body[data-preview-page="composition-public"] .marketing-sample {
+  margin-inline: -12px;
+}
+
+body:is([data-preview-page="interface-primitives"], [data-page-kind="example"])
+  .scope-note {
+  margin-top: 0;
+  border-top: 0;
+}
+
 .reference-intro {
   padding: 34px 0 26px;
   border-bottom: 1px solid var(--oc-border-subtle);
@@ -2594,6 +2650,14 @@ body[data-page-kind="catalog"] .reference-page > section {
     grid-column: 1;
     padding-inline: 0;
     border-left: 0;
+  }
+
+  body[data-preview-page="resource-adapters"] .reference-page {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-preview-page="resource-adapters"] .reference-page > section {
+    grid-column: 1;
   }
 
   .sidebar {

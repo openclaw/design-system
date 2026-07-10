@@ -334,4 +334,15 @@ describe("preview", () => {
     expect(css).toContain('[data-section-kind="preview"]');
     expect(css).toContain("grid-column: 1 / -1");
   });
+
+  test("adapts guide and composition framing without changing specimens", async () => {
+    const css = await readFile("preview/preview.css", "utf8");
+
+    expect(css).toContain('body[data-page-kind="guide"] .reference-page > section');
+    expect(css).toContain('body[data-preview-page="resource-adapters"] .reference-page');
+    expect(css).toContain('body[data-preview-page="resource-skills"] .principle-grid');
+    expect(css).toContain('body[data-page-kind="composition"] .reference-page > section');
+    expect(css).toContain('body[data-preview-page="composition-content"] .prose-sample');
+    expect(css).toContain('body[data-page-kind="release"] .release-panel');
+  });
 });
