@@ -14,11 +14,17 @@ until at least two consumers share the same interface and behavior.
 
 ## Commands
 
-- `bun install` - install development dependencies.
+- Bun `1.3.0` is the supported minimum; use the exact `packageManager` pin for
+  normal development and release work.
+- `bun install --frozen-lockfile` - install the committed dependency graph.
 - `bun run test` - parse CSS and verify token/theme contracts.
 - `bun run skills:check` - validate skill metadata and references.
 - `bun run pack:check` - verify package exports and packed contents.
 - `bun run check` - run all validation.
+- Keep the 48-hour dependency maturity window in `bunfig.toml`; add exclusions
+  only for a named, reviewed dependency.
+- Use mutable `bun install` only for deliberate dependency changes, and review
+  `bun.lock` as a security-sensitive generated artifact.
 
 ## Release
 

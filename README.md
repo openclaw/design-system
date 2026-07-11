@@ -132,5 +132,4 @@ bun run preview:build
 ```
 
 The Pages workflow is ready for `https://openclaw.github.io/design-system/`.
-Public deployment remains deferred while organization policy keeps this
-repository private.
+Deployment remains deferred until GitHub Pages is enabled for this repository.

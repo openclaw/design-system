@@ -1,0 +1,3 @@
+[install]
+# Match OpenClaw's 48-hour dependency maturity window for new resolutions.
+minimumReleaseAge = 172800
