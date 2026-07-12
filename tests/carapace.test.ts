@@ -103,6 +103,7 @@ describe("CSS contract", () => {
       ".oc-empty",
       ".oc-flow",
       ".oc-grid",
+      ".oc-layer-card",
     ]) {
       expect(components).toContain(className);
     }
