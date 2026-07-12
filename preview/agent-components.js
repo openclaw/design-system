@@ -127,6 +127,19 @@ const components = {
 </ol>`,
     guidance: ["Render messages in chronological document order.", "Use role text and semantics instead of color alone.", "Preserve the user's reading position when older messages are prepended."],
   },
+  "mcp-tool": {
+    slug: "mcp-tool",
+    title: "MCP Tool",
+    className: "oc-agent-mcp-tool",
+    lede: "A protocol tool surface that identifies its server, capability, invocation state, and returned result.",
+    previewTitle: "Connected capability call",
+    preview: `<details class="oc-agent-tool oc-agent-mcp-tool" open><summary class="oc-agent-tool-summary"><span class="oc-agent-mcp-mark" aria-hidden="true">M</span><span>workspace · read_resource</span><span class="oc-agent-tool-status">Completed</span></summary><div class="oc-agent-tool-content"><dl class="oc-agent-mcp-meta"><div><dt>Server</dt><dd>workspace</dd></div><div><dt>Resource</dt><dd>design-system://tokens</dd></div></dl></div></details>`,
+    markup: `<details class="oc-agent-tool oc-agent-mcp-tool" open>
+  <summary class="oc-agent-tool-summary"><span>workspace · read_resource</span><span class="oc-agent-tool-status">Completed</span></summary>
+  <div class="oc-agent-tool-content"><dl class="oc-agent-mcp-meta">…</dl></div>
+</details>`,
+    guidance: ["Identify both server and capability in human-readable text.", "Keep authorization and connection failures distinct from tool-result errors.", "The consumer owns discovery, consent, credentials, invocation, and trust boundaries."],
+  },
   "input-bar": {
     slug: "input-bar",
     title: "Input Bar",

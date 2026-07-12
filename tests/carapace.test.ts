@@ -141,6 +141,7 @@ describe("CSS contract", () => {
       ".oc-agent-tool-group",
       ".oc-agent-subagent-tool",
       ".oc-agent-question-tool",
+      ".oc-agent-mcp-tool",
       ".oc-agent-file-attachment",
       ".oc-agent-input-bar",
       ".oc-agent-markdown",
