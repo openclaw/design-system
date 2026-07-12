@@ -163,7 +163,7 @@ function renderSidebar() {
   const openAreas = readOpenSidebarAreas(currentArea?.id);
   const foundations = referenceAreas.find((area) => area.id === "foundations");
   const foundationLinks = foundations?.pages
-    .map((page) => `<a class="sidebar-foundation-link" href="${hrefFor(page.path)}"${page.id === currentId ? ' aria-current="page"' : ""}>${page.label}</a>`)
+    .map((page) => `<a class="sidebar-root-link" href="${hrefFor(page.path)}"${page.id === currentId ? ' aria-current="page"' : ""}>${page.label}</a>`)
     .join("") || "";
   const areas = referenceAreas
     .filter((area) => area.id !== "foundations")
@@ -202,8 +202,8 @@ function renderSidebar() {
         <button class="mobile-nav-close shell-control" type="button" data-close-navigation aria-label="Close navigation">×</button>
       </div>
       <nav aria-label="Design system reference">
-        <a class="sidebar-introduction" href="${hrefFor(introductionPage.path)}"${currentId === introductionPage.id ? ' aria-current="page"' : ""}>${introductionPage.label}</a>
-        <div class="sidebar-foundations">${foundationLinks}</div>
+        <a class="sidebar-root-link" href="${hrefFor(introductionPage.path)}"${currentId === introductionPage.id ? ' aria-current="page"' : ""}>${introductionPage.label}</a>
+        ${foundationLinks}
         ${areas}
       </nav>
       <div class="version" aria-label="Current release v0.0.1" translate="no">
