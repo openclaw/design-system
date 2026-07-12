@@ -266,6 +266,19 @@ const components = {
     markup: `<span class="oc-agent-text-shimmer" role="status">Thinking through the request</span>`,
     guidance: ["Use shimmer only for genuinely pending content.", "Keep status text concise and meaningful without animation.", "Honor reduced-motion preferences and replace the status when work completes."],
   },
+  "subagent-tool": {
+    slug: "subagent-tool",
+    title: "Subagent Tool",
+    className: "oc-agent-subagent-tool",
+    lede: "A delegated-work surface that identifies the worker, assigned objective, and current execution state.",
+    previewTitle: "Delegated agent work",
+    preview: `<details class="oc-agent-tool oc-agent-subagent-tool" open><summary class="oc-agent-tool-summary"><span class="oc-agent-tool-avatar" aria-hidden="true">A</span><span>Audit component accessibility</span><span class="oc-agent-tool-status">Completed</span></summary><div class="oc-agent-tool-content"><dl class="oc-agent-subagent-meta"><div><dt>Worker</dt><dd>Accessibility reviewer</dd></div><div><dt>Result</dt><dd>No blocking issues</dd></div></dl></div></details>`,
+    markup: `<details class="oc-agent-tool oc-agent-subagent-tool" open>
+  <summary class="oc-agent-tool-summary"><span>Audit component accessibility</span><span class="oc-agent-tool-status">Completed</span></summary>
+  <div class="oc-agent-tool-content"><dl class="oc-agent-subagent-meta">…</dl></div>
+</details>`,
+    guidance: ["Identify delegated work by objective rather than an opaque identifier.", "Keep worker and execution state visible and traceable.", "The parent consumer owns delegation, interruption, permissions, and acceptance of results."],
+  },
   "spiral-loader": {
     slug: "spiral-loader",
     title: "Spiral Loader",
