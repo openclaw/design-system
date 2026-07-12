@@ -2568,6 +2568,20 @@ body:is([data-preview-page="interface-primitives"], [data-page-kind="example"])
   font-size: var(--oc-font-size-sm);
 }
 
+.agent-specimen {
+  display: grid;
+  min-height: clamp(22rem, 48vw, 34rem);
+  place-items: center;
+  overflow: hidden;
+}
+
+@media (max-width: 42rem) {
+  .agent-specimen {
+    min-height: 18rem;
+    place-items: center stretch;
+  }
+}
+
 .primitive-index-grid {
   margin-top: 0;
 }

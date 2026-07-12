@@ -1,4 +1,5 @@
 import { bindExampleDialog } from "./interaction.js";
+import { bindAgentComponentDemos } from "./agent-components-interactions.js";
 import { bindCombobox } from "./combobox.js";
 import { bindCommandPalettes } from "./command-palette.js";
 import { bindDialogs } from "./dialog.js";
@@ -23,6 +24,7 @@ import { nextThemeMode, resolveThemeMode, themeModes } from "./theme.js";
 
 renderReferenceContent();
 renderShell();
+bindAgentComponentDemos();
 bindCombobox();
 bindCommandPalettes();
 bindDialogs();
