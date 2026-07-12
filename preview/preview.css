@@ -1119,9 +1119,9 @@ body[data-page-kind="home"] .preview-stage {
 .search-trigger {
   grid-column: 2;
   display: flex;
-  width: 100%;
+  width: min(100%, 480px);
   min-height: 44px;
-  justify-self: stretch;
+  justify-self: center;
   justify-content: space-between;
   align-items: center;
   gap: 14px;
@@ -1177,6 +1177,7 @@ body[data-page-kind="home"] .preview-stage {
   background: var(--oc-bg-elevated);
   color: var(--oc-text-primary);
   box-shadow: var(--oc-shadow-lg);
+  overflow: hidden;
   overscroll-behavior: contain;
 }
 
@@ -1186,8 +1187,11 @@ body[data-page-kind="home"] .preview-stage {
   gap: 10px;
   align-items: center;
   min-height: 56px;
-  padding: 0 16px;
-  border-bottom: 1px solid var(--oc-border-subtle);
+  padding: 0 12px;
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-md);
+  margin: 8px;
+  background: var(--oc-input-bg);
 }
 
 .search-field-icon {
@@ -1198,6 +1202,7 @@ body[data-page-kind="home"] .preview-stage {
 
 .search-field input[type="search"] {
   min-width: 0;
+  padding: 0;
   border: 0;
   background: transparent;
   color: var(--oc-text-primary);
@@ -1205,15 +1210,22 @@ body[data-page-kind="home"] .preview-stage {
   outline: none;
 }
 
+.search-field input[type="search"]:focus {
+  border: 0;
+  box-shadow: none;
+}
+
 .search-field:focus-within {
-  box-shadow: inset 0 -2px 0 var(--oc-focus-ring);
+  border-color: var(--oc-focus-ring);
+  box-shadow: 0 0 0 1px var(--oc-focus-ring);
 }
 
 .search-results {
   display: grid;
   gap: 2px;
-  max-height: calc(min(76vh, 680px) - 57px);
+  max-height: calc(min(76vh, 680px) - 73px);
   overflow-y: auto;
+  border-top: 1px solid var(--oc-border-subtle);
   padding: 8px;
   overscroll-behavior: contain;
 }
