@@ -168,6 +168,19 @@ const components = {
 </article>`,
     guidance: ["Keep user text selectable and in document order.", "Use alignment and surface treatment without relying on color alone.", "The consumer owns editing, retrying, timestamps, and attachment data."],
   },
+  "todo-tool": {
+    slug: "todo-tool",
+    title: "Todo Tool",
+    className: "oc-agent-todo-tool",
+    lede: "A compact task-state surface for work the agent is tracking during a bounded run.",
+    previewTitle: "Tracked task progress",
+    preview: `<details class="oc-agent-tool oc-agent-todo-tool" open><summary class="oc-agent-tool-summary"><span class="oc-agent-tool-icon" aria-hidden="true">☑</span><span>Update component reference</span><span class="oc-agent-tool-status">2 of 3</span></summary><div class="oc-agent-tool-content"><ul class="oc-agent-todo-list"><li data-state="complete">Inspect contract</li><li data-state="complete">Implement component</li><li data-state="active">Run visual check</li></ul></div></details>`,
+    markup: `<details class="oc-agent-tool oc-agent-todo-tool" open>
+  <summary class="oc-agent-tool-summary"><span>Update component reference</span><span class="oc-agent-tool-status">2 of 3</span></summary>
+  <div class="oc-agent-tool-content"><ul class="oc-agent-todo-list">…</ul></div>
+</details>`,
+    guidance: ["Keep task labels outcome-oriented and ordered.", "Expose complete, active, and pending states in text or semantics.", "The consumer owns task mutation, persistence, and completion rules."],
+  },
   "text-shimmer": {
     slug: "text-shimmer",
     title: "Text Shimmer",

@@ -3125,6 +3125,31 @@
   text-decoration-color: var(--oc-border-accent);
 }
 
+.oc-agent-todo-tool .oc-agent-todo-list {
+  display: grid;
+  gap: var(--oc-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.oc-agent-todo-list li::before {
+  display: inline-block;
+  width: 1.5em;
+  color: var(--oc-text-muted);
+  content: "○";
+}
+
+.oc-agent-todo-list li[data-state="complete"]::before {
+  color: var(--oc-accent-secondary);
+  content: "✓";
+}
+
+.oc-agent-todo-list li[data-state="active"]::before {
+  color: var(--oc-accent-primary);
+  content: "●";
+}
+
 .oc-agent-message-meta {
   color: var(--oc-text-muted);
   font-size: var(--oc-font-size-xs);

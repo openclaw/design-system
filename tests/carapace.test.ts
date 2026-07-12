@@ -135,6 +135,7 @@ describe("CSS contract", () => {
       ".oc-agent-bash-tool",
       ".oc-agent-edit-tool",
       ".oc-agent-search-tool",
+      ".oc-agent-todo-tool",
       ".oc-agent-input-bar",
       ".oc-agent-suggestions",
       ".oc-agent-model-picker",
