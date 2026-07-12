@@ -60,6 +60,19 @@ const components = {
 </form>`,
     guidance: ["Keep one visible message field and one current primary action.", "Change the send action to stop while a response is streaming.", "The consumer owns submission, draft persistence, attachment processing, and keyboard shortcuts."],
   },
+  "suggestions": {
+    slug: "suggestions",
+    title: "Suggestions",
+    className: "oc-agent-suggestions",
+    lede: "Short prompt starters that help users begin or continue a conversation without replacing free-form input.",
+    previewTitle: "Useful next prompts",
+    preview: `<div class="oc-agent-suggestions" aria-label="Suggested prompts"><button class="oc-agent-suggestion" type="button">Summarize changes</button><button class="oc-agent-suggestion" type="button">Run validation</button><button class="oc-agent-suggestion" type="button">Explain the failure</button></div>`,
+    markup: `<div class="oc-agent-suggestions" aria-label="Suggested prompts">
+  <button class="oc-agent-suggestion" type="button">Summarize changes</button>
+  <button class="oc-agent-suggestion" type="button">Run validation</button>
+</div>`,
+    guidance: ["Offer a small set of specific, context-aware prompts.", "Insert or submit the complete visible suggestion when selected.", "Disable suggestions while they would conflict with an active submission."],
+  },
 };
 
 export const agentReferenceContentIds = Object.keys(components);

@@ -131,6 +131,7 @@ describe("CSS contract", () => {
       ".oc-delete-resource",
       ".oc-agent-chat",
       ".oc-agent-input-bar",
+      ".oc-agent-suggestions",
       ".oc-agent-message-list",
     ]) {
       expect(components).toContain(className);
