@@ -130,10 +130,14 @@ describe("preview contracts", () => {
 
   test("renders the header search as a complete command field", async () => {
     const shell = await readFile("preview/shell.js", "utf8");
+    const previewStyles = await readFile("preview/preview.css", "utf8");
 
     expect(shell).toContain("shell-command-field");
     expect(shell).toContain("Search routes, tokens, and primitives…");
     expect(shell).toContain("<kbd>⌘ K</kbd>");
+    expect(previewStyles).toContain("width: min(100%, 480px)");
+    expect(previewStyles).toContain("justify-self: center");
+    expect(previewStyles).toContain(".search-field:focus-within");
   });
 
   test("renders foundation pages at the sidebar root", async () => {
