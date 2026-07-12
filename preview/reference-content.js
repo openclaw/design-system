@@ -106,7 +106,7 @@ const contents = {
   "interface-primitives": () =>
     `${pageIntro("Interface", "Shared primitives", "Framework-neutral classes exported by components.css. Consumers keep their own content and behavior.")}
     <div class="scope-note"><strong>Canonical scope</strong><p>Every page below documents classes already exported by components.css. No local example is promoted into the contract.</p></div>
-    <section aria-labelledby="primitive-index"><div class="section-heading"><div><p class="eyebrow">Index</p><h2 id="primitive-index">Primitive families</h2></div><span class="oc-pill">9 references</span></div>
+    <section aria-labelledby="primitive-index"><div class="section-heading"><div><p class="eyebrow">Index</p><h2 id="primitive-index">Primitive families</h2></div><span class="oc-pill">10 references</span></div>
       <div class="reference-card-grid primitive-index-grid">
         <a class="reference-card" href="./app-surface/"><span>.oc-app-surface</span><strong>App surface</strong><p>Root visual context for an application surface.</p></a>
         <a class="reference-card" href="./hero/"><span>.oc-hero</span><strong>Hero</strong><p>Centered introduction with title and lede roles.</p></a>
@@ -117,6 +117,7 @@ const contents = {
         <a class="reference-card" href="./pill/"><span>.oc-pill</span><strong>Pill</strong><p>Compact non-interactive metadata.</p></a>
         <a class="reference-card" href="./input/"><span>.oc-input</span><strong>Input</strong><p>Labeled text entry with helper, error, and disabled states.</p></a>
         <a class="reference-card" href="./checkbox/"><span>.oc-checkbox</span><strong>Checkbox</strong><p>Independent binary selection with native form behavior.</p></a>
+        <a class="reference-card" href="./radio/"><span>.oc-radio</span><strong>Radio</strong><p>Single selection from a visible group of options.</p></a>
       </div>
     </section>`,
 
@@ -198,6 +199,20 @@ const contents = {
   <span>Include verified publishers</span>
 </label>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="checkbox-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="checkbox-guidance">One independent choice</h2></div></div>${guidanceList(["Use checkboxes when multiple options may be selected independently.", "Write a label that remains clear in checked and unchecked states.", "Use disabled only when the reason is evident nearby.", "Use radio buttons when exactly one option must be chosen."])}</section>`,
+
+  "primitive-radio": () =>
+    `${pageIntro("Interface primitive", "Radio", "A native single-choice control for a visible group of mutually exclusive options.")}
+    <section data-section-kind="preview" aria-labelledby="radio-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="radio-preview">Single selection</h2></div><span class="oc-pill">.oc-radio</span></div>
+      <div class="specimen-frame oc-app-surface"><fieldset class="oc-radio-group"><legend>Default visibility</legend><label class="oc-radio-option"><input class="oc-radio" type="radio" name="visibility-preview" checked /><span>Public</span></label><label class="oc-radio-option"><input class="oc-radio" type="radio" name="visibility-preview" /><span>Private</span></label><label class="oc-radio-option"><input class="oc-radio" type="radio" name="visibility-preview" disabled /><span>Organization only</span></label></fieldset></div>
+    </section>
+    <section data-section-kind="markup" aria-labelledby="radio-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="radio-markup">Group related options in a fieldset</h2></div></div>${codeBlock(`<fieldset class="oc-radio-group">
+  <legend>Default visibility</legend>
+  <label class="oc-radio-option">
+    <input class="oc-radio" type="radio" name="visibility" value="public" />
+    <span>Public</span>
+  </label>
+</fieldset>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="radio-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="radio-guidance">Make the full set visible</h2></div></div>${guidanceList(["Use radio buttons when one option is required from a small visible set.", "Share one name across every option in the group.", "Use a fieldset and legend to provide the group name.", "Use Select when the option set is long or space is constrained."])}</section>`,
 
   "interface-examples": () =>
     `${pageIntro("Interface", "Interaction examples", "Preview-only examples that exercise canonical foundations without claiming a shared component contract.")}

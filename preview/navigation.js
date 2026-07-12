@@ -135,6 +135,12 @@ export const referenceAreas = [
         keywords: "oc-check oc-checkbox checked disabled form selection",
       },
       {
+        id: "primitive-radio",
+        label: "Radio",
+        path: "interface/primitives/radio/",
+        keywords: "oc-radio-group oc-radio-option oc-radio single selection",
+      },
+      {
         id: "interface-examples",
         label: "Interaction examples",
         path: "interface/interaction-examples/",
@@ -281,6 +287,7 @@ const adjacentReferenceSequences = [
     "primitive-pill",
     "primitive-input",
     "primitive-checkbox",
+    "primitive-radio",
   ],
 ];
 

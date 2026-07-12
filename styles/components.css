@@ -387,6 +387,78 @@
   opacity: 0.55;
 }
 
+.oc-radio-group {
+  display: grid;
+  gap: var(--oc-space-3);
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+
+.oc-radio-group legend {
+  padding: 0;
+  margin-bottom: var(--oc-space-3);
+  color: var(--oc-text-primary);
+  font-size: var(--oc-font-size-sm);
+  font-weight: 650;
+}
+
+.oc-radio-option {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--oc-space-3);
+  color: var(--oc-text-primary);
+  font-size: var(--oc-font-size-base);
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.oc-radio {
+  display: grid;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  appearance: none;
+  place-items: center;
+  border: 1px solid var(--oc-input-border);
+  border-radius: var(--oc-radius-round);
+  margin: 0.1rem 0 0;
+  background: var(--oc-input-bg);
+  cursor: inherit;
+}
+
+.oc-radio::before {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--oc-radius-round);
+  background: var(--oc-accent-primary);
+  content: "";
+  transform: scale(0);
+  transition: transform var(--oc-duration-fast) var(--oc-ease-out);
+}
+
+.oc-radio:hover:not(:disabled) {
+  border-color: var(--oc-border-accent);
+}
+
+.oc-radio:checked {
+  border-color: var(--oc-accent-primary);
+}
+
+.oc-radio:checked::before {
+  transform: scale(1);
+}
+
+.oc-radio:focus-visible {
+  outline: 2px solid var(--oc-focus-ring);
+  outline-offset: 2px;
+}
+
+.oc-radio-option:has(.oc-radio:disabled) {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .oc-card-interactive {
     transition: none;

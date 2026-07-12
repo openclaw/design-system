@@ -80,6 +80,7 @@ describe("CSS contract", () => {
       ".oc-segmented",
       ".oc-input",
       ".oc-checkbox",
+      ".oc-radio",
     ]) {
       expect(components).toContain(className);
     }
