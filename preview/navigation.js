@@ -143,6 +143,12 @@ export const referenceAreas = [
         keywords: "oc-command-palette dialog actions search keyboard command",
       },
       {
+        id: "primitive-date-picker",
+        label: "Date Picker",
+        path: "interface/primitives/date-picker/",
+        keywords: "oc-date-picker date calendar native input form",
+      },
+      {
         id: "primitive-app-surface",
         label: "App surface",
         path: "interface/primitives/app-surface/",
@@ -391,6 +397,7 @@ const adjacentReferenceSequences = [
     "primitive-collapsible",
     "primitive-combobox",
     "primitive-command-palette",
+    "primitive-date-picker",
     "primitive-input-area",
     "primitive-input-group",
     "primitive-input",

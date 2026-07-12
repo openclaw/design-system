@@ -106,7 +106,7 @@ const contents = {
   "interface-primitives": () =>
     `${pageIntro("Interface", "Shared primitives", "Framework-neutral classes exported by components.css. Consumers keep their own content and behavior.")}
     <div class="scope-note"><strong>Canonical scope</strong><p>Every page below documents classes already exported by components.css. No local example is promoted into the contract.</p></div>
-    <section aria-labelledby="primitive-index"><div class="section-heading"><div><p class="eyebrow">Index</p><h2 id="primitive-index">Primitive families</h2></div><span class="oc-pill">26 references</span></div>
+    <section aria-labelledby="primitive-index"><div class="section-heading"><div><p class="eyebrow">Index</p><h2 id="primitive-index">Primitive families</h2></div><span class="oc-pill">27 references</span></div>
       <div class="reference-card-grid primitive-index-grid">
         <a class="reference-card" href="./autocomplete/"><span>.oc-autocomplete</span><strong>Autocomplete</strong><p>Text entry with native suggestions.</p></a>
         <a class="reference-card" href="./badge/"><span>.oc-badge</span><strong>Badge</strong><p>Compact status and metadata labels.</p></a>
@@ -118,6 +118,7 @@ const contents = {
         <a class="reference-card" href="./collapsible/"><span>.oc-collapsible</span><strong>Collapsible</strong><p>Native expandable disclosure.</p></a>
         <a class="reference-card" href="./combobox/"><span>.oc-combobox</span><strong>Combobox</strong><p>Searchable single selection.</p></a>
         <a class="reference-card" href="./command-palette/"><span>.oc-command-palette</span><strong>Command Palette</strong><p>Searchable action launcher.</p></a>
+        <a class="reference-card" href="./date-picker/"><span>.oc-date-picker</span><strong>Date Picker</strong><p>Native calendar date selection.</p></a>
         <a class="reference-card" href="./app-surface/"><span>.oc-app-surface</span><strong>App surface</strong><p>Root visual context for an application surface.</p></a>
         <a class="reference-card" href="./hero/"><span>.oc-hero</span><strong>Hero</strong><p>Centered introduction with title and lede roles.</p></a>
         <a class="reference-card" href="./section/"><span>.oc-section</span><strong>Section</strong><p>Reusable heading, copy, and action structure.</p></a>
@@ -224,6 +225,14 @@ const contents = {
     </section>
     <section data-section-kind="markup" aria-labelledby="command-palette-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="command-palette-markup">Use a modal dialog</h2></div></div>${codeBlock(`<dialog class="oc-command-palette" aria-label="Commands">\n  <div class="oc-command-palette-search">\n    <input type="search" aria-label="Search commands" />\n  </div>\n  <ul class="oc-command-palette-list">\n    <li><button class="oc-command-palette-item">Open components</button></li>\n  </ul>\n</dialog>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="command-palette-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="command-palette-guidance">Expose actions, not another sitemap</h2></div></div>${guidanceList(["Prioritize frequent actions and direct destinations.", "Keep keyboard shortcuts visible when they are stable.", "Return focus to the trigger after the dialog closes."])}</section>`,
+
+  "primitive-date-picker": () =>
+    `${pageIntro("Component", "Date Picker", "A labeled native calendar field that preserves locale, keyboard, validation, and mobile picker behavior.")}
+    <section data-section-kind="preview" aria-labelledby="date-picker-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="date-picker-preview">Choose a calendar date</h2></div><span class="oc-pill">.oc-date-picker</span></div>
+      <div class="specimen-frame"><label class="oc-date-picker"><span class="oc-field-label">Review date</span><input class="oc-date-input" type="date" value="2026-07-12" min="2026-07-01" /><span class="oc-field-message">Dates use the locale configured by the browser.</span></label></div>
+    </section>
+    <section data-section-kind="markup" aria-labelledby="date-picker-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="date-picker-markup">Use the native date input</h2></div></div>${codeBlock(`<label class="oc-date-picker">\n  <span class="oc-field-label">Review date</span>\n  <input class="oc-date-input" type="date" />\n</label>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="date-picker-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="date-picker-guidance">Ask only for precision you need</h2></div></div>${guidanceList(["Use a plain text field when the value is not a calendar date.", "Expose minimum and maximum dates through native attributes.", "Show validation next to the field without replacing the browser picker."])}</section>`,
 
   "primitive-hero": () =>
     `${pageIntro("Interface primitive", "Hero", "A centered introduction with explicit title and supporting-copy roles.")}
