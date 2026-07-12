@@ -465,6 +465,12 @@ export const referenceAreas = [
         keywords: "oc-agent-spiral-loader pending progress working",
       },
       {
+        id: "subagent-tool",
+        label: "Subagent Tool",
+        path: "agent-components/subagent-tool/",
+        keywords: "oc-agent-subagent-tool delegated worker task status",
+      },
+      {
         id: "text-shimmer",
         label: "Text Shimmer",
         path: "agent-components/text-shimmer/",
@@ -771,7 +777,7 @@ const adjacentReferenceSequences = [
   ],
   ["chart-base", "chart-colors", "chart-timeseries", "chart-maps", "chart-sankey", "chart-custom"],
   ["block-page-header", "block-resource-list", "block-delete-resource"],
-  ["agent-chat", "attachment-button", "bash-tool", "edit-tool", "error-message", "file-attachment", "generic-tool", "input-bar", "markdown", "message-list", "mode-selector", "model-picker", "plan-tool", "search-tool", "send-button", "spiral-loader", "suggestions", "text-shimmer", "todo-tool", "tool-group", "user-message"],
+  ["agent-chat", "attachment-button", "bash-tool", "edit-tool", "error-message", "file-attachment", "generic-tool", "input-bar", "markdown", "message-list", "mode-selector", "model-picker", "plan-tool", "search-tool", "send-button", "spiral-loader", "subagent-tool", "suggestions", "text-shimmer", "todo-tool", "tool-group", "user-message"],
 ];
 
 export function getReferencePage(id) {
