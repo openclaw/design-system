@@ -2947,6 +2947,13 @@
   overflow-x: auto;
 }
 
+.oc-agent-suggestions {
+  display: flex;
+  width: min(100%, 42rem);
+  flex-wrap: wrap;
+  gap: var(--oc-space-2);
+}
+
 .oc-agent-suggestion {
   min-height: 2rem;
   padding: 0 var(--oc-space-3);

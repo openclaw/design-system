@@ -410,6 +410,12 @@ export const referenceAreas = [
         path: "agent-components/input-bar/",
         keywords: "oc-agent-input-bar composer textarea send stop attachments",
       },
+      {
+        id: "suggestions",
+        label: "Suggestions",
+        path: "agent-components/suggestions/",
+        keywords: "oc-agent-suggestions suggested prompts actions input composer",
+      },
     ],
   },
   {
@@ -663,7 +669,7 @@ const adjacentReferenceSequences = [
   ],
   ["chart-base", "chart-colors", "chart-timeseries", "chart-maps", "chart-sankey", "chart-custom"],
   ["block-page-header", "block-resource-list", "block-delete-resource"],
-  ["agent-chat", "message-list", "input-bar"],
+  ["agent-chat", "input-bar", "message-list", "suggestions"],
 ];
 
 export function getReferencePage(id) {
