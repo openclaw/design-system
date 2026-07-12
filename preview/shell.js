@@ -63,6 +63,7 @@ const pageKinds = {
   "primitive-toast": "reference",
   "primitive-tooltip": "reference",
   "chart-base": "reference",
+  "chart-colors": "reference",
   "primitive-hero": "reference",
   "primitive-section": "reference",
   "primitive-card": "reference",
