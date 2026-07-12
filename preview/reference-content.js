@@ -106,7 +106,7 @@ const contents = {
   "interface-primitives": () =>
     `${pageIntro("Interface", "Shared primitives", "Framework-neutral classes exported by components.css. Consumers keep their own content and behavior.")}
     <div class="scope-note"><strong>Canonical scope</strong><p>Every page below documents classes already exported by components.css. No local example is promoted into the contract.</p></div>
-    <section aria-labelledby="primitive-index"><div class="section-heading"><div><p class="eyebrow">Index</p><h2 id="primitive-index">Primitive families</h2></div><span class="oc-pill">35 references</span></div>
+    <section aria-labelledby="primitive-index"><div class="section-heading"><div><p class="eyebrow">Index</p><h2 id="primitive-index">Primitive families</h2></div><span class="oc-pill">36 references</span></div>
       <div class="reference-card-grid primitive-index-grid">
         <a class="reference-card" href="./autocomplete/"><span>.oc-autocomplete</span><strong>Autocomplete</strong><p>Text entry with native suggestions.</p></a>
         <a class="reference-card" href="./badge/"><span>.oc-badge</span><strong>Badge</strong><p>Compact status and metadata labels.</p></a>
@@ -127,6 +127,7 @@ const contents = {
         <a class="reference-card" href="./layer-card/"><span>.oc-layer-card</span><strong>Layer Card</strong><p>Stacked surface depth.</p></a>
         <a class="reference-card" href="./link/"><span>.oc-link</span><strong>Link</strong><p>Inline and standalone navigation.</p></a>
         <a class="reference-card" href="./loader/"><span>.oc-loader</span><strong>Loader</strong><p>Indeterminate progress feedback.</p></a>
+        <a class="reference-card" href="./menu-bar/"><span>.oc-menubar</span><strong>Menu Bar</strong><p>Grouped application commands.</p></a>
         <a class="reference-card" href="./app-surface/"><span>.oc-app-surface</span><strong>App surface</strong><p>Root visual context for an application surface.</p></a>
         <a class="reference-card" href="./hero/"><span>.oc-hero</span><strong>Hero</strong><p>Centered introduction with title and lede roles.</p></a>
         <a class="reference-card" href="./section/"><span>.oc-section</span><strong>Section</strong><p>Reusable heading, copy, and action structure.</p></a>
@@ -305,6 +306,14 @@ const contents = {
     </section>
     <section data-section-kind="markup" aria-labelledby="loader-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="loader-markup">Announce the operation</h2></div></div>${codeBlock(`<span class="oc-loader" role="status">\n  <span class="oc-loader-spinner" aria-hidden="true"></span>\n  <span>Syncing components</span>\n</span>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="loader-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="loader-guidance">Use only while duration is unknown</h2></div></div>${guidanceList(["Use Meter or progress when completion can be measured.", "Keep the current content visible when background work does not block it.", "Provide a status label even when it is visually hidden."])}</section>`,
+
+  "primitive-menu-bar": () =>
+    `${pageIntro("Component", "Menu Bar", "A horizontal group of application command menus for dense, recurring workflows.")}
+    <section data-section-kind="preview" aria-labelledby="menu-bar-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="menu-bar-preview">Grouped commands</h2></div><span class="oc-pill">.oc-menubar</span></div>
+      <div class="specimen-frame"><div class="oc-menubar" role="menubar" aria-label="Editor commands"><div class="oc-dropdown" data-dropdown><button class="oc-menubar-item" type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false" data-dropdown-trigger>File</button><ul class="oc-dropdown-menu" role="menu" hidden><li><button class="oc-dropdown-item" type="button" role="menuitem">New</button></li><li><button class="oc-dropdown-item" type="button" role="menuitem">Export</button></li></ul></div><div class="oc-dropdown" data-dropdown><button class="oc-menubar-item" type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false" data-dropdown-trigger>Edit</button><ul class="oc-dropdown-menu" role="menu" hidden><li><button class="oc-dropdown-item" type="button" role="menuitem">Undo</button></li><li><button class="oc-dropdown-item" type="button" role="menuitem">Redo</button></li></ul></div><button class="oc-menubar-item" type="button" role="menuitem">View</button></div></div>
+    </section>
+    <section data-section-kind="markup" aria-labelledby="menu-bar-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="menu-bar-markup">Group top-level commands</h2></div></div>${codeBlock(`<div class="oc-menubar" role="menubar" aria-label="Editor commands">\n  <button class="oc-menubar-item" role="menuitem" aria-haspopup="menu">File</button>\n  <button class="oc-menubar-item" role="menuitem" aria-haspopup="menu">Edit</button>\n</div>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="menu-bar-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="menu-bar-guidance">Reserve it for application-scale command density</h2></div></div>${guidanceList(["Use Toolbar for direct actions that do not open menus.", "Keep top-level labels stable and short.", "Support directional keyboard movement in the consuming application."])}</section>`,
 
   "primitive-hero": () =>
     `${pageIntro("Interface primitive", "Hero", "A centered introduction with explicit title and supporting-copy roles.")}

@@ -197,6 +197,12 @@ export const referenceAreas = [
         keywords: "oc-loader spinner loading progress busy status",
       },
       {
+        id: "primitive-menu-bar",
+        label: "Menu Bar",
+        path: "interface/primitives/menu-bar/",
+        keywords: "oc-menubar menu bar grouped commands application",
+      },
+      {
         id: "primitive-app-surface",
         label: "App surface",
         path: "interface/primitives/app-surface/",
@@ -458,6 +464,7 @@ const adjacentReferenceSequences = [
     "primitive-layer-card",
     "primitive-link",
     "primitive-loader",
+    "primitive-menu-bar",
     "primitive-hero",
     "primitive-pill",
     "primitive-radio",
