@@ -106,7 +106,7 @@ const contents = {
   "interface-primitives": () =>
     `${pageIntro("Interface", "Shared primitives", "Framework-neutral classes exported by components.css. Consumers keep their own content and behavior.")}
     <div class="scope-note"><strong>Canonical scope</strong><p>Every page below documents classes already exported by components.css. No local example is promoted into the contract.</p></div>
-    <section aria-labelledby="primitive-index"><div class="section-heading"><div><p class="eyebrow">Index</p><h2 id="primitive-index">Primitive families</h2></div><span class="oc-pill">45 references</span></div>
+    <section aria-labelledby="primitive-index"><div class="section-heading"><div><p class="eyebrow">Index</p><h2 id="primitive-index">Primitive families</h2></div><span class="oc-pill">46 references</span></div>
       <div class="reference-card-grid primitive-index-grid">
         <a class="reference-card" href="./autocomplete/"><span>.oc-autocomplete</span><strong>Autocomplete</strong><p>Text entry with native suggestions.</p></a>
         <a class="reference-card" href="./badge/"><span>.oc-badge</span><strong>Badge</strong><p>Compact status and metadata labels.</p></a>
@@ -153,6 +153,7 @@ const contents = {
         <a class="reference-card" href="./table/"><span>.oc-table</span><strong>Table</strong><p>Structured comparison across rows and columns.</p></a>
         <a class="reference-card" href="./table-of-contents/"><span>.oc-table-of-contents</span><strong>Table of Contents</strong><p>Local navigation through page sections.</p></a>
         <a class="reference-card" href="./tabs/"><span>.oc-tabs</span><strong>Tabs</strong><p>Peer views within one local context.</p></a>
+        <a class="reference-card" href="./text/"><span>.oc-text</span><strong>Text</strong><p>Readable semantic text roles.</p></a>
       </div>
     </section>`,
 
@@ -581,6 +582,15 @@ const contents = {
   <div class="oc-tabs-panel" id="code" role="tabpanel" hidden>Code content</div>
 </div>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="tabs-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="tabs-guidance">Keep views equivalent</h2></div></div>${guidanceList(["Use tabs for peer views, not sequential steps or primary navigation.", "Keep tab labels short and stable.", "Connect aria-controls and aria-labelledby in both directions.", "Arrow keys move between tabs while Tab moves into the active panel."])}</section>`,
+
+  "primitive-text": () =>
+    `${pageIntro("Component", "Text", "Semantic text roles for primary copy, supporting detail, metadata, and literal values.")}
+    <section data-section-kind="preview" aria-labelledby="text-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="text-preview">Clear reading hierarchy</h2></div><span class="oc-pill">.oc-text</span></div><div class="specimen-frame primitive-input-grid"><p class="oc-text oc-text-balance">Primary text carries the information required to understand the current context.</p><p class="oc-text oc-text-secondary">Secondary text supports the primary message without competing with it.</p><p class="oc-text oc-text-muted oc-text-small">Muted text is reserved for metadata and low-priority detail.</p><p class="oc-text oc-text-mono oc-text-small">--oc-text-primary</p></div></section>
+    <section data-section-kind="markup" aria-labelledby="text-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="text-markup">Combine roles deliberately</h2></div></div>${codeBlock(`<p class="oc-text">Primary information.</p>
+<p class="oc-text oc-text-secondary">Supporting context.</p>
+<p class="oc-text oc-text-muted oc-text-small">Metadata.</p>
+<code class="oc-text oc-text-mono">--oc-text-primary</code>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="text-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="text-guidance">Hierarchy follows meaning</h2></div></div>${guidanceList(["Use primary text for information required to complete the current task.", "Use secondary and muted roles progressively, not decoratively.", "Keep semantic HTML independent from the visual role.", "Use monospace only for literals, code, identifiers, and data."])}</section>`,
 
   "interface-examples": () =>
     `${pageIntro("Interface", "Interaction examples", "Preview-only examples that exercise canonical foundations without claiming a shared component contract.")}

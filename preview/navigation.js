@@ -257,6 +257,12 @@ export const referenceAreas = [
         keywords: "oc-tabs tablist panels selection keyboard",
       },
       {
+        id: "primitive-text",
+        label: "Text",
+        path: "interface/primitives/text/",
+        keywords: "oc-text body secondary muted small mono typography",
+      },
+      {
         id: "primitive-app-surface",
         label: "App surface",
         path: "interface/primitives/app-surface/",
@@ -536,6 +542,7 @@ const adjacentReferenceSequences = [
     "primitive-table",
     "primitive-table-of-contents",
     "primitive-tabs",
+    "primitive-text",
   ],
 ];
 

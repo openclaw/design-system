@@ -2237,6 +2237,34 @@
   color: var(--oc-text-secondary);
 }
 
+.oc-text {
+  margin: 0;
+  color: var(--oc-text-primary);
+  font-family: var(--oc-font-body);
+  font-size: var(--oc-font-size-base);
+  line-height: 1.6;
+}
+
+.oc-text-secondary {
+  color: var(--oc-text-secondary);
+}
+
+.oc-text-muted {
+  color: var(--oc-text-muted);
+}
+
+.oc-text-small {
+  font-size: var(--oc-font-size-sm);
+}
+
+.oc-text-mono {
+  font-family: var(--oc-font-mono);
+}
+
+.oc-text-balance {
+  text-wrap: balance;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .oc-skeleton-line::after {
     animation: none;
