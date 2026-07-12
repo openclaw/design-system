@@ -441,6 +441,12 @@ export const referenceAreas = [
         keywords: "oc-agent-message-list transcript messages streaming history",
       },
       {
+        id: "mcp-tool",
+        label: "MCP Tool",
+        path: "agent-components/mcp-tool/",
+        keywords: "oc-agent-mcp-tool server connector capability call",
+      },
+      {
         id: "input-bar",
         label: "Input Bar",
         path: "agent-components/input-bar/",
@@ -783,7 +789,7 @@ const adjacentReferenceSequences = [
   ],
   ["chart-base", "chart-colors", "chart-timeseries", "chart-maps", "chart-sankey", "chart-custom"],
   ["block-page-header", "block-resource-list", "block-delete-resource"],
-  ["agent-chat", "attachment-button", "bash-tool", "edit-tool", "error-message", "file-attachment", "generic-tool", "input-bar", "markdown", "message-list", "mode-selector", "model-picker", "plan-tool", "question-tool", "search-tool", "send-button", "spiral-loader", "subagent-tool", "suggestions", "text-shimmer", "todo-tool", "tool-group", "user-message"],
+  ["agent-chat", "attachment-button", "bash-tool", "edit-tool", "error-message", "file-attachment", "generic-tool", "input-bar", "markdown", "mcp-tool", "message-list", "mode-selector", "model-picker", "plan-tool", "question-tool", "search-tool", "send-button", "spiral-loader", "subagent-tool", "suggestions", "text-shimmer", "todo-tool", "tool-group", "user-message"],
 ];
 
 export function getReferencePage(id) {

@@ -3257,6 +3257,35 @@
   padding-top: var(--oc-space-4);
 }
 
+.oc-agent-mcp-mark {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  border: 1px solid var(--oc-border-accent);
+  border-radius: var(--oc-radius-inset);
+  color: var(--oc-text-primary);
+  font-family: var(--oc-font-mono);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-agent-mcp-tool .oc-agent-mcp-meta {
+  display: grid;
+  gap: var(--oc-space-2);
+  margin: 0;
+}
+
+.oc-agent-mcp-meta div {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: var(--oc-space-3);
+}
+
+.oc-agent-mcp-meta :is(dt, dd) {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
 .oc-agent-file-attachment {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
