@@ -669,6 +669,22 @@ const contents = {
 </figure>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="timeseries-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="timeseries-guidance">Time determines the reading order</h2></div></div>${guidanceList(["Keep intervals consistent and label changes in sampling or missing data.", "Use the same scale when series are meant to be compared directly.", "Pair color with a visible legend and distinct line treatment or points.", "Summarize the meaningful trend in the accessible description."])}</section>`,
 
+  "chart-maps": () =>
+    `${pageIntro("Charts", "Maps", "A geographic figure for comparing values by location without obscuring the underlying places.")}
+    <section data-section-kind="preview" aria-labelledby="map-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="map-preview">Regional activity</h2></div><span class="oc-pill">.oc-map</span></div><div class="specimen-frame"><figure class="oc-chart oc-map"><figcaption class="oc-chart-header"><div><p class="oc-chart-title">Active workspaces</p><p class="oc-chart-caption">Relative activity by region</p></div><div class="oc-map-scale" aria-label="Activity scale"><span>Lower</span><i></i><i></i><i></i><span>Higher</span></div></figcaption><svg class="oc-map-plot" viewBox="0 0 640 300" role="img" aria-labelledby="map-title map-description"><title id="map-title">Active workspaces by region</title><desc id="map-description">The east and central regions have the highest activity. The north region has the lowest activity.</desc><g class="oc-map-regions"><path class="oc-map-region oc-map-region-low" d="M52 58L210 36L248 126L186 176L72 148Z"><title>North: lower activity</title></path><path class="oc-map-region oc-map-region-medium" d="M248 126L388 60L450 138L356 210L186 176Z"><title>Central: medium activity</title></path><path class="oc-map-region oc-map-region-high" d="M450 138L590 106L606 238L438 270L356 210Z"><title>East: higher activity</title></path><path class="oc-map-region oc-map-region-medium" d="M72 148L186 176L356 210L292 276L104 262Z"><title>South: medium activity</title></path></g></svg></figure></div></section>
+    <section data-section-kind="markup" aria-labelledby="map-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="map-markup">Name every region</h2></div></div>${codeBlock(`<figure class="oc-chart oc-map">
+  <figcaption class="oc-chart-header">
+    <p class="oc-chart-title">Active workspaces</p>
+    <div class="oc-map-scale" aria-label="Activity scale">...</div>
+  </figcaption>
+  <svg class="oc-map-plot" viewBox="0 0 640 300" role="img" aria-labelledby="map-title map-description">
+    <title id="map-title">Active workspaces by region</title>
+    <desc id="map-description">The east and central regions have the highest activity.</desc>
+    <path class="oc-map-region oc-map-region-high" d="..."><title>East: higher activity</title></path>
+  </svg>
+</figure>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="map-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="map-guidance">Geography must explain the data</h2></div></div>${guidanceList(["Use a map only when location changes how the data should be understood.", "Name regions in accessible text and provide the important comparison outside hover.", "Keep boundaries visible in both themes and never encode values with color alone.", "Let consumers own projections, coordinate data, zoom, and selection behavior."])}</section>`,
+
   "interface-examples": () =>
     `${pageIntro("Interface", "Interaction examples", "Preview-only examples that exercise canonical foundations without claiming a shared component contract.")}
     <div class="scope-note"><strong>Ownership boundary</strong><p>These controls demonstrate states and density. Their behavior and markup remain consumer-owned.</p></div>

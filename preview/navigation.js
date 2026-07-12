@@ -410,6 +410,12 @@ export const referenceAreas = [
         path: "interface/charts/timeseries/",
         keywords: "oc-timeseries temporal line trend series data visualization",
       },
+      {
+        id: "chart-maps",
+        label: "Maps",
+        path: "interface/charts/maps/",
+        keywords: "oc-map geographic region location choropleth data visualization",
+      },
     ],
   },
   {
@@ -591,7 +597,7 @@ const adjacentReferenceSequences = [
     "primitive-toast",
     "primitive-tooltip",
   ],
-  ["chart-base", "chart-colors", "chart-timeseries"],
+  ["chart-base", "chart-colors", "chart-timeseries", "chart-maps"],
 ];
 
 export function getReferencePage(id) {
