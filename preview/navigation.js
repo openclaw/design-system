@@ -161,6 +161,12 @@ export const referenceAreas = [
         keywords: "oc-dropdown menu actions trigger escape",
       },
       {
+        id: "primitive-empty",
+        label: "Empty",
+        path: "interface/primitives/empty/",
+        keywords: "oc-empty no results blank state action",
+      },
+      {
         id: "primitive-app-surface",
         label: "App surface",
         path: "interface/primitives/app-surface/",
@@ -412,6 +418,7 @@ const adjacentReferenceSequences = [
     "primitive-date-picker",
     "primitive-dialog",
     "primitive-dropdown",
+    "primitive-empty",
     "primitive-input-area",
     "primitive-input-group",
     "primitive-input",

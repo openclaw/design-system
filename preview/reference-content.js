@@ -106,7 +106,7 @@ const contents = {
   "interface-primitives": () =>
     `${pageIntro("Interface", "Shared primitives", "Framework-neutral classes exported by components.css. Consumers keep their own content and behavior.")}
     <div class="scope-note"><strong>Canonical scope</strong><p>Every page below documents classes already exported by components.css. No local example is promoted into the contract.</p></div>
-    <section aria-labelledby="primitive-index"><div class="section-heading"><div><p class="eyebrow">Index</p><h2 id="primitive-index">Primitive families</h2></div><span class="oc-pill">29 references</span></div>
+    <section aria-labelledby="primitive-index"><div class="section-heading"><div><p class="eyebrow">Index</p><h2 id="primitive-index">Primitive families</h2></div><span class="oc-pill">30 references</span></div>
       <div class="reference-card-grid primitive-index-grid">
         <a class="reference-card" href="./autocomplete/"><span>.oc-autocomplete</span><strong>Autocomplete</strong><p>Text entry with native suggestions.</p></a>
         <a class="reference-card" href="./badge/"><span>.oc-badge</span><strong>Badge</strong><p>Compact status and metadata labels.</p></a>
@@ -121,6 +121,7 @@ const contents = {
         <a class="reference-card" href="./date-picker/"><span>.oc-date-picker</span><strong>Date Picker</strong><p>Native calendar date selection.</p></a>
         <a class="reference-card" href="./dialog/"><span>.oc-dialog</span><strong>Dialog</strong><p>Focused modal decisions.</p></a>
         <a class="reference-card" href="./dropdown/"><span>.oc-dropdown</span><strong>Dropdown</strong><p>Compact contextual actions.</p></a>
+        <a class="reference-card" href="./empty/"><span>.oc-empty</span><strong>Empty</strong><p>Purposeful no-content states.</p></a>
         <a class="reference-card" href="./app-surface/"><span>.oc-app-surface</span><strong>App surface</strong><p>Root visual context for an application surface.</p></a>
         <a class="reference-card" href="./hero/"><span>.oc-hero</span><strong>Hero</strong><p>Centered introduction with title and lede roles.</p></a>
         <a class="reference-card" href="./section/"><span>.oc-section</span><strong>Section</strong><p>Reusable heading, copy, and action structure.</p></a>
@@ -251,6 +252,14 @@ const contents = {
     </section>
     <section data-section-kind="markup" aria-labelledby="dropdown-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="dropdown-markup">Connect trigger and menu</h2></div></div>${codeBlock(`<div class="oc-dropdown">\n  <button aria-haspopup="menu" aria-expanded="false">More actions</button>\n  <ul class="oc-dropdown-menu" role="menu">\n    <li><button class="oc-dropdown-item" role="menuitem">Duplicate</button></li>\n  </ul>\n</div>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="dropdown-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="dropdown-guidance">Keep the menu short and contextual</h2></div></div>${guidanceList(["Use visible buttons for frequent or primary actions.", "Close on selection, Escape, and outside interaction.", "Separate destructive actions from routine actions."])}</section>`,
+
+  "primitive-empty": () =>
+    `${pageIntro("Component", "Empty", "A purposeful no-content state that explains what is absent and offers the most useful next action.")}
+    <section data-section-kind="preview" aria-labelledby="empty-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="empty-preview">No saved views</h2></div><span class="oc-pill">.oc-empty</span></div>
+      <div class="specimen-frame"><div class="oc-empty"><div class="oc-empty-content"><span class="oc-empty-icon" aria-hidden="true">◇</span><h3 class="oc-empty-title">No saved views</h3><p class="oc-empty-description">Save a filtered view to return to the same component set later.</p><div class="oc-empty-actions"><button class="oc-button oc-button-primary" type="button">Create view</button></div></div></div></div>
+    </section>
+    <section data-section-kind="markup" aria-labelledby="empty-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="empty-markup">Name the absence and next step</h2></div></div>${codeBlock(`<div class="oc-empty">\n  <div class="oc-empty-content">\n    <h2 class="oc-empty-title">No saved views</h2>\n    <p class="oc-empty-description">Save a filtered view to return later.</p>\n    <div class="oc-empty-actions"><button>Create view</button></div>\n  </div>\n</div>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="empty-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="empty-guidance">The state must help users continue</h2></div></div>${guidanceList(["Distinguish an empty collection from an error or loading state.", "Explain why content is absent only when it is not obvious.", "Offer one primary recovery or creation action."])}</section>`,
 
   "primitive-hero": () =>
     `${pageIntro("Interface primitive", "Hero", "A centered introduction with explicit title and supporting-copy roles.")}
