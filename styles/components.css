@@ -1940,6 +1940,42 @@
   color: var(--oc-text-muted);
 }
 
+.oc-popover {
+  width: min(20rem, calc(100vw - 2rem));
+  margin: 0;
+  padding: var(--oc-space-4);
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-surface);
+  background: var(--oc-surface-overlay);
+  color: var(--oc-text-secondary);
+  box-shadow: var(--oc-shadow-md);
+  font-size: var(--oc-font-size-sm);
+  line-height: 1.6;
+}
+
+.oc-popover:popover-open {
+  position-area: bottom span-left;
+  margin-top: var(--oc-space-2);
+}
+
+.oc-popover-title {
+  margin: 0 0 var(--oc-space-2);
+  color: var(--oc-text-primary);
+  font-family: var(--oc-font-display);
+  font-size: var(--oc-font-size-base);
+}
+
+.oc-popover p {
+  margin: 0;
+}
+
+.oc-popover-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--oc-space-2);
+  margin-top: var(--oc-space-4);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .oc-loader-spinner {
     animation: none;

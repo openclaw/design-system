@@ -50,6 +50,7 @@ const pageKinds = {
   "primitive-menu-bar": "reference",
   "primitive-meter": "reference",
   "primitive-pagination": "reference",
+  "primitive-popover": "reference",
   "primitive-hero": "reference",
   "primitive-section": "reference",
   "primitive-card": "reference",
