@@ -109,6 +109,7 @@ describe("CSS contract", () => {
       ".oc-menubar",
       ".oc-meter",
       ".oc-pagination",
+      ".oc-popover",
     ]) {
       expect(components).toContain(className);
     }

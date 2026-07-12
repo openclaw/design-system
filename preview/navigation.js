@@ -215,6 +215,12 @@ export const referenceAreas = [
         keywords: "oc-pagination pages previous next current navigation",
       },
       {
+        id: "primitive-popover",
+        label: "Popover",
+        path: "interface/primitives/popover/",
+        keywords: "oc-popover anchored content native light dismiss",
+      },
+      {
         id: "primitive-app-surface",
         label: "App surface",
         path: "interface/primitives/app-surface/",
@@ -479,6 +485,7 @@ const adjacentReferenceSequences = [
     "primitive-menu-bar",
     "primitive-meter",
     "primitive-pagination",
+    "primitive-popover",
     "primitive-hero",
     "primitive-pill",
     "primitive-radio",
