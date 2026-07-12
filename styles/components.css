@@ -1060,21 +1060,20 @@
 .oc-banner {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: start;
+  align-items: center;
   gap: var(--oc-space-3);
-  padding: var(--oc-space-4);
+  padding: var(--oc-space-3);
   border: 1px solid var(--oc-border-subtle);
   border-radius: var(--oc-radius-surface);
-  background: var(--oc-surface-secondary-soft);
+  background: var(--oc-surface-card-strong);
   color: var(--oc-text-secondary);
   font-size: var(--oc-font-size-sm);
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .oc-banner-indicator {
-  width: 0.5rem;
-  height: 0.5rem;
-  margin-top: 0.375rem;
+  width: 0.375rem;
+  height: 0.375rem;
   border-radius: var(--oc-radius-round);
   background: var(--oc-text-muted);
 }
@@ -1082,7 +1081,7 @@
 .oc-banner-content {
   display: grid;
   min-width: 0;
-  gap: var(--oc-space-1);
+  gap: 0;
 }
 
 .oc-banner-title {
@@ -1095,27 +1094,12 @@
   overflow-wrap: anywhere;
 }
 
-.oc-banner-success {
-  border-color: var(--oc-status-success-fg);
-  background: var(--oc-status-success-bg);
-}
-
 .oc-banner-success .oc-banner-indicator {
   background: var(--oc-status-success-fg);
 }
 
-.oc-banner-warning {
-  border-color: var(--oc-status-warning-fg);
-  background: var(--oc-status-warning-bg);
-}
-
 .oc-banner-warning .oc-banner-indicator {
   background: var(--oc-status-warning-fg);
-}
-
-.oc-banner-error {
-  border-color: var(--oc-status-error-fg);
-  background: var(--oc-status-error-bg);
 }
 
 .oc-banner-error .oc-banner-indicator {
@@ -1319,14 +1303,12 @@
   border-radius: var(--oc-radius-surface);
   background: var(--oc-surface-card-strong);
   color: var(--oc-text-secondary);
-  box-shadow: var(--oc-shadow-sm);
 }
 
 .oc-code-highlighted-header {
   display: flex;
-  min-height: 2.5rem;
+  min-height: 2.25rem;
   align-items: center;
-  justify-content: space-between;
   gap: var(--oc-space-3);
   padding: 0 var(--oc-space-3);
   border-bottom: 1px solid var(--oc-border-subtle);
@@ -1341,6 +1323,7 @@
 
 .oc-code-highlighted-header > span:last-child {
   overflow: hidden;
+  margin-left: auto;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1349,6 +1332,10 @@
   margin: 0;
   overflow: auto;
   padding: var(--oc-space-4);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
   font-family: var(--oc-font-mono);
   font-size: var(--oc-font-size-sm);
   line-height: 1.7;
@@ -1537,7 +1524,7 @@
 }
 
 .oc-command-palette {
-  width: min(38rem, calc(100vw - 2rem));
+  width: min(32rem, calc(100vw - 2rem));
   max-height: min(36rem, calc(100dvh - 2rem));
   overflow: hidden;
   padding: 0;
@@ -1555,16 +1542,35 @@
 
 .oc-command-palette-search {
   display: flex;
-  min-height: 3.25rem;
+  min-height: 3rem;
   align-items: center;
-  gap: var(--oc-space-3);
-  padding: 0 var(--oc-space-4);
+  gap: var(--oc-space-2);
+  padding: 0 var(--oc-space-3);
   border-bottom: 1px solid var(--oc-border-subtle);
 }
 
 .oc-command-palette-search:focus-within {
   border-bottom-color: var(--oc-input-focus-border);
-  box-shadow: inset 0 0 0 2px var(--oc-input-focus-ring);
+  box-shadow: inset 0 -1px 0 var(--oc-input-focus-border);
+}
+
+.oc-command-palette-search-icon {
+  display: grid;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  place-items: center;
+  color: var(--oc-text-muted);
+}
+
+.oc-command-palette-search-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
 }
 
 .oc-command-palette-search input {
@@ -1584,12 +1590,23 @@
 
 .oc-command-palette-list {
   display: grid;
-  max-height: 28rem;
+  max-height: 24rem;
   overflow: auto;
-  gap: var(--oc-space-1);
+  gap: 1px;
   margin: 0;
-  padding: var(--oc-space-2);
+  padding: 0 var(--oc-space-2) var(--oc-space-2);
   list-style: none;
+}
+
+.oc-command-palette-group-label {
+  margin: 0;
+  padding: var(--oc-space-3) var(--oc-space-3) var(--oc-space-1);
+  color: var(--oc-text-muted);
+  font-family: var(--oc-font-mono);
+  font-size: var(--oc-font-size-xs);
+  font-weight: 700;
+  line-height: 1.4;
+  text-transform: uppercase;
 }
 
 .oc-command-palette-status {
@@ -1619,7 +1636,8 @@
 
 .oc-command-palette-item {
   display: flex;
-  min-height: 2.75rem;
+  width: 100%;
+  min-height: 2.5rem;
   align-items: center;
   justify-content: space-between;
   gap: var(--oc-space-3);
@@ -1644,9 +1662,16 @@
 
 .oc-command-palette-item kbd,
 .oc-command-palette-search kbd {
+  min-width: 1.75rem;
+  padding: var(--oc-space-1) var(--oc-space-2);
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-inset);
+  background: var(--oc-surface-interactive);
   color: var(--oc-text-muted);
   font-family: var(--oc-font-mono);
   font-size: var(--oc-font-size-xs);
+  line-height: 1;
+  text-align: center;
 }
 
 .oc-date-picker {
@@ -1839,12 +1864,9 @@
 
 .oc-empty {
   display: grid;
-  min-height: 16rem;
+  min-height: 12rem;
   place-items: center;
-  padding: var(--oc-space-6);
-  border: 1px solid var(--oc-border-subtle);
-  border-radius: var(--oc-radius-surface);
-  background: var(--oc-surface-card);
+  padding: var(--oc-space-5);
   text-align: center;
 }
 
@@ -1852,21 +1874,19 @@
   display: grid;
   width: 100%;
   min-width: 0;
-  max-width: 28rem;
+  max-width: 24rem;
   justify-items: center;
-  gap: var(--oc-space-3);
+  gap: var(--oc-space-2);
 }
 
 .oc-empty-icon {
   display: grid;
-  width: 3rem;
-  height: 3rem;
+  width: 2rem;
+  height: 2rem;
   place-items: center;
-  border: 1px solid var(--oc-border-subtle);
-  border-radius: var(--oc-radius-round);
-  background: var(--oc-surface-interactive);
   color: var(--oc-text-muted);
   font-family: var(--oc-font-mono);
+  font-size: var(--oc-font-size-lg);
 }
 
 .oc-empty-title {
@@ -1879,10 +1899,11 @@
 }
 
 .oc-empty-description {
+  max-width: 42ch;
   margin: 0;
   color: var(--oc-text-secondary);
   font-size: var(--oc-font-size-sm);
-  line-height: 1.6;
+  line-height: 1.5;
   overflow-wrap: anywhere;
 }
 
@@ -1891,7 +1912,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--oc-space-2);
-  margin-top: var(--oc-space-2);
+  margin-top: var(--oc-space-1);
 }
 
 .oc-flow {

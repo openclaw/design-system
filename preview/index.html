@@ -48,111 +48,94 @@
                 </div>
               </li>
               <li class="home-component-cell">
-                <a class="home-component-link" href="./interface/charts/timeseries/">Timeseries</a>
+                <a class="home-component-link" href="./agent-components/input-bar/">Input Bar</a>
                 <div class="home-component-demo home-component-demo-fill">
-                  <figure class="oc-chart oc-timeseries home-chart">
-                    <figcaption class="oc-chart-header">
-                      <div>
-                        <p class="oc-chart-title">Weekly runs</p>
-                        <p class="oc-chart-caption">Last six weeks</p>
+                  <form class="oc-agent-input-bar oc-agent-input-bar-standalone home-agent-input-bar" data-agent-compose-form>
+                    <label class="sr-only" for="home-agent-message">Message</label>
+                    <textarea id="home-agent-message" class="oc-agent-input" rows="2" placeholder="Send a message…"></textarea>
+                    <div class="oc-agent-input-toolbar">
+                      <div class="oc-agent-input-tools">
+                        <button class="oc-agent-input-action" type="button" aria-label="Attach file"><svg class="oc-agent-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m20 11.5-8.5 8.5a5 5 0 0 1-7-7L14 3.5a3.5 3.5 0 0 1 5 5L9.5 18a2 2 0 0 1-3-3l8-8" /></svg></button>
+                        <button class="oc-agent-input-meta" type="button"><span>Agent</span><svg class="oc-agent-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4" /></svg></button>
                       </div>
-                      <ul class="oc-timeseries-legend" aria-label="Series">
-                        <li><span class="oc-timeseries-key"></span>Successful</li>
-                        <li><span class="oc-timeseries-key oc-timeseries-key-secondary"></span>Retried</li>
-                      </ul>
-                    </figcaption>
-                    <svg class="oc-chart-plot" viewBox="0 0 640 220" role="img" aria-labelledby="home-timeseries-title home-timeseries-description">
-                      <title id="home-timeseries-title">Weekly task runs</title>
-                      <desc id="home-timeseries-description">Successful runs increased while retried runs decreased over six weeks.</desc>
-                      <path class="oc-chart-grid-line" d="M40 40H620M40 100H620M40 160H620M40 210H620" />
-                      <path class="oc-timeseries-axis" d="M40 20V210H620" />
-                      <path class="oc-timeseries-series oc-timeseries-series-primary" d="M40 178L156 156L272 146L388 108L504 82L620 44" />
-                      <path class="oc-timeseries-series oc-timeseries-series-secondary" d="M40 128L156 138L272 152L388 164L504 178L620 190" />
-                    </svg>
-                  </figure>
+                      <button class="oc-agent-send-button" type="submit" aria-label="Send message"><svg class="oc-agent-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6" /></svg></button>
+                    </div>
+                    <span class="sr-only" data-agent-compose-status aria-live="polite"></span>
+                  </form>
                 </div>
               </li>
               <li class="home-component-cell">
-                <a class="home-component-link" href="./interface/primitives/command-palette/">Command Palette</a>
+                <a class="home-component-link" href="./interface/primitives/select/">Select</a>
+                <div class="home-component-demo">
+                  <label class="oc-field home-input-demo"><span class="oc-field-label">Model</span><span class="oc-select-wrap"><select class="oc-select"><option>Default model</option><option>Fast model</option></select></span></label>
+                </div>
+              </li>
+              <li class="home-component-cell">
+                <a class="home-component-link" href="./interface/primitives/toolbar/">Toolbar</a>
+                <div class="home-component-demo">
+                  <div class="oc-toolbar" role="toolbar" aria-label="Text formatting"><div class="oc-toolbar-group"><button class="oc-toolbar-button" type="button" aria-label="Bold" aria-pressed="true"><strong>B</strong></button><button class="oc-toolbar-button" type="button" aria-label="Italic" aria-pressed="false"><em>I</em></button></div><div class="oc-toolbar-group"><button class="oc-toolbar-button" type="button">Link</button><button class="oc-toolbar-button" type="button">Code</button></div></div>
+                </div>
+              </li>
+              <li class="home-component-cell">
+                <a class="home-component-link" href="./interface/primitives/input/">Input</a>
+                <div class="home-component-demo">
+                  <label class="oc-field home-input-demo"><span class="oc-field-label">Email</span><input class="oc-input" type="email" value="name@" aria-invalid="true" aria-describedby="home-email-error" /><span class="oc-field-message" id="home-email-error">Enter a complete email address.</span></label>
+                </div>
+              </li>
+              <li class="home-component-cell">
+                <a class="home-component-link" href="./agent-components/question-tool/">Question Tool</a>
                 <div class="home-component-demo home-component-demo-fill">
-                  <div class="oc-command-palette home-command-palette" role="group" aria-label="Command palette preview">
-                    <div class="oc-command-palette-search">
-                      <input type="search" aria-label="Search commands" placeholder="Search commands…" readonly />
-                      <kbd>⌘ K</kbd>
-                    </div>
-                    <ul class="oc-command-palette-list">
-                      <li><button class="oc-command-palette-item" type="button"><span>Open components</span><kbd>G C</kbd></button></li>
-                      <li><button class="oc-command-palette-item" type="button"><span>Inspect tokens</span><kbd>G T</kbd></button></li>
-                    </ul>
-                  </div>
+                  <form class="oc-agent-tool oc-agent-question-tool home-agent-question" data-agent-question-form>
+                    <header class="oc-agent-question-header"><span>Question</span><span>1 of 1</span></header>
+                    <fieldset><legend>How should we apply this change?</legend><label class="oc-agent-question-option"><input type="radio" name="home-scope" value="small" checked /><span aria-hidden="true">A</span><span>Scoped patch</span></label><label class="oc-agent-question-option"><input type="radio" name="home-scope" value="refactor" /><span aria-hidden="true">B</span><span>Full refactor</span></label></fieldset>
+                    <div class="oc-agent-question-actions"><button class="oc-agent-question-action" type="button" data-agent-question-skip>Skip</button><button class="oc-agent-question-action" type="submit" data-variant="primary">Answer</button></div>
+                    <span class="sr-only" data-agent-question-status aria-live="polite"></span>
+                  </form>
+                </div>
+              </li>
+              <li class="home-component-cell">
+                <a class="home-component-link" href="./agent-components/tool-group/">Tool Group</a>
+                <div class="home-component-demo home-component-demo-fill">
+                  <details class="oc-agent-tool-group home-agent-tool-group" open><summary class="oc-agent-tool-group-summary"><strong>Task completed</strong><span>3 tools</span><time datetime="PT6S">6s</time></summary><ul class="oc-agent-tool-group-list"><li><span aria-hidden="true"><svg class="oc-agent-icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m7 9 3 3-3 3m5 0h5" /></svg></span><strong>Ran command</strong><code>bun run check</code></li><li><span aria-hidden="true"><svg class="oc-agent-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m16 16 4 4" /></svg></span><strong>Found results</strong><code>semantic tokens</code></li><li><span aria-hidden="true"><svg class="oc-agent-icon" viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z" /><path d="M14 3v4h4" /></svg></span><strong>Read file</strong><code>components.css</code></li></ul></details>
                 </div>
               </li>
               <li class="home-component-cell">
                 <a class="home-component-link" href="./interface/primitives/table/">Table</a>
                 <div class="home-component-demo home-component-demo-fill">
-                  <div class="oc-table-wrap home-table">
-                    <table class="oc-table">
-                      <caption class="visually-hidden">Component status</caption>
-                      <thead><tr><th scope="col">Component</th><th scope="col">Status</th><th scope="col">Updated</th></tr></thead>
-                      <tbody>
-                        <tr><td>Button</td><td>Stable</td><td>Today</td></tr>
-                        <tr><td>Dialog</td><td>Stable</td><td>Yesterday</td></tr>
-                        <tr><td>Table</td><td>Draft</td><td>Now</td></tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <div class="oc-table-wrap home-table"><table class="oc-table"><caption class="visually-hidden">Component status</caption><thead><tr><th scope="col">Component</th><th scope="col">Status</th><th scope="col">Updated</th></tr></thead><tbody><tr><td>Button</td><td>Stable</td><td>Today</td></tr><tr><td>Dialog</td><td>Stable</td><td>Yesterday</td></tr><tr><td>Table</td><td>Draft</td><td>Now</td></tr></tbody></table></div>
+                </div>
+              </li>
+              <li class="home-component-cell">
+                <a class="home-component-link" href="./interface/charts/timeseries/">Timeseries</a>
+                <div class="home-component-demo home-component-demo-fill">
+                  <figure class="oc-chart oc-timeseries home-chart">
+                    <figcaption class="oc-chart-header"><div><p class="oc-chart-title">Weekly runs</p><p class="oc-chart-caption">Last six weeks</p></div><ul class="oc-timeseries-legend" aria-label="Series"><li><span class="oc-timeseries-key"></span>Successful</li><li><span class="oc-timeseries-key oc-timeseries-key-secondary"></span>Retried</li></ul></figcaption>
+                    <svg class="oc-chart-plot" viewBox="0 0 640 220" role="img" aria-labelledby="home-timeseries-title home-timeseries-description"><title id="home-timeseries-title">Weekly task runs</title><desc id="home-timeseries-description">Successful runs increased while retried runs decreased over six weeks.</desc><path class="oc-chart-grid-line" d="M40 40H620M40 100H620M40 160H620M40 210H620" /><path class="oc-timeseries-axis" d="M40 20V210H620" /><path class="oc-timeseries-series oc-timeseries-series-primary" d="M40 178L156 156L272 146L388 108L504 82L620 44" /><path class="oc-timeseries-series oc-timeseries-series-secondary" d="M40 128L156 138L272 152L388 164L504 178L620 190" /></svg>
+                  </figure>
                 </div>
               </li>
               <li class="home-component-cell">
                 <a class="home-component-link" href="./interface/primitives/tabs/">Tabs</a>
                 <div class="home-component-demo home-component-demo-fill">
-                  <div class="oc-tabs home-tabs" data-tabs>
-                    <div class="oc-tabs-list" role="tablist" aria-label="Component details">
-                      <button class="oc-tabs-trigger" id="home-tab-preview" role="tab" aria-selected="true" aria-controls="home-panel-preview">Preview</button>
-                      <button class="oc-tabs-trigger" id="home-tab-code" role="tab" aria-selected="false" aria-controls="home-panel-code" tabindex="-1">Code</button>
-                      <button class="oc-tabs-trigger" id="home-tab-guidance" role="tab" aria-selected="false" aria-controls="home-panel-guidance" tabindex="-1">Guidance</button>
-                    </div>
-                    <div class="oc-tabs-panel" id="home-panel-preview" role="tabpanel" aria-labelledby="home-tab-preview">Rendered component preview.</div>
-                    <div class="oc-tabs-panel" id="home-panel-code" role="tabpanel" aria-labelledby="home-tab-code" hidden>Implementation markup.</div>
-                    <div class="oc-tabs-panel" id="home-panel-guidance" role="tabpanel" aria-labelledby="home-tab-guidance" hidden>Usage guidance.</div>
-                  </div>
+                  <div class="oc-tabs home-tabs" data-tabs><div class="oc-tabs-list" role="tablist" aria-label="Component details"><button class="oc-tabs-trigger" id="home-tab-preview" role="tab" aria-selected="true" aria-controls="home-panel-preview">Preview</button><button class="oc-tabs-trigger" id="home-tab-code" role="tab" aria-selected="false" aria-controls="home-panel-code" tabindex="-1">Code</button><button class="oc-tabs-trigger" id="home-tab-guidance" role="tab" aria-selected="false" aria-controls="home-panel-guidance" tabindex="-1">Guidance</button></div><div class="oc-tabs-panel" id="home-panel-preview" role="tabpanel" aria-labelledby="home-tab-preview">Rendered component preview.</div><div class="oc-tabs-panel" id="home-panel-code" role="tabpanel" aria-labelledby="home-tab-code" hidden>Implementation markup.</div><div class="oc-tabs-panel" id="home-panel-guidance" role="tabpanel" aria-labelledby="home-tab-guidance" hidden>Usage guidance.</div></div>
                 </div>
               </li>
               <li class="home-component-cell">
                 <a class="home-component-link" href="./interface/primitives/flow/">Flow</a>
                 <div class="home-component-demo home-component-demo-fill">
-                  <ol class="oc-flow oc-flow-list home-flow" aria-label="Release path" tabindex="0">
-                    <li class="oc-flow-step"><strong>Draft</strong></li>
-                    <li class="oc-flow-step" aria-current="step"><strong>Review</strong></li>
-                    <li class="oc-flow-step"><strong>Publish</strong></li>
-                  </ol>
+                  <ol class="oc-flow oc-flow-list home-flow" aria-label="Release path" tabindex="0"><li class="oc-flow-step"><strong>Draft</strong></li><li class="oc-flow-step" aria-current="step"><strong>Review</strong></li><li class="oc-flow-step"><strong>Publish</strong></li></ol>
                 </div>
               </li>
               <li class="home-component-cell">
                 <a class="home-component-link" href="./interface/primitives/toast/">Toast</a>
                 <div class="home-component-demo">
-                  <div class="oc-toast-region">
-                    <div class="oc-toast" role="status">
-                      <div class="oc-toast-content">
-                        <p class="oc-toast-title">Changes saved</p>
-                        <p class="oc-toast-message">The component reference is up to date.</p>
-                      </div>
-                      <button class="oc-toast-close" type="button" aria-label="Dismiss notification">×</button>
-                    </div>
-                  </div>
+                  <div class="oc-toast-region"><div class="oc-toast" role="status"><div class="oc-toast-content"><p class="oc-toast-title">Changes saved</p><p class="oc-toast-message">The component reference is up to date.</p></div><button class="oc-toast-close" type="button" aria-label="Dismiss notification">×</button></div></div>
                 </div>
               </li>
               <li class="home-component-cell">
                 <a class="home-component-link" href="./interface/blocks/page-header/">Page Header</a>
                 <div class="home-component-demo home-component-demo-fill">
-                  <header class="oc-page-header home-page-header">
-                    <div class="oc-page-header-content">
-                      <p class="oc-page-header-kicker">Workspace</p>
-                      <h2 class="oc-page-header-title">Components</h2>
-                      <p class="oc-page-header-description">Build interfaces from the shared visual contract.</p>
-                    </div>
-                    <div class="oc-page-header-actions"><button class="oc-button oc-button-primary oc-button-sm" type="button">Create</button></div>
-                  </header>
+                  <header class="oc-page-header home-page-header"><div class="oc-page-header-content"><p class="oc-page-header-kicker">Workspace</p><h2 class="oc-page-header-title">Components</h2><p class="oc-page-header-description">Build interfaces from the shared visual contract.</p></div><div class="oc-page-header-actions"><button class="oc-button oc-button-primary oc-button-sm" type="button">Create</button></div></header>
                 </div>
               </li>
               <li class="home-component-cell">
@@ -187,15 +170,6 @@
                 </div>
               </li>
               <li class="home-component-cell">
-                <a class="home-component-link" href="./interface/primitives/select/">Select</a>
-                <div class="home-component-demo">
-                  <label class="oc-field home-input-demo">
-                    <span class="oc-field-label">Model</span>
-                    <span class="oc-select-wrap"><select class="oc-select"><option>Default model</option><option>Fast model</option></select></span>
-                  </label>
-                </div>
-              </li>
-              <li class="home-component-cell">
                 <a class="home-component-link" href="./interface/primitives/switch/">Switch</a>
                 <div class="home-component-demo">
                   <label class="oc-switch-label"><input class="oc-switch" type="checkbox" checked /><span>Automatic updates</span></label>
@@ -205,22 +179,6 @@
                 <a class="home-component-link" href="./interface/primitives/date-picker/">Date Picker</a>
                 <div class="home-component-demo">
                   <label class="oc-date-picker home-input-demo"><span class="oc-field-label">Review date</span><input class="oc-date-input" type="date" value="2026-07-12" /></label>
-                </div>
-              </li>
-              <li class="home-component-cell">
-                <a class="home-component-link" href="./interface/primitives/banner/">Banner</a>
-                <div class="home-component-demo home-component-demo-fill">
-                  <div class="oc-banner oc-banner-warning home-banner" role="status">
-                    <span class="oc-banner-indicator" aria-hidden="true"></span>
-                    <div class="oc-banner-content"><strong class="oc-banner-title">Update available</strong><p>Review the changes before applying.</p></div>
-                    <button class="oc-action oc-action-secondary" type="button">Review</button>
-                  </div>
-                </div>
-              </li>
-              <li class="home-component-cell">
-                <a class="home-component-link" href="./interface/primitives/empty/">Empty</a>
-                <div class="home-component-demo home-component-demo-fill">
-                  <div class="oc-empty home-empty"><div class="oc-empty-content"><span class="oc-empty-icon" aria-hidden="true">◇</span><h3 class="oc-empty-title">No saved views</h3><button class="oc-button oc-button-primary oc-button-sm" type="button">Create view</button></div></div>
                 </div>
               </li>
               <li class="home-component-cell">
@@ -239,12 +197,6 @@
                 </div>
               </li>
               <li class="home-component-cell">
-                <a class="home-component-link" href="./interface/primitives/toolbar/">Toolbar</a>
-                <div class="home-component-demo">
-                  <div class="oc-toolbar" role="toolbar" aria-label="Text formatting"><div class="oc-toolbar-group"><button class="oc-toolbar-button" type="button" aria-label="Bold" aria-pressed="true"><strong>B</strong></button><button class="oc-toolbar-button" type="button" aria-label="Italic" aria-pressed="false"><em>I</em></button></div><div class="oc-toolbar-group"><button class="oc-toolbar-button" type="button">Link</button><button class="oc-toolbar-button" type="button">Code</button></div></div>
-                </div>
-              </li>
-              <li class="home-component-cell">
                 <a class="home-component-link" href="./interface/primitives/tooltip/">Tooltip</a>
                 <div class="home-component-demo">
                   <span class="oc-tooltip home-tooltip"><button class="oc-button oc-button-secondary" type="button" aria-describedby="home-tooltip-copy">Copy</button><span class="oc-tooltip-content" id="home-tooltip-copy" role="tooltip">Copy component markup</span></span>
@@ -258,15 +210,6 @@
                 <a class="home-component-link" href="./interface/primitives/breadcrumbs/">Breadcrumbs</a>
                 <div class="home-component-demo home-component-demo-fill">
                   <nav class="oc-breadcrumbs" aria-label="Breadcrumb"><ol class="oc-breadcrumbs-list"><li class="oc-breadcrumbs-item"><a href="./">Home</a></li><li class="oc-breadcrumbs-item"><a href="./interface/">Components</a></li><li class="oc-breadcrumbs-item"><span aria-current="page">Current</span></li></ol></nav>
-                </div>
-              </li>
-              <li class="home-component-cell">
-                <a class="home-component-link" href="./interface/primitives/code-highlighted/">Code Highlighted</a>
-                <div class="home-component-demo home-component-demo-fill">
-                  <div class="oc-code-highlighted home-code"><div class="oc-code-highlighted-header"><span>css</span><span>components.css</span></div><pre><code><span class="oc-code-token-comment">/* Shared action */</span>
-<span class="oc-code-token-keyword">.oc-button</span> {
-  color: <span class="oc-code-token-string">var(--oc-text-primary)</span>;
-}</code></pre></div>
                 </div>
               </li>
               <li class="home-component-cell">

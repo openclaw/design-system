@@ -39,7 +39,7 @@ export function bindCommandPalettes(root = document) {
     const filter = () => {
       const query = input.value.trim().toLowerCase();
       for (const item of items) item.hidden = query !== "" && !item.textContent.toLowerCase().includes(query);
-      clearActive();
+      setActive(0, false);
       announce();
     };
 
