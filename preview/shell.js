@@ -36,6 +36,7 @@ const pageKinds = {
   "primitive-pill": "reference",
   "primitive-input": "reference",
   "primitive-checkbox": "reference",
+  "primitive-radio": "reference",
   "interface-examples": "example",
   "composition-product": "composition",
   "composition-content": "composition",
