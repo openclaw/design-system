@@ -41,6 +41,7 @@ const pageKinds = {
   "primitive-date-picker": "reference",
   "primitive-dialog": "reference",
   "primitive-dropdown": "reference",
+  "primitive-empty": "reference",
   "primitive-hero": "reference",
   "primitive-section": "reference",
   "primitive-card": "reference",

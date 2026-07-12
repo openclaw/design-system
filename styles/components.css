@@ -1532,6 +1532,59 @@
   color: var(--oc-status-error-fg);
 }
 
+.oc-empty {
+  display: grid;
+  min-height: 16rem;
+  place-items: center;
+  padding: var(--oc-space-6);
+  border: 1px dashed var(--oc-border-subtle);
+  border-radius: var(--oc-radius-surface);
+  background: var(--oc-surface-secondary-soft);
+  text-align: center;
+}
+
+.oc-empty-content {
+  display: grid;
+  max-width: 28rem;
+  justify-items: center;
+  gap: var(--oc-space-3);
+}
+
+.oc-empty-icon {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-round);
+  background: var(--oc-surface-card);
+  color: var(--oc-text-muted);
+  font-family: var(--oc-font-mono);
+}
+
+.oc-empty-title {
+  margin: 0;
+  color: var(--oc-text-primary);
+  font-family: var(--oc-font-display);
+  font-size: var(--oc-font-size-lg);
+  line-height: 1.2;
+}
+
+.oc-empty-description {
+  margin: 0;
+  color: var(--oc-text-secondary);
+  font-size: var(--oc-font-size-sm);
+  line-height: 1.6;
+}
+
+.oc-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--oc-space-2);
+  margin-top: var(--oc-space-2);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .oc-card-interactive {
     transition: none;
