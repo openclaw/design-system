@@ -144,8 +144,7 @@ describe("preview contracts", () => {
     const shell = await readFile("preview/shell.js", "utf8");
 
     expect(shell).toContain('.filter((area) => area.id !== "foundations")');
-    expect(shell).toContain('class="sidebar-foundations"');
-    expect(shell).toContain('class="sidebar-foundation-link"');
+    expect(shell.match(/class="sidebar-root-link"/g)).toHaveLength(2);
   });
 
   test("lists every canonical token exactly once", async () => {
