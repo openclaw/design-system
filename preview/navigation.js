@@ -173,6 +173,12 @@ export const referenceAreas = [
         keywords: "oc-flow steps sequence dependency current",
       },
       {
+        id: "primitive-grid",
+        label: "Grid",
+        path: "interface/primitives/grid/",
+        keywords: "oc-grid columns responsive layout gap",
+      },
+      {
         id: "primitive-app-surface",
         label: "App surface",
         path: "interface/primitives/app-surface/",
@@ -426,6 +432,7 @@ const adjacentReferenceSequences = [
     "primitive-dropdown",
     "primitive-empty",
     "primitive-flow",
+    "primitive-grid",
     "primitive-input-area",
     "primitive-input-group",
     "primitive-input",

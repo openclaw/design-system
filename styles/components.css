@@ -1639,6 +1639,27 @@
   transform: rotate(45deg);
 }
 
+.oc-grid {
+  display: grid;
+  gap: var(--oc-space-4);
+}
+
+.oc-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.oc-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.oc-grid-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.oc-grid-item {
+  min-width: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .oc-card-interactive {
     transition: none;
@@ -1652,6 +1673,12 @@
 }
 
 @media (max-width: 42rem) {
+  .oc-grid-2,
+  .oc-grid-3,
+  .oc-grid-4 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .oc-section-header {
     align-items: start;
     flex-direction: column;
