@@ -181,6 +181,7 @@ describe("preview behavior", () => {
 
     expect(bindCommandPalettes(root)).toBe(1);
     expect(status.textContent).toBe("3 commands available.");
+    expect(items[0].attributes.has("data-active")).toBe(true);
 
     input.value = "missing";
     input.dispatchEvent(new Event("input"));

@@ -70,6 +70,9 @@ describe("preview contracts", () => {
     const componentLabels = [
       ...home.matchAll(/class="home-component-link"[^>]*>([^<]+)<\/a>/g),
     ].map(([, label]) => label);
+    const componentPaths = [
+      ...home.matchAll(/class="home-component-link" href="\.\/([^"]+)"/g),
+    ].map(([, path]) => path);
 
     expect(introductionPage).toEqual({
       id: "overview",
@@ -84,36 +87,44 @@ describe("preview contracts", () => {
     expect(home).toContain("A carapace is a protective outer shell.");
     expect(home).not.toContain('class="home-hero"');
     expect(home.match(/home-component-cell/g)).toHaveLength(33);
+    expect(home.match(/class="home-component-cell"/g)).toHaveLength(32);
+    expect(new Set(componentLabels).size).toBe(32);
+    expect(new Set(componentPaths).size).toBe(32);
+    expect(componentPaths.every((path) => referencePages.some((page) => page.path === path))).toBe(
+      true,
+    );
     expect(home.match(/oc-app-surface/g)).toHaveLength(1);
     expect(previewStyles).toContain(
       "--home-grid-row-height: calc((100dvh - var(--preview-topbar-height) - 1px) / 2)",
     );
     expect(previewStyles).toContain("grid-auto-rows: var(--home-grid-row-height)");
     expect(previewStyles).toContain(".home-chart .oc-chart-plot");
-    expect(previewStyles).toContain(".home-command-palette");
     expect(previewStyles).toContain(".home-table .oc-table");
+    expect(previewStyles).toContain(".home-agent-input-bar");
+    expect(previewStyles).toContain(".home-agent-question");
+    expect(previewStyles).toContain(".home-agent-tool-group");
     expect(previewStyles).toContain(".home-page-header");
     expect(previewScript).toContain('.home-component-grid .oc-segmented');
     expect(componentLabels.slice(0, 8)).toEqual([
       "Button",
-      "Timeseries",
-      "Command Palette",
+      "Input Bar",
+      "Select",
+      "Toolbar",
+      "Input",
+      "Question Tool",
+      "Tool Group",
       "Table",
-      "Tabs",
-      "Flow",
-      "Toast",
-      "Page Header",
     ]);
 
     for (const path of [
       "./interface/primitives/button/",
-      "./interface/charts/timeseries/",
-      "./interface/primitives/command-palette/",
+      "./agent-components/input-bar/",
+      "./interface/primitives/select/",
+      "./interface/primitives/toolbar/",
+      "./interface/primitives/input/",
+      "./agent-components/question-tool/",
+      "./agent-components/tool-group/",
       "./interface/primitives/table/",
-      "./interface/primitives/tabs/",
-      "./interface/primitives/flow/",
-      "./interface/primitives/toast/",
-      "./interface/blocks/page-header/",
     ]) {
       expect(destinations).toContain(path);
     }
