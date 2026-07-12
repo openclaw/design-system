@@ -823,6 +823,69 @@
   color: var(--oc-status-error-fg);
 }
 
+.oc-banner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--oc-space-3);
+  padding: var(--oc-space-4);
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-surface);
+  background: var(--oc-surface-secondary-soft);
+  color: var(--oc-text-secondary);
+  font-size: var(--oc-font-size-sm);
+  line-height: 1.5;
+}
+
+.oc-banner-indicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-top: 0.375rem;
+  border-radius: var(--oc-radius-round);
+  background: var(--oc-text-muted);
+}
+
+.oc-banner-content {
+  display: grid;
+  gap: var(--oc-space-1);
+}
+
+.oc-banner-title {
+  color: var(--oc-text-primary);
+  font-weight: 650;
+}
+
+.oc-banner p {
+  margin: 0;
+}
+
+.oc-banner-success {
+  border-color: var(--oc-status-success-fg);
+  background: var(--oc-status-success-bg);
+}
+
+.oc-banner-success .oc-banner-indicator {
+  background: var(--oc-status-success-fg);
+}
+
+.oc-banner-warning {
+  border-color: var(--oc-status-warning-fg);
+  background: var(--oc-status-warning-bg);
+}
+
+.oc-banner-warning .oc-banner-indicator {
+  background: var(--oc-status-warning-fg);
+}
+
+.oc-banner-error {
+  border-color: var(--oc-status-error-fg);
+  background: var(--oc-status-error-bg);
+}
+
+.oc-banner-error .oc-banner-indicator {
+  background: var(--oc-status-error-fg);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .oc-card-interactive {
     transition: none;
