@@ -35,10 +35,12 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "check": "bun run test && bun run skills:check && bun run pack:check",
+    "check": "bun run test && bun run contract:check && bun run skills:check && bun run pack:check",
     "preview:build": "vite build --config preview/vite.config.ts",
     "preview:dev": "vite --config preview/vite.config.ts --host 127.0.0.1 --port 4173",
+    "candidate:pack": "bun scripts/pack-candidate.ts",
     "test": "bun test",
+    "contract:check": "bun scripts/check-contract.ts",
     "skills:check": "bun scripts/validate-skills.ts",
     "pack:check": "bun scripts/check-package.ts",
     "release:check": "bun scripts/check-release-version.ts"

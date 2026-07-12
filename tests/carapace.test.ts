@@ -216,7 +216,18 @@ describe("CSS contract", () => {
     const packageJson = JSON.parse(await readFile("package.json", "utf8"));
     const lab = await readFile("preview/lab.css", "utf8");
 
-    expect(aggregate).toContain('@import "./components.css";');
+    expect(
+      aggregate
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean),
+    ).toEqual([
+      '@import "./tokens.css";',
+      '@import "./themes.css";',
+      '@import "./typography.css";',
+      '@import "./base.css";',
+      '@import "./components.css";',
+    ]);
     expect(aggregate).not.toContain("candidate/");
     expect(aggregate).not.toContain("lab.css");
     expect(Object.values(packageJson.exports)).not.toContain("./preview/lab.css");
