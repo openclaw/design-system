@@ -38,6 +38,7 @@ const pageKinds = {
   "primitive-collapsible": "reference",
   "primitive-combobox": "reference",
   "primitive-command-palette": "reference",
+  "primitive-date-picker": "reference",
   "primitive-hero": "reference",
   "primitive-section": "reference",
   "primitive-card": "reference",
