@@ -398,6 +398,12 @@ export const referenceAreas = [
         path: "interface/charts/",
         keywords: "oc-chart visualization plot axes series data",
       },
+      {
+        id: "chart-colors",
+        label: "Colors",
+        path: "interface/charts/colors/",
+        keywords: "oc-chart-colors series palette semantic data visualization",
+      },
     ],
   },
   {
@@ -579,7 +585,7 @@ const adjacentReferenceSequences = [
     "primitive-toast",
     "primitive-tooltip",
   ],
-  ["chart-base"],
+  ["chart-base", "chart-colors"],
 ];
 
 export function getReferencePage(id) {

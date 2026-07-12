@@ -643,6 +643,16 @@ const contents = {
 </figure>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="chart-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="chart-guidance">Data remains understandable</h2></div></div>${guidanceList(["Give every chart a visible title and concise time or scope caption.", "Provide an accessible text alternative that communicates the trend or comparison.", "Do not rely on color alone to distinguish series.", "Keep scales, data transformation, and interaction in the consumer."])}</section>`,
 
+  "chart-colors": () =>
+    `${pageIntro("Charts", "Colors", "A restrained semantic series palette built from existing accent and status roles.")}
+    <section data-section-kind="preview" aria-labelledby="chart-colors-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="chart-colors-preview">Semantic series roles</h2></div><span class="oc-pill">.oc-chart-colors</span></div><div class="specimen-frame"><div class="oc-chart-colors"><span class="oc-chart-color oc-chart-color-primary">Primary</span><span class="oc-chart-color oc-chart-color-secondary">Secondary</span><span class="oc-chart-color oc-chart-color-success">Success</span><span class="oc-chart-color oc-chart-color-warning">Warning</span><span class="oc-chart-color oc-chart-color-error">Error</span></div></div></section>
+    <section data-section-kind="markup" aria-labelledby="chart-colors-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="chart-colors-markup">Assign meaning before color</h2></div></div>${codeBlock(`<div class="oc-chart-colors">
+  <span class="oc-chart-color oc-chart-color-primary">Primary</span>
+  <span class="oc-chart-color oc-chart-color-secondary">Secondary</span>
+  <span class="oc-chart-color oc-chart-color-success">Success</span>
+</div>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="chart-colors-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="chart-colors-guidance">Color supports, never replaces</h2></div></div>${guidanceList(["Use primary and secondary accents for neutral series.", "Reserve status colors for data that genuinely carries the matching meaning.", "Pair color with labels, shapes, strokes, or patterns.", "Validate every series against both light and dark themes."])}</section>`,
+
   "interface-examples": () =>
     `${pageIntro("Interface", "Interaction examples", "Preview-only examples that exercise canonical foundations without claiming a shared component contract.")}
     <div class="scope-note"><strong>Ownership boundary</strong><p>These controls demonstrate states and density. Their behavior and markup remain consumer-owned.</p></div>

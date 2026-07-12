@@ -2459,6 +2459,37 @@
   stroke-width: 3;
 }
 
+.oc-chart-colors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: var(--oc-space-2);
+  width: 100%;
+}
+
+.oc-chart-color {
+  display: grid;
+  gap: var(--oc-space-3);
+  padding: var(--oc-space-3);
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-control);
+  background: var(--oc-surface-card);
+  color: var(--oc-text-secondary);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-chart-color::before {
+  height: 3rem;
+  border-radius: var(--oc-radius-control);
+  background: var(--oc-chart-color, var(--oc-accent-primary));
+  content: "";
+}
+
+.oc-chart-color-primary { --oc-chart-color: var(--oc-accent-primary); }
+.oc-chart-color-secondary { --oc-chart-color: var(--oc-accent-secondary); }
+.oc-chart-color-success { --oc-chart-color: var(--oc-status-success-fg); }
+.oc-chart-color-warning { --oc-chart-color: var(--oc-status-warning-fg); }
+.oc-chart-color-error { --oc-chart-color: var(--oc-status-error-fg); }
+
 @media (prefers-reduced-motion: reduce) {
   .oc-tooltip-content {
     transition: none;
