@@ -63,6 +63,7 @@ describe("preview contracts", () => {
 
   test("publishes the introduction as a live primitive grid", async () => {
     const home = await readFile("preview/index.html", "utf8");
+    const previewStyles = await readFile("preview/preview.css", "utf8");
     const previewScript = await readFile("preview/preview.js", "utf8");
     const destinations = [...home.matchAll(/href="([^"]+)"/g)].map(([, href]) => href);
 
@@ -77,6 +78,10 @@ describe("preview contracts", () => {
     expect(home).not.toContain('class="home-hero"');
     expect(home.match(/class="home-component-cell"/g)).toHaveLength(32);
     expect(home.match(/oc-app-surface/g)).toHaveLength(1);
+    expect(previewStyles).toContain(
+      "--home-grid-row-height: calc((100dvh - var(--preview-topbar-height) - 1px) / 2)",
+    );
+    expect(previewStyles).toContain("grid-auto-rows: var(--home-grid-row-height)");
     expect(previewScript).toContain('.home-component-grid .oc-segmented');
 
     for (const path of [
