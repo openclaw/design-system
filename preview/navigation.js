@@ -95,6 +95,12 @@ export const referenceAreas = [
         keywords: "oc-badge status success warning error metadata",
       },
       {
+        id: "primitive-banner",
+        label: "Banner",
+        path: "interface/primitives/banner/",
+        keywords: "oc-banner notice status information warning error",
+      },
+      {
         id: "primitive-app-surface",
         label: "App surface",
         path: "interface/primitives/app-surface/",
@@ -333,6 +339,7 @@ const adjacentReferenceSequences = [
     "primitive-app-surface",
     "primitive-autocomplete",
     "primitive-badge",
+    "primitive-banner",
     "primitive-card",
     "primitive-checkbox",
     "primitive-input-area",

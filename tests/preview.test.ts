@@ -239,7 +239,7 @@ describe("preview contracts", () => {
     });
     expect(getAdjacentReferencePages("foundation-tokens").next?.id).toBe("foundation-colors");
     expect(getAdjacentReferencePages("primitive-card")).toMatchObject({
-      previous: { id: "primitive-badge" },
+      previous: { id: "primitive-banner" },
       next: { id: "primitive-checkbox" },
     });
     expect(getAdjacentReferencePages("resource-theming")).toEqual({
