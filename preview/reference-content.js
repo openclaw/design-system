@@ -106,7 +106,7 @@ const contents = {
   "interface-primitives": () =>
     `${pageIntro("Interface", "Shared primitives", "Framework-neutral classes exported by components.css. Consumers keep their own content and behavior.")}
     <div class="scope-note"><strong>Canonical scope</strong><p>Every page below documents classes already exported by components.css. No local example is promoted into the contract.</p></div>
-    <section aria-labelledby="primitive-index"><div class="section-heading"><div><p class="eyebrow">Index</p><h2 id="primitive-index">Primitive families</h2></div><span class="oc-pill">32 references</span></div>
+    <section aria-labelledby="primitive-index"><div class="section-heading"><div><p class="eyebrow">Index</p><h2 id="primitive-index">Primitive families</h2></div><span class="oc-pill">33 references</span></div>
       <div class="reference-card-grid primitive-index-grid">
         <a class="reference-card" href="./autocomplete/"><span>.oc-autocomplete</span><strong>Autocomplete</strong><p>Text entry with native suggestions.</p></a>
         <a class="reference-card" href="./badge/"><span>.oc-badge</span><strong>Badge</strong><p>Compact status and metadata labels.</p></a>
@@ -124,6 +124,7 @@ const contents = {
         <a class="reference-card" href="./empty/"><span>.oc-empty</span><strong>Empty</strong><p>Purposeful no-content states.</p></a>
         <a class="reference-card" href="./flow/"><span>.oc-flow</span><strong>Flow</strong><p>Sequential steps and dependencies.</p></a>
         <a class="reference-card" href="./grid/"><span>.oc-grid</span><strong>Grid</strong><p>Responsive equal-width layouts.</p></a>
+        <a class="reference-card" href="./layer-card/"><span>.oc-layer-card</span><strong>Layer Card</strong><p>Stacked surface depth.</p></a>
         <a class="reference-card" href="./app-surface/"><span>.oc-app-surface</span><strong>App surface</strong><p>Root visual context for an application surface.</p></a>
         <a class="reference-card" href="./hero/"><span>.oc-hero</span><strong>Hero</strong><p>Centered introduction with title and lede roles.</p></a>
         <a class="reference-card" href="./section/"><span>.oc-section</span><strong>Section</strong><p>Reusable heading, copy, and action structure.</p></a>
@@ -278,6 +279,14 @@ const contents = {
     </section>
     <section data-section-kind="markup" aria-labelledby="grid-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="grid-markup">Choose the intended column count</h2></div></div>${codeBlock(`<div class="oc-grid oc-grid-3">\n  <article class="oc-grid-item">First</article>\n  <article class="oc-grid-item">Second</article>\n  <article class="oc-grid-item">Third</article>\n</div>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="grid-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="grid-guidance">Use grid for repeated peers</h2></div></div>${guidanceList(["Use intrinsic page layout when items are not peers.", "Keep every grid child min-width zero so long content can truncate or wrap.", "All fixed column variants collapse to one column on narrow screens."])}</section>`,
+
+  "primitive-layer-card": () =>
+    `${pageIntro("Component", "Layer Card", "A stacked card surface for representing a grouped resource or layered object without adding nested chrome.")}
+    <section data-section-kind="preview" aria-labelledby="layer-card-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="layer-card-preview">Grouped resource</h2></div><span class="oc-pill">.oc-layer-card</span></div>
+      <div class="specimen-frame"><article class="oc-layer-card"><h3 class="oc-layer-card-title">Component collection</h3><p class="oc-layer-card-copy">Twelve shared controls organized under one contract.</p></article></div>
+    </section>
+    <section data-section-kind="markup" aria-labelledby="layer-card-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="layer-card-markup">Keep the stack decorative</h2></div></div>${codeBlock(`<article class="oc-layer-card">\n  <h2 class="oc-layer-card-title">Component collection</h2>\n  <p class="oc-layer-card-copy">Twelve shared controls.</p>\n</article>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="layer-card-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="layer-card-guidance">Depth must communicate grouping</h2></div></div>${guidanceList(["Use Card when there is no meaningful stacked relationship.", "Keep the pseudo-layers decorative and hidden from assistive technology.", "Do not nest additional cards solely to increase visual depth."])}</section>`,
 
   "primitive-hero": () =>
     `${pageIntro("Interface primitive", "Hero", "A centered introduction with explicit title and supporting-copy roles.")}

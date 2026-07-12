@@ -179,6 +179,12 @@ export const referenceAreas = [
         keywords: "oc-grid columns responsive layout gap",
       },
       {
+        id: "primitive-layer-card",
+        label: "Layer Card",
+        path: "interface/primitives/layer-card/",
+        keywords: "oc-layer-card stacked depth surface hierarchy",
+      },
+      {
         id: "primitive-app-surface",
         label: "App surface",
         path: "interface/primitives/app-surface/",
@@ -437,6 +443,7 @@ const adjacentReferenceSequences = [
     "primitive-input-group",
     "primitive-input",
     "primitive-label",
+    "primitive-layer-card",
     "primitive-hero",
     "primitive-pill",
     "primitive-radio",

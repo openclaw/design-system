@@ -44,6 +44,7 @@ const pageKinds = {
   "primitive-empty": "reference",
   "primitive-flow": "reference",
   "primitive-grid": "reference",
+  "primitive-layer-card": "reference",
   "primitive-hero": "reference",
   "primitive-section": "reference",
   "primitive-card": "reference",
