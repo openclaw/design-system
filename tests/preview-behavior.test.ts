@@ -1,5 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import {
+  bindAgentComponentDemos,
+  findAgentSuggestionTarget,
+  normalizeAgentDraft,
+} from "../preview/agent-components-interactions.js";
+import { getAgentReferenceContent } from "../preview/agent-components.js";
+import {
   bindExampleDialog,
   exampleDialogAttribute,
   exampleDialogSelector,
@@ -463,6 +469,261 @@ describe("preview behavior", () => {
     const markup = getReferenceContent("primitive-tooltip");
     expect(markup).toContain("data-tooltip-trigger");
     expect(markup).toContain('aria-label="Copy component markup"');
+  });
+
+  test("keeps agent search results inside the deployed preview base path", () => {
+    const markup = getAgentReferenceContent("search-tool");
+    expect(markup).toContain('href="../../resources/tailwind/"');
+    expect(markup).toContain('href="../../foundations/tokens/"');
+    expect(markup).not.toContain('href="/resources/');
+    expect(markup).not.toContain('href="/foundations/');
+  });
+
+  test("keeps agent markdown links inside the deployed preview base path", () => {
+    const markup = getAgentReferenceContent("markdown");
+    expect(markup).toContain('href="../../foundations/tokens/"');
+    expect(markup).not.toContain('href="/foundations/');
+  });
+
+  test("keeps agent chat suggestions actionable without making the transcript live", () => {
+    const markup = getAgentReferenceContent("agent-chat");
+    expect(markup).toContain('data-agent-suggestion-target="agent-chat-message"');
+    expect(markup).toContain('data-agent-chat-status aria-live="polite"');
+    expect(markup).not.toContain('oc-agent-chat-messages" aria-label="Conversation history" aria-live');
+  });
+
+  test("submits a trimmed agent chat draft into the visible transcript", () => {
+    class Element extends EventTarget {
+      children = [];
+      className = "";
+      textContent = "";
+      value = "  Review the current diff.  ";
+      ownerDocument;
+      constructor(ownerDocument) {
+        super();
+        this.ownerDocument = ownerDocument;
+      }
+      append(child) { this.children.push(child); }
+    }
+
+    const ownerDocument = { createElement: () => new Element(ownerDocument) };
+    const input = new Element(ownerDocument);
+    const transcript = new Element(ownerDocument);
+    const status = new Element(ownerDocument);
+    transcript.scrollHeight = 320;
+    transcript.scrollTop = 0;
+    const form = new Element(ownerDocument);
+    form.querySelector = () => input;
+    form.closest = () => ({
+      querySelector: (selector) => selector === ".oc-agent-chat-messages" ? transcript : status,
+    });
+    const root = {
+      querySelectorAll(selector) {
+        return selector === "[data-agent-chat-form]" ? [form] : [];
+      },
+    };
+
+    expect(normalizeAgentDraft(input.value)).toBe("Review the current diff.");
+    expect(bindAgentComponentDemos(root)).toBe(1);
+    const submit = new Event("submit", { cancelable: true });
+    form.dispatchEvent(submit);
+
+    expect(submit.defaultPrevented).toBe(true);
+    expect(input.value).toBe("");
+    expect(transcript.scrollTop).toBe(320);
+    expect(transcript.children[0].className).toBe("oc-user-message");
+    expect(transcript.children[0].children[0].textContent).toBe("Review the current diff.");
+    expect(status.textContent).toBe("Message sent");
+  });
+
+  test("submits a standalone composer without navigating away", () => {
+    const input = { value: "  Ship this update.  ", focused: false, focus() { this.focused = true; } };
+    const status = { textContent: "" };
+    const form = new EventTarget();
+    form.querySelector = (selector) => selector === ".oc-agent-input" ? input : status;
+    const root = {
+      querySelectorAll(selector) {
+        return selector === "[data-agent-compose-form]" ? [form] : [];
+      },
+    };
+
+    expect(bindAgentComponentDemos(root)).toBe(1);
+    const submit = new Event("submit", { cancelable: true });
+    form.dispatchEvent(submit);
+
+    expect(submit.defaultPrevented).toBe(true);
+    expect(input.value).toBe("");
+    expect(input.focused).toBe(true);
+    expect(status.textContent).toBe("Message sent");
+  });
+
+  test("moves a selected suggestion into its linked composer", () => {
+    const inputEvents = [];
+    const input = new EventTarget();
+    input.value = "";
+    input.focused = false;
+    input.focus = () => (input.focused = true);
+    input.addEventListener("input", () => inputEvents.push(input.value));
+    const suggestion = new EventTarget();
+    suggestion.dataset = {
+      agentSuggestionTarget: "message",
+      agentSuggestionValue: "Review the implementation",
+    };
+    suggestion.textContent = "Review";
+    const root = {
+      getElementById: (id) => id === "message" ? input : null,
+      querySelectorAll(selector) {
+        return selector === "[data-agent-suggestion-value]" ? [suggestion] : [];
+      },
+    };
+
+    expect(bindAgentComponentDemos(root)).toBe(1);
+    suggestion.dispatchEvent(new Event("click"));
+    expect(input.value).toBe("Review the implementation");
+    expect(input.focused).toBe(true);
+    expect(inputEvents).toEqual(["Review the implementation"]);
+  });
+
+  test("finds a suggestion target when the binding root is an element", () => {
+    const input = { id: "message" };
+    const root = {
+      querySelectorAll(selector) {
+        return selector === "[id]" ? [input] : [];
+      },
+    };
+
+    expect(findAgentSuggestionTarget(root, "message")).toBe(input);
+    expect(findAgentSuggestionTarget(root, "missing")).toBe(null);
+  });
+
+  test("updates and closes the agent mode selector", () => {
+    const label = { textContent: "Agent" };
+    const summary = { focused: false, focus() { this.focused = true; } };
+    const agent = new EventTarget();
+    agent.checked = true;
+    agent.value = "Agent";
+    const plan = new EventTarget();
+    plan.checked = false;
+    plan.value = "Plan";
+    const selector = {
+      open: true,
+      querySelector: (query) => query === "summary" ? summary : label,
+      querySelectorAll: () => [agent, plan],
+    };
+    const root = {
+      querySelectorAll(query) {
+        return query === "[data-agent-mode-selector]" ? [selector] : [];
+      },
+    };
+
+    expect(bindAgentComponentDemos(root)).toBe(1);
+    agent.checked = false;
+    plan.checked = true;
+    plan.dispatchEvent(new Event("change"));
+    expect(label.textContent).toBe("Plan");
+    expect(selector.open).toBe(false);
+    expect(summary.focused).toBe(true);
+  });
+
+  test("marks a failed agent response as retrying", () => {
+    const attributes = new Map();
+    const error = { setAttribute: (name, value) => attributes.set(name, value) };
+    const button = new EventTarget();
+    button.disabled = false;
+    button.textContent = "Try again";
+    button.closest = () => error;
+    const root = {
+      querySelectorAll(query) {
+        return query === "[data-agent-retry]" ? [button] : [];
+      },
+    };
+
+    expect(bindAgentComponentDemos(root)).toBe(1);
+    button.dispatchEvent(new Event("click"));
+    expect(button.disabled).toBe(true);
+    expect(button.textContent).toBe("Retrying…");
+    expect(attributes.get("aria-busy")).toBe("true");
+    expect(attributes.get("data-state")).toBe("retrying");
+  });
+
+  test("removes only the selected file attachment", () => {
+    let removed = false;
+    const attachment = { remove: () => { removed = true; } };
+    const button = new EventTarget();
+    button.closest = () => attachment;
+    const root = {
+      querySelectorAll(query) {
+        return query === "[data-agent-attachment-remove]" ? [button] : [];
+      },
+    };
+
+    expect(bindAgentComponentDemos(root)).toBe(1);
+    button.dispatchEvent(new Event("click"));
+    expect(removed).toBe(true);
+  });
+
+  test("marks an approved plan without submitting the page", () => {
+    const attributes = new Map();
+    const status = { textContent: "Step 2 of 3" };
+    const plan = {
+      querySelector: () => status,
+      setAttribute: (name, value) => attributes.set(name, value),
+    };
+    const button = new EventTarget();
+    button.disabled = false;
+    button.textContent = "Approve";
+    button.closest = () => plan;
+    const root = {
+      querySelectorAll(query) {
+        return query === "[data-agent-plan-approve]" ? [button] : [];
+      },
+    };
+
+    expect(bindAgentComponentDemos(root)).toBe(1);
+    button.dispatchEvent(new Event("click"));
+    expect(attributes.get("data-state")).toBe("approved");
+    expect(status.textContent).toBe("Approved");
+    expect(button.disabled).toBe(true);
+  });
+
+  test("labels plan step states and exposes only functional actions", () => {
+    const markup = getAgentReferenceContent("plan-tool");
+    expect(markup).toContain("Completed: ");
+    expect(markup).toContain("In progress: ");
+    expect(markup).toContain("Not started: ");
+    expect(markup).not.toContain("Open details");
+  });
+
+  test("submits and skips agent questions without navigating", () => {
+    const status = { textContent: "" };
+    const skip = new EventTarget();
+    const form = new EventTarget();
+    form.dataset = {};
+    form.querySelector = () => status;
+    form.querySelectorAll = () => [skip];
+    const root = {
+      querySelectorAll(selector) {
+        return selector === "[data-agent-question-form]" ? [form] : [];
+      },
+    };
+
+    expect(bindAgentComponentDemos(root)).toBe(1);
+    const submit = new Event("submit", { cancelable: true });
+    form.dispatchEvent(submit);
+    expect(submit.defaultPrevented).toBe(true);
+    expect(form.dataset.state).toBe("answered");
+    expect(status.textContent).toBe("Answer submitted");
+
+    skip.dispatchEvent(new Event("click"));
+    expect(form.dataset.state).toBe("skipped");
+    expect(status.textContent).toBe("Question skipped");
+  });
+
+  test("keeps MCP results named and keyboard scrollable", () => {
+    const markup = getAgentReferenceContent("mcp-tool");
+    expect(markup).toContain('aria-label="MCP tool result"');
+    expect(markup).toContain('tabindex="0"');
+    expect(markup).toContain("read_resource");
   });
 
   test("shows sidebar fades only toward hidden navigation content", () => {
