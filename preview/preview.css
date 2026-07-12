@@ -4,6 +4,10 @@
 @import "../styles/themes/product.css";
 @import "../styles/base.css";
 @import "../styles/components.css";
+@import "../styles/candidate/controls.css";
+@import "../styles/candidate/feedback.css";
+@import "../styles/candidate/data.css";
+@import "./lab.css";
 
 :root {
   --preview-content: 1040px;

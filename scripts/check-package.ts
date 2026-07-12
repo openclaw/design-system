@@ -56,12 +56,19 @@ for (const required of [
   "styles/typography.css",
   "styles/base.css",
   "styles/components.css",
+  "styles/candidate/controls.css",
+  "styles/candidate/feedback.css",
+  "styles/candidate/data.css",
   "styles/tailwind.css",
   "styles/compat/clawhub.css",
 ]) {
   if (!output.includes(required)) {
     throw new Error(`Packed package is missing ${required}`);
   }
+}
+
+if (output.includes("preview/lab.css")) {
+  throw new Error("Packed package must not include preview-only Lab CSS");
 }
 
 console.log(`Package exports and packed contents are valid for ${packageJson.version}`);

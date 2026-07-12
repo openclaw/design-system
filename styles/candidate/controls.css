@@ -1,0 +1,462 @@
+/*
+ * Opt-in candidate controls. Import explicitly after the canonical tokens,
+ * themes, product theme, and typography entry points.
+ */
+
+.oc-field {
+  display: grid;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-primary);
+}
+
+.oc-field-label {
+  font-size: var(--oc-font-size-sm);
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.oc-field-message {
+  margin: 0;
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+  line-height: 1.4;
+}
+
+.oc-input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--oc-space-2) var(--oc-space-3);
+  border: 1px solid var(--oc-input-border);
+  border-radius: var(--oc-radius-control);
+  outline: none;
+  background: var(--oc-input-bg);
+  color: var(--oc-text-primary);
+  font: inherit;
+  font-size: var(--oc-font-size-base);
+  line-height: 1.4;
+  touch-action: manipulation;
+  transition:
+    border-color var(--oc-duration-fast) var(--oc-ease-out),
+    box-shadow var(--oc-duration-fast) var(--oc-ease-out);
+}
+
+.oc-input::placeholder {
+  color: var(--oc-input-placeholder);
+}
+
+.oc-input:hover:not(:disabled) {
+  border-color: var(--oc-border-accent);
+}
+
+.oc-input:focus-visible {
+  border-color: var(--oc-input-focus-border);
+  box-shadow: 0 0 0 3px var(--oc-input-focus-ring);
+}
+
+.oc-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.oc-input[aria-invalid="true"] {
+  border-color: var(--oc-status-error-fg);
+}
+
+.oc-field:has(.oc-input[aria-invalid="true"]) .oc-field-message {
+  color: var(--oc-status-error-fg);
+}
+
+.oc-check {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: var(--oc-space-3);
+  color: var(--oc-text-primary);
+  font-size: var(--oc-font-size-base);
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.oc-checkbox {
+  position: relative;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  appearance: none;
+  border: 1px solid var(--oc-input-border);
+  border-radius: var(--oc-radius-inset);
+  margin: 0;
+  background: var(--oc-input-bg);
+  cursor: inherit;
+  touch-action: manipulation;
+}
+
+.oc-checkbox::before {
+  position: absolute;
+  top: 0.16rem;
+  left: 0.2rem;
+  width: 0.48rem;
+  height: 0.24rem;
+  border-bottom: 2px solid var(--oc-text-on-accent);
+  border-left: 2px solid var(--oc-text-on-accent);
+  content: "";
+  opacity: 0;
+  transform: rotate(-45deg);
+}
+
+.oc-checkbox:hover:not(:disabled) {
+  border-color: var(--oc-border-accent);
+}
+
+.oc-checkbox:checked {
+  border-color: var(--oc-accent-primary);
+  background: var(--oc-accent-primary);
+}
+
+.oc-checkbox:checked::before {
+  opacity: 1;
+}
+
+.oc-checkbox:indeterminate {
+  border-color: var(--oc-accent-primary);
+  background: var(--oc-accent-primary);
+}
+
+.oc-checkbox:indeterminate::before {
+  top: 50%;
+  left: 50%;
+  width: 0.5rem;
+  height: 2px;
+  border: 0;
+  background: var(--oc-text-on-accent);
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.oc-checkbox:focus-visible {
+  outline: 2px solid var(--oc-focus-ring);
+  outline-offset: 2px;
+}
+
+.oc-check:has(.oc-checkbox:disabled) {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@media (forced-colors: active) {
+  .oc-checkbox {
+    appearance: auto;
+    forced-color-adjust: auto;
+  }
+
+  .oc-checkbox::before {
+    display: none;
+  }
+}
+
+.oc-radio-group {
+  display: grid;
+  gap: var(--oc-space-3);
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+
+.oc-radio-group legend {
+  padding: 0;
+  margin-bottom: 0;
+  color: var(--oc-text-primary);
+  font-size: var(--oc-font-size-sm);
+  font-weight: 650;
+}
+
+.oc-radio-option {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: var(--oc-space-3);
+  color: var(--oc-text-primary);
+  font-size: var(--oc-font-size-base);
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.oc-radio {
+  display: grid;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  appearance: none;
+  place-items: center;
+  border: 1px solid var(--oc-input-border);
+  border-radius: var(--oc-radius-round);
+  margin: 0;
+  background: var(--oc-input-bg);
+  cursor: inherit;
+  touch-action: manipulation;
+}
+
+.oc-radio::before {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--oc-radius-round);
+  background: var(--oc-accent-primary);
+  content: "";
+  transform: scale(0);
+  transition: transform var(--oc-duration-fast) var(--oc-ease-out);
+}
+
+.oc-radio:hover:not(:disabled) {
+  border-color: var(--oc-border-accent);
+}
+
+.oc-radio:checked {
+  border-color: var(--oc-accent-primary);
+}
+
+.oc-radio:checked::before {
+  transform: scale(1);
+}
+
+.oc-radio:focus-visible {
+  outline: 2px solid var(--oc-focus-ring);
+  outline-offset: 2px;
+}
+
+.oc-radio-option:has(.oc-radio:disabled) {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@media (forced-colors: active) {
+  .oc-radio {
+    appearance: auto;
+    forced-color-adjust: auto;
+  }
+
+  .oc-radio::before {
+    display: none;
+  }
+}
+
+.oc-switch-label {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: var(--oc-space-3);
+  color: var(--oc-text-primary);
+  font-size: var(--oc-font-size-base);
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.oc-switch {
+  position: relative;
+  width: 2.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
+  appearance: none;
+  border: 1px solid var(--oc-input-border);
+  border-radius: var(--oc-radius-round);
+  margin: 0;
+  background: var(--oc-input-bg);
+  cursor: inherit;
+  touch-action: manipulation;
+  transition:
+    background var(--oc-duration-fast) var(--oc-ease-out),
+    border-color var(--oc-duration-fast) var(--oc-ease-out);
+}
+
+.oc-switch::before {
+  position: absolute;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: var(--oc-radius-round);
+  background: var(--oc-text-muted);
+  content: "";
+  transition:
+    background var(--oc-duration-fast) var(--oc-ease-out),
+    transform var(--oc-duration-fast) var(--oc-ease-out);
+}
+
+.oc-switch:hover:not(:disabled) {
+  border-color: var(--oc-border-accent);
+}
+
+.oc-switch:checked {
+  border-color: var(--oc-accent-primary);
+  background: var(--oc-accent-primary);
+}
+
+.oc-switch:checked::before {
+  background: var(--oc-text-on-accent);
+  transform: translateX(1rem);
+}
+
+.oc-switch:focus-visible {
+  outline: 2px solid var(--oc-focus-ring);
+  outline-offset: 2px;
+}
+
+.oc-switch-label:has(.oc-switch:disabled) {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@media (forced-colors: active) {
+  .oc-switch {
+    appearance: auto;
+    forced-color-adjust: auto;
+  }
+
+  .oc-switch::before {
+    display: none;
+  }
+}
+
+.oc-select-wrap {
+  position: relative;
+  display: grid;
+}
+
+.oc-select-wrap::after {
+  position: absolute;
+  top: 50%;
+  right: var(--oc-space-3);
+  width: 0.4rem;
+  height: 0.4rem;
+  border-right: 1.5px solid var(--oc-text-muted);
+  border-bottom: 1.5px solid var(--oc-text-muted);
+  content: "";
+  pointer-events: none;
+  transform: translateY(-65%) rotate(45deg);
+}
+
+.oc-select {
+  width: 100%;
+  min-height: 2.75rem;
+  appearance: none;
+  padding: var(--oc-space-2) var(--oc-space-6) var(--oc-space-2) var(--oc-space-3);
+  border: 1px solid var(--oc-input-border);
+  border-radius: var(--oc-radius-control);
+  outline: none;
+  background: var(--oc-input-bg);
+  color: var(--oc-text-primary);
+  font: inherit;
+  font-size: var(--oc-font-size-base);
+  line-height: 1.4;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    border-color var(--oc-duration-fast) var(--oc-ease-out),
+    box-shadow var(--oc-duration-fast) var(--oc-ease-out);
+}
+
+.oc-select:hover:not(:disabled) {
+  border-color: var(--oc-border-accent);
+}
+
+.oc-select:focus-visible {
+  border-color: var(--oc-input-focus-border);
+  box-shadow: 0 0 0 3px var(--oc-input-focus-ring);
+}
+
+.oc-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.oc-select-wrap:has(.oc-select:disabled)::after {
+  opacity: 0.55;
+}
+
+@media (forced-colors: active) {
+  .oc-select-wrap::after {
+    display: none;
+  }
+
+  .oc-select {
+    appearance: auto;
+    forced-color-adjust: auto;
+  }
+}
+
+.oc-textarea {
+  width: 100%;
+  min-height: 7.5rem;
+  resize: vertical;
+  padding: var(--oc-space-3);
+  border: 1px solid var(--oc-input-border);
+  border-radius: var(--oc-radius-control);
+  outline: none;
+  background: var(--oc-input-bg);
+  color: var(--oc-text-primary);
+  font: inherit;
+  font-size: var(--oc-font-size-base);
+  line-height: 1.5;
+  transition:
+    border-color var(--oc-duration-fast) var(--oc-ease-out),
+    box-shadow var(--oc-duration-fast) var(--oc-ease-out);
+}
+
+.oc-textarea::placeholder {
+  color: var(--oc-input-placeholder);
+}
+
+.oc-textarea:hover:not(:disabled) {
+  border-color: var(--oc-border-accent);
+}
+
+.oc-textarea:focus-visible {
+  border-color: var(--oc-input-focus-border);
+  box-shadow: 0 0 0 3px var(--oc-input-focus-ring);
+}
+
+.oc-textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  resize: none;
+}
+
+.oc-textarea[aria-invalid="true"] {
+  border-color: var(--oc-status-error-fg);
+}
+
+.oc-field:has(.oc-textarea[aria-invalid="true"]) .oc-field-message {
+  color: var(--oc-status-error-fg);
+}
+
+.oc-label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-primary);
+  font-size: var(--oc-font-size-sm);
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.oc-label-required {
+  color: var(--oc-status-error-fg);
+}
+
+.oc-label-optional {
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+  font-weight: 500;
+}
+
+.oc-label-description {
+  display: block;
+  margin-top: var(--oc-space-1);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.oc-field > .oc-label-description {
+  margin-top: 0;
+}

@@ -20,6 +20,16 @@ function customProperties(source: string, pattern: RegExp) {
   return new Set([...source.matchAll(pattern)].map((match) => match[1]));
 }
 
+function componentClasses(source: string) {
+  return new Set(
+    [...source.matchAll(/\.(oc-[a-z0-9-]+)/g)].map((match) => `.${match[1]}`),
+  );
+}
+
+function expectClasses(source: string, expected: string[]) {
+  expect([...componentClasses(source)].sort()).toEqual([...expected].sort());
+}
+
 describe("CSS contract", () => {
   test("every distributed stylesheet parses", async () => {
     for (const path of await listCssFiles("styles")) {
@@ -66,98 +76,33 @@ describe("CSS contract", () => {
     expect(themes).toContain('html[data-theme="dark"]');
   });
 
-  test("shared component primitives only consume canonical tokens", async () => {
+  test("the default component entry point contains only the stable floor", async () => {
     const components = await readFile("styles/components.css", "utf8");
     const references = customProperties(components, /var\((--[\w-]+)/g);
 
     expect([...references].filter((name) => !name.startsWith("--oc-"))).toEqual([]);
-    for (const className of [
+    expectClasses(components, [
       ".oc-app-surface",
       ".oc-hero",
+      ".oc-hero-title",
+      ".oc-hero-lede",
+      ".oc-section",
       ".oc-section-header",
+      ".oc-section-heading",
+      ".oc-section-title",
+      ".oc-section-copy",
+      ".oc-eyebrow",
       ".oc-card",
+      ".oc-card-interactive",
       ".oc-action",
+      ".oc-action-primary",
+      ".oc-action-secondary",
+      ".oc-action-ghost",
+      ".oc-action-icon",
       ".oc-segmented",
-      ".oc-input",
-      ".oc-checkbox",
-      ".oc-radio",
-      ".oc-switch",
-      ".oc-select",
-      ".oc-textarea",
-      ".oc-label",
-      ".oc-input-group",
-      ".oc-sensitive-input",
-      ".oc-autocomplete",
-      ".oc-avatar",
-      ".oc-badge",
-      ".oc-banner",
-      ".oc-breadcrumbs",
-      ".oc-button",
-      ".oc-clipboard-text",
-      ".oc-code-highlighted",
-      ".oc-collapsible",
-      ".oc-combobox",
-      ".oc-command-palette",
-      ".oc-date-picker",
-      ".oc-dialog",
-      ".oc-dropdown",
-      ".oc-empty",
-      ".oc-flow",
-      ".oc-grid",
-      ".oc-layer-card",
-      ".oc-link",
-      ".oc-loader",
-      ".oc-menubar",
-      ".oc-meter",
-      ".oc-pagination",
-      ".oc-popover",
-      ".oc-provider-logo",
-      ".oc-sidebar",
-      ".oc-skeleton-line",
-      ".oc-table",
-      ".oc-table-of-contents",
-      ".oc-tabs",
-      ".oc-text",
-      ".oc-toolbar",
-      ".oc-toast",
-      ".oc-tooltip",
-      ".oc-chart",
-      ".oc-chart-colors",
-      ".oc-timeseries",
-      ".oc-map",
-      ".oc-sankey",
-      ".oc-custom-chart",
-      ".oc-page-header",
-      ".oc-resource-list",
-      ".oc-delete-resource",
-      ".oc-agent-chat",
-      ".oc-agent-attachment-button",
-      ".oc-agent-error-message",
-      ".oc-agent-tool",
-      ".oc-agent-bash-tool",
-      ".oc-agent-edit-tool",
-      ".oc-agent-search-tool",
-      ".oc-agent-todo-tool",
-      ".oc-agent-plan-tool",
-      ".oc-agent-tool-group",
-      ".oc-agent-subagent-tool",
-      ".oc-agent-question-tool",
-      ".oc-agent-mcp-tool",
-      ".oc-agent-thinking-tool",
-      ".oc-agent-file-attachment",
-      ".oc-agent-input-bar",
-      ".oc-agent-markdown",
-      ".oc-agent-suggestions",
-      ".oc-agent-model-picker",
-      ".oc-agent-mode-selector",
-      ".oc-agent-send-button",
-      ".oc-agent-user-message",
-      ".oc-agent-text-shimmer",
-      ".oc-agent-spiral-loader",
-      ".oc-agent-message-list",
-    ]) {
-      expect(components).toContain(className);
-    }
+      ".oc-segmented-item",
+      ".oc-pill",
+    ]);
 
     expect(components).toContain("border-radius: var(--oc-radius-surface)");
     expect(components).toContain("border-radius: var(--oc-radius-control)");
@@ -165,6 +110,119 @@ describe("CSS contract", () => {
     expect(references).not.toContain("--oc-radius-full");
     expect(components).toContain("@media (prefers-reduced-motion: reduce)");
     expect(components).toContain("transform: none");
+  });
+
+  test("candidate entry points are isolated by responsibility", async () => {
+    const controls = await readFile("styles/candidate/controls.css", "utf8");
+    const feedback = await readFile("styles/candidate/feedback.css", "utf8");
+    const data = await readFile("styles/candidate/data.css", "utf8");
+
+    expectClasses(controls, [
+      ".oc-field",
+      ".oc-field-label",
+      ".oc-field-message",
+      ".oc-input",
+      ".oc-check",
+      ".oc-checkbox",
+      ".oc-radio",
+      ".oc-radio-group",
+      ".oc-radio-option",
+      ".oc-switch",
+      ".oc-switch-label",
+      ".oc-select",
+      ".oc-select-wrap",
+      ".oc-textarea",
+      ".oc-label",
+      ".oc-label-required",
+      ".oc-label-optional",
+      ".oc-label-description",
+    ]);
+    expectClasses(feedback, [
+      ".oc-badge",
+      ".oc-badge-neutral",
+      ".oc-badge-success",
+      ".oc-badge-warning",
+      ".oc-badge-error",
+      ".oc-banner",
+      ".oc-banner-indicator",
+      ".oc-banner-content",
+      ".oc-banner-title",
+      ".oc-banner-success",
+      ".oc-banner-warning",
+      ".oc-banner-error",
+      ".oc-empty",
+      ".oc-empty-content",
+      ".oc-empty-icon",
+      ".oc-empty-title",
+      ".oc-empty-description",
+      ".oc-empty-actions",
+      ".oc-loader",
+      ".oc-loader-spinner",
+      ".oc-loader-sm",
+      ".oc-loader-lg",
+      ".oc-skeleton-line",
+      ".oc-skeleton-line-short",
+    ]);
+    expectClasses(data, [
+      ".oc-table",
+      ".oc-table-wrap",
+      ".oc-table-interactive",
+      ".oc-resource-list",
+      ".oc-resource-list-item",
+      ".oc-resource-list-link",
+      ".oc-resource-list-content",
+      ".oc-resource-list-title",
+      ".oc-resource-list-description",
+      ".oc-resource-list-meta",
+      ".oc-resource-list-arrow",
+    ]);
+
+    for (const candidate of [controls, feedback, data]) {
+      expect(candidate).not.toContain("@import");
+      expect(
+        [...customProperties(candidate, /var\((--[\w-]+)/g)].every((name) =>
+          name.startsWith("--oc-"),
+        ),
+      ).toBe(true);
+    }
+  });
+
+  test("candidate behavior includes native states and accessibility fallbacks", async () => {
+    const controls = await readFile("styles/candidate/controls.css", "utf8");
+    const feedback = await readFile("styles/candidate/feedback.css", "utf8");
+    const data = await readFile("styles/candidate/data.css", "utf8");
+
+    expect(controls).toMatch(
+      /\.oc-input\[aria-invalid="true"\][\s\S]*?--oc-status-error-fg/,
+    );
+    expect(controls).toMatch(
+      /\.oc-checkbox:indeterminate[\s\S]*?--oc-accent-primary/,
+    );
+    expect(controls).toMatch(
+      /@media \(forced-colors: active\)[\s\S]*?appearance: auto/,
+    );
+    expect(controls).toMatch(
+      /\.oc-switch:checked[\s\S]*?--oc-accent-primary/,
+    );
+    expect(feedback).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)[\s\S]*?animation: none/,
+    );
+    expect(data).toMatch(/\.oc-table-wrap[\s\S]*?overflow-x: auto/);
+    expect(data).toMatch(/\.oc-resource-list-link:focus-visible[\s\S]*?--oc-focus-ring/);
+  });
+
+  test("the default import graph cannot load candidates or lab styles", async () => {
+    const aggregate = await readFile("styles/styles.css", "utf8");
+    const packageJson = JSON.parse(await readFile("package.json", "utf8"));
+    const lab = await readFile("preview/lab.css", "utf8");
+
+    expect(aggregate).toContain('@import "./components.css";');
+    expect(aggregate).not.toContain("candidate/");
+    expect(aggregate).not.toContain("lab.css");
+    expect(Object.values(packageJson.exports)).not.toContain("./preview/lab.css");
+    expect(lab).toContain(".oc-agent-chat");
+    expect(lab).toContain(".oc-command-palette");
+    expect(lab).toContain(".oc-chart");
   });
 
   test("ClawHub compatibility covers explicit and system light modes", async () => {
