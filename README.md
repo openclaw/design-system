@@ -41,6 +41,9 @@ Consumers can instead import focused entry points:
 @import "@openclaw/carapace/base.css";
 @import "@openclaw/carapace/components.css";
 @import "@openclaw/carapace/themes/product.css";
+@import "@openclaw/carapace/candidate/controls.css";
+@import "@openclaw/carapace/candidate/feedback.css";
+@import "@openclaw/carapace/candidate/data.css";
 @import "@openclaw/carapace/compat/clawhub.css";
 @import "@openclaw/carapace/tailwind.css";
 ```
@@ -66,6 +69,11 @@ their own content and behavior while composing the same visual implementation:
   </header>
 </section>
 ```
+
+Candidate entry points are additive and opt-in. They are excluded from both
+`components.css` and the complete default import until their selectors and
+behavior have been validated in multiple consumers. Preview-only Lab work is
+not included in package exports.
 
 OpenClaw surfaces and controls use square corners by default. Use the semantic
 `--oc-radius-surface`, `--oc-radius-control`, and `--oc-radius-inset` roles
