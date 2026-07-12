@@ -357,7 +357,7 @@ a {
   min-height: 40px !important;
   align-items: center;
   padding: 9px 10px !important;
-  color: var(--oc-text-primary) !important;
+  color: var(--oc-text-secondary) !important;
   font-size: 13px;
   font-weight: 650;
   line-height: 1.35;
@@ -366,10 +366,12 @@ a {
 
 .sidebar-root-link:hover {
   background: var(--oc-surface-interactive);
+  color: var(--oc-text-primary) !important;
 }
 
 .sidebar-root-link[aria-current="page"] {
   background: var(--oc-surface-interactive);
+  color: var(--oc-text-primary) !important;
 }
 
 .sidebar-area {
@@ -397,7 +399,7 @@ a {
   border: 0;
   padding: 9px 10px !important;
   background: transparent;
-  color: var(--oc-text-primary) !important;
+  color: var(--oc-text-secondary) !important;
   cursor: pointer;
   font: inherit;
   font-weight: 650;
