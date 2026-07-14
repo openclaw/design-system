@@ -95,10 +95,10 @@ describe("preview contracts", () => {
     expect(home).toContain('<h1 id="preview-title">Carapace</h1>');
     expect(home).toContain("A carapace is a protective outer shell.");
     expect(home).not.toContain('class="home-hero"');
-    expect(home.match(/home-component-cell/g)).toHaveLength(32);
-    expect(home.match(/class="home-component-cell"/g)).toHaveLength(31);
-    expect(new Set(componentLabels).size).toBe(31);
-    expect(new Set(componentPaths).size).toBe(31);
+    expect(home.match(/home-component-cell/g)).toHaveLength(35);
+    expect(home.match(/class="home-component-cell"/g)).toHaveLength(34);
+    expect(new Set(componentLabels).size).toBe(34);
+    expect(new Set(componentPaths).size).toBe(34);
     expect(componentPaths.every((path) => referencePages.some((page) => page.path === path))).toBe(
       true,
     );
