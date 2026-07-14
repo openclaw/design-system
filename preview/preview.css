@@ -695,40 +695,39 @@ body[data-page-kind="home"] .preview-stage {
 }
 
 .home-brand-cell {
-  --home-artwork-size: 54%;
-  --home-artwork-offset-x: -16%;
-  --home-artwork-offset-y: -1%;
-  --home-artwork-opacity: 0.36;
-  --home-artwork-fade: 45%;
-  --home-artwork-reach: 44%;
-
   isolation: isolate;
   grid-column: span 2;
   grid-template-rows: minmax(0, 1fr);
 }
 
-.home-brand-cell::before {
+.home-artwork-layer {
   position: absolute;
   z-index: -1;
-  top: 0;
-  right: var(--home-artwork-offset-x);
-  width: var(--home-artwork-size);
-  height: auto;
-  aspect-ratio: 1024 / 826;
-  background: url("./assets/carapace-home-artwork.avif") center / contain no-repeat;
-  content: "";
-  opacity: var(--home-artwork-opacity);
+  inset: 0;
+  overflow: hidden;
   pointer-events: none;
-  transform: translateY(var(--home-artwork-offset-y));
+}
+
+.home-artwork-layer img {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  opacity: 0.82;
+  transform: translateX(-50%);
   -webkit-mask-image: linear-gradient(
-    to right,
-    rgb(0 0 0 / var(--home-artwork-fade)),
-    #000 var(--home-artwork-reach)
+    to bottom,
+    #000 0%,
+    #000 36%,
+    transparent 65%
   );
   mask-image: linear-gradient(
-    to right,
-    rgb(0 0 0 / var(--home-artwork-fade)),
-    #000 var(--home-artwork-reach)
+    to bottom,
+    #000 0%,
+    #000 36%,
+    transparent 65%
   );
 }
 
