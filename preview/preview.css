@@ -892,6 +892,11 @@ body[data-page-kind="home"] .preview-stage {
   min-height: 2.5rem;
 }
 
+.home-banner,
+.home-meter {
+  width: min(100%, 17.5rem);
+}
+
 .home-toast-region {
   position: fixed;
   z-index: 40;
