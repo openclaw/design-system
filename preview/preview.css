@@ -892,6 +892,13 @@ body[data-page-kind="home"] .preview-stage {
   min-height: 2.5rem;
 }
 
+.home-toast-region {
+  position: fixed;
+  z-index: 40;
+  right: 24px;
+  bottom: 24px;
+}
+
 .home-chart {
   gap: 12px;
   padding: 16px;
