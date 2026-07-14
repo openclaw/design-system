@@ -848,13 +848,13 @@
 }
 
 .oc-dialog {
-  width: min(32rem, calc(100vw - 2rem));
+  width: min(28rem, calc(100vw - 2rem));
   max-height: calc(100dvh - 2rem);
   overflow: auto;
   padding: 0;
   border: 1px solid var(--oc-border-subtle);
   border-radius: var(--oc-radius-surface);
-  background: var(--oc-surface-overlay);
+  background: var(--oc-bg-elevated);
   color: var(--oc-text-primary);
   box-shadow: var(--oc-shadow-lg);
   overscroll-behavior: contain;
@@ -862,14 +862,8 @@
 }
 
 .oc-dialog::backdrop {
-  background: color-mix(in srgb, var(--oc-bg-page) 72%, transparent);
-  backdrop-filter: blur(4px);
-}
-
-.oc-dialog-header,
-.oc-dialog-body,
-.oc-dialog-footer {
-  padding: var(--oc-space-4) var(--oc-space-5);
+  background: color-mix(in srgb, var(--oc-bg-page) 82%, transparent);
+  backdrop-filter: blur(8px);
 }
 
 .oc-dialog-header {
@@ -877,21 +871,22 @@
   align-items: start;
   justify-content: space-between;
   gap: var(--oc-space-4);
-  border-bottom: 1px solid var(--oc-border-subtle);
+  padding: var(--oc-space-5) var(--oc-space-5) var(--oc-space-2);
 }
 
 .oc-dialog-title {
   margin: 0;
   font-family: var(--oc-font-display);
-  font-size: var(--oc-font-size-lg);
+  font-size: var(--oc-font-size-xl);
   line-height: 1.2;
   overflow-wrap: anywhere;
 }
 
 .oc-dialog-body {
+  padding: var(--oc-space-2) var(--oc-space-5) var(--oc-space-5);
   color: var(--oc-text-secondary);
   font-size: var(--oc-font-size-sm);
-  line-height: 1.6;
+  line-height: 1.55;
   overflow-wrap: anywhere;
 }
 
@@ -908,13 +903,13 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--oc-space-2);
-  border-top: 1px solid var(--oc-border-subtle);
+  padding: 0 var(--oc-space-5) var(--oc-space-5);
 }
 
 .oc-dialog-close {
   display: grid;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
   flex: 0 0 auto;
   place-items: center;
   border: 0;
