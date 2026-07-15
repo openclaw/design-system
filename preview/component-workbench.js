@@ -4,8 +4,6 @@ import {
   normalizeWorkbenchState,
 } from "./component-workbench-config.js";
 
-const workbenchAreaIds = new Set(["interface", "agent-components"]);
-
 export const workbenchViewportModes = [
   {
     id: "desktop",
@@ -39,12 +37,15 @@ export const workbenchCanvasThemes = [
 
 export function isComponentWorkbenchPage(pageId) {
   const page = getReferencePage(pageId);
-  return Boolean(
-    page &&
-      workbenchAreaIds.has(page.areaId) &&
-      page.id !== page.areaId &&
-      page.id !== "interface-primitives",
-  );
+  if (!page) return false;
+
+  const isPrimitive =
+    page.areaId === "interface" &&
+    page.path.startsWith("interface/primitives/") &&
+    page.id !== "interface-primitives";
+  const isAgentComponent =
+    page.areaId === "agent-components" && page.id !== "agent-components";
+  return isPrimitive || isAgentComponent;
 }
 
 export function setWorkbenchViewport(workbench, viewport) {
