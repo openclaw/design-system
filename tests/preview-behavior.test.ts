@@ -573,6 +573,77 @@ describe("preview behavior", () => {
     expect(markup).toContain('class="oc-command-palette-status sr-only"');
   });
 
+  test("activates the current command from the search input with Enter", () => {
+    class Element extends EventTarget {
+      attributes = new Map();
+      hidden = false;
+      value = "";
+      textContent = "";
+      clickCount = 0;
+      focused = false;
+      onClick = null;
+      setAttribute(name, value) { this.attributes.set(name, value); }
+      removeAttribute(name) { this.attributes.delete(name); }
+      closest(selector) {
+        return selector === "[data-command-palette-item]" ? this : null;
+      }
+      focus() { this.focused = true; }
+      click() {
+        this.clickCount += 1;
+        this.onClick?.();
+      }
+    }
+
+    const trigger = new Element();
+    const input = new Element();
+    const items = ["Open components", "Inspect tokens", "Switch theme"].map((label) => {
+      const item = new Element();
+      item.textContent = label;
+      return item;
+    });
+    const dialog = new Element();
+    dialog.showModal = () => {};
+    dialog.close = () => dialog.dispatchEvent(new Event("close"));
+    for (const item of items) {
+      item.onClick = () => {
+        const click = new Event("click");
+        Object.defineProperty(click, "target", { value: item });
+        dialog.dispatchEvent(click);
+      };
+    }
+    const palette = {
+      querySelector(selector) {
+        return {
+          dialog,
+          "[data-command-palette-open]": trigger,
+          "[data-command-palette-input]": input,
+        }[selector];
+      },
+      querySelectorAll: () => items,
+    };
+    const root = { querySelectorAll: () => [palette] };
+
+    expect(bindCommandPalettes(root)).toBe(1);
+
+    input.value = "tokens";
+    input.dispatchEvent(new Event("input"));
+    const enter = keyboardEvent("Enter");
+    input.dispatchEvent(enter);
+
+    expect(enter.defaultPrevented).toBe(true);
+    expect(items.map(({ clickCount }) => clickCount)).toEqual([0, 1, 0]);
+    expect(trigger.focused).toBe(true);
+    expect(input.value).toBe("");
+
+    input.value = "missing";
+    input.dispatchEvent(new Event("input"));
+    const emptyEnter = keyboardEvent("Enter");
+    input.dispatchEvent(emptyEnter);
+
+    expect(emptyEnter.defaultPrevented).toBe(false);
+    expect(items.map(({ clickCount }) => clickCount)).toEqual([0, 1, 0]);
+  });
+
   test("moves focus through dropdown menus and closes after native Tab focus", async () => {
     class Element extends EventTarget {
       attributes = new Map();
