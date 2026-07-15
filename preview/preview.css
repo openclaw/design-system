@@ -2954,11 +2954,6 @@ body[data-reference-layout="workbench"][data-page-kind="reference"] .reference-p
   outline-offset: -4px;
 }
 
-.component-workbench-dock-panel {
-  max-height: 280px;
-  overflow: auto;
-}
-
 .component-workbench-dock-panel[hidden] {
   display: none;
 }
@@ -2974,7 +2969,6 @@ body[data-reference-layout="workbench"][data-page-kind="reference"] .reference-p
 }
 
 .component-workbench-dock-panel .code-block pre {
-  max-height: 236px;
   padding: 16px;
   overflow-wrap: anywhere;
   line-height: 1.55;
@@ -3981,9 +3975,6 @@ body:is([data-preview-page="interface-primitives"], [data-page-kind="example"])
     border-left: 0;
   }
 
-  .component-workbench-dock-panel {
-    max-height: none;
-  }
 }
 
 @media (prefers-reduced-transparency: reduce) {
