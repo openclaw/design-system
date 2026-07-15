@@ -41,6 +41,21 @@ ${options}
 </div>`;
 }
 
+export function toastWorkbenchMarkup({ dismissible = true } = {}) {
+  const close = dismissible
+    ? '\n    <button class="oc-toast-close" type="button" aria-label="Dismiss notification" data-workbench-toast-dismiss>×</button>'
+    : "";
+
+  return `<div class="oc-toast-region" aria-label="Notifications" aria-live="polite" aria-relevant="additions removals">
+  <div class="oc-toast">
+    <div class="oc-toast-content">
+      <p class="oc-toast-title">Changes saved</p>
+      <p class="oc-toast-message">The component reference is up to date.</p>
+    </div>${close}
+  </div>
+</div>`;
+}
+
 const definitions = {
   "primitive-action": {
     defaults: { variant: "primary" },
@@ -79,6 +94,42 @@ const definitions = {
     bind(specimen, _state, update) {
       specimen.querySelector("select")?.addEventListener("change", (event) => {
         update("value", event.currentTarget.value);
+      });
+    },
+  },
+  "primitive-toast": {
+    defaults: { visible: false, dismissible: true },
+    controls: [
+      {
+        id: "visible",
+        label: "Visible",
+        type: "toggle",
+      },
+      {
+        id: "dismissible",
+        label: "Dismissible",
+        type: "toggle",
+      },
+    ],
+    markup: toastWorkbenchMarkup,
+    render(specimen, state) {
+      const toast = state.visible
+        ? toastWorkbenchMarkup(state).replace(
+            'class="oc-toast-region"',
+            'class="oc-toast-region component-workbench-toast-region"',
+          )
+        : "";
+      specimen.innerHTML = `<div class="component-workbench-toast-demo">
+  <button class="oc-button oc-button-secondary" type="button" data-workbench-toast-trigger>Show toast</button>
+  ${toast}
+</div>`;
+    },
+    bind(specimen, _state, update) {
+      specimen.querySelector("[data-workbench-toast-trigger]")?.addEventListener("click", () => {
+        update("visible", true);
+      });
+      specimen.querySelector("[data-workbench-toast-dismiss]")?.addEventListener("click", () => {
+        update("visible", false);
       });
     },
   },

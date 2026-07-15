@@ -91,6 +91,19 @@ describe("preview contracts", () => {
     });
   });
 
+  test("models only observable Toast demo states", () => {
+    const definition = getWorkbenchDefinition("primitive-toast");
+
+    expect(definition?.controls).toMatchObject([
+      { id: "visible", type: "toggle" },
+      { id: "dismissible", type: "toggle" },
+    ]);
+    expect(normalizeWorkbenchState(definition, { visible: true, dismissible: false })).toEqual({
+      visible: true,
+      dismissible: false,
+    });
+  });
+
   test("loads canonical styles through valid CSS", async () => {
     const css = await readFile("preview/preview.css", "utf8");
     const imports = [...css.matchAll(/@import\s+"([^"]+)"/g)].map(([, path]) => path);

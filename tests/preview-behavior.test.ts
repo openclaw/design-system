@@ -32,6 +32,7 @@ import { setWorkbenchViewport } from "../preview/component-workbench.js";
 import {
   actionWorkbenchMarkup,
   selectWorkbenchMarkup,
+  toastWorkbenchMarkup,
 } from "../preview/component-workbench-config.js";
 
 function keyboardEvent(key) {
@@ -85,6 +86,14 @@ describe("preview behavior", () => {
     expect(selectWorkbenchMarkup({ value: "fast", disabled: true })).not.toContain(
       '<option value="balanced" selected>',
     );
+  });
+
+  test("keeps Toast dismissal optional in the rendered markup", () => {
+    expect(toastWorkbenchMarkup({ dismissible: true })).toContain(
+      'button class="oc-toast-close"',
+    );
+    expect(toastWorkbenchMarkup({ dismissible: false })).not.toContain("oc-toast-close");
+    expect(toastWorkbenchMarkup({ dismissible: false })).toContain('aria-live="polite"');
   });
 
   test("moves table-of-contents location to the selected section", () => {
