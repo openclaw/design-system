@@ -64,6 +64,12 @@ describe("preview contracts", () => {
     expect(scroller).toEqual({ scrollLeft: 18, scrollTop: 640 });
   });
 
+  test("provides a surface role for the Grid specimen", () => {
+    expect(getReferenceContent("primitive-grid")).toContain(
+      'class="specimen-frame oc-app-surface"',
+    );
+  });
+
   test("publishes only real action variants through the workbench schema", () => {
     const definition = getWorkbenchDefinition("primitive-action");
 
