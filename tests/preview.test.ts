@@ -1,6 +1,10 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, test } from "bun:test";
 import { transform } from "lightningcss";
+import {
+  isComponentWorkbenchPage,
+  workbenchViewportModes,
+} from "../preview/component-workbench.js";
 import { icon } from "../preview/icons.js";
 import {
   getAdjacentReferencePages,
@@ -28,6 +32,15 @@ const legacyDisplayName = ["OpenClaw", "Design System"].join(" ");
 const legacyPackageName = ["@openclaw", "design-system"].join("/");
 
 describe("preview contracts", () => {
+  test("limits the component workbench to component reference pages", () => {
+    expect(workbenchViewportModes.map(({ id }) => id)).toEqual(["desktop", "tablet", "mobile"]);
+    expect(isComponentWorkbenchPage("primitive-action")).toBe(true);
+    expect(isComponentWorkbenchPage("input-bar")).toBe(true);
+    expect(isComponentWorkbenchPage("foundation-colors")).toBe(false);
+    expect(isComponentWorkbenchPage("chart-base")).toBe(false);
+    expect(isComponentWorkbenchPage("interface")).toBe(false);
+  });
+
   test("loads canonical styles through valid CSS", async () => {
     const css = await readFile("preview/preview.css", "utf8");
     const imports = [...css.matchAll(/@import\s+"([^"]+)"/g)].map(([, path]) => path);

@@ -1,5 +1,6 @@
 import { exampleDialogAttribute } from "./interaction.js";
 import { agentReferenceContentIds, getAgentReferenceContent } from "./agent-components.js";
+import { renderComponentWorkbench } from "./component-workbench.js";
 import { getReferenceMaturity } from "./navigation.js";
 
 function escapeHtml(value) {
@@ -979,4 +980,5 @@ export function renderReferenceContent() {
     eyebrow.before(meta);
     meta.append(eyebrow, badge);
   }
+  renderComponentWorkbench(mount, pageId);
 }
