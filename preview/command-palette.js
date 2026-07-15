@@ -68,7 +68,15 @@ export function bindCommandPalettes(root = document) {
     });
     input.addEventListener("input", filter);
     input.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowDown" || event.key === "ArrowUp") handleNavigation(event);
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        handleNavigation(event);
+        return;
+      }
+      if (event.key !== "Enter") return;
+      const item = visibleItems()[activeIndex];
+      if (!item) return;
+      event.preventDefault();
+      item.click();
     });
     for (const item of items) {
       item.tabIndex = -1;
