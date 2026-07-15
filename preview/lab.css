@@ -1147,6 +1147,7 @@
 .oc-layer-card {
   position: relative;
   min-width: 0;
+  margin-inline-end: var(--oc-space-4);
   margin-bottom: var(--oc-space-4);
   isolation: isolate;
   padding: var(--oc-space-5);
@@ -1161,22 +1162,22 @@
 .oc-layer-card::after {
   position: absolute;
   z-index: -1;
-  right: var(--oc-space-3);
+  inset-inline-end: calc(var(--oc-space-2) * -1);
+  inset-inline-start: var(--oc-space-2);
   bottom: calc(var(--oc-space-2) * -1);
-  left: var(--oc-space-3);
   height: 100%;
   border: 1px solid var(--oc-border-subtle);
   border-radius: inherit;
-  background: var(--oc-surface-card-strong);
+  background: var(--oc-component-surface-strong, var(--oc-bg-elevated));
   content: "";
 }
 
 .oc-layer-card::after {
   z-index: -2;
-  right: var(--oc-space-5);
+  inset-inline-end: calc(var(--oc-space-4) * -1);
+  inset-inline-start: var(--oc-space-4);
   bottom: calc(var(--oc-space-4) * -1);
-  left: var(--oc-space-5);
-  background: var(--oc-surface-secondary-soft);
+  background: var(--oc-bg-recessed);
 }
 
 .oc-layer-card-title {
