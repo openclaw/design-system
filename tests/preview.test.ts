@@ -153,6 +153,68 @@ describe("preview contracts", () => {
     expect(getWorkbenchDefinition("mode-selector")?.controls[0].id).toBe("value");
   });
 
+  test("models Agent tool lifecycle without synthetic states", () => {
+    for (const pageId of [
+      "bash-tool",
+      "edit-tool",
+      "generic-tool",
+      "mcp-tool",
+      "search-tool",
+      "thinking-tool",
+      "subagent-tool",
+      "tool-group",
+    ]) {
+      const definition = getWorkbenchDefinition(pageId);
+      expect(definition?.controls).toMatchObject([
+        {
+          id: "state",
+          type: "choice",
+          options: [
+            { label: "Running", value: "animating" },
+            { label: "Complete", value: "complete" },
+          ],
+        },
+        { id: "open", type: "toggle" },
+      ]);
+      expect(normalizeWorkbenchState(definition, { state: "pending", open: "yes" })).toEqual({
+        state: "complete",
+        open: true,
+      });
+    }
+  });
+
+  test("models exact Plan, Todo, and Question states", () => {
+    expect(getWorkbenchDefinition("plan-tool")?.controls).toMatchObject([
+      {
+        id: "state",
+        options: [
+          { label: "Running", value: "animating" },
+          { label: "Complete", value: "complete" },
+        ],
+      },
+      { id: "open", type: "toggle" },
+      { id: "approved", type: "toggle" },
+    ]);
+    expect(getWorkbenchDefinition("todo-tool")?.controls[0]).toMatchObject({
+      id: "status",
+      options: [
+        { label: "Pending", value: "pending" },
+        { label: "In progress", value: "in_progress" },
+        { label: "Completed", value: "completed" },
+      ],
+    });
+    expect(getWorkbenchDefinition("question-tool")?.controls).toMatchObject([
+      {
+        id: "state",
+        options: [
+          { label: "Open", value: "open" },
+          { label: "Answered", value: "answered" },
+        ],
+      },
+      { id: "allowSkip", type: "toggle" },
+    ]);
+  });
+
   test("models Agent Chat examples and ChatStatus values from the reference contract", () => {
     const definition = getWorkbenchDefinition("agent-chat");
 

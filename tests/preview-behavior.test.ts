@@ -41,6 +41,10 @@ import {
   selectWorkbenchMarkup,
   sendButtonWorkbenchMarkup,
   suggestionsWorkbenchMarkup,
+  toolWorkbenchMarkup,
+  todoToolWorkbenchMarkup,
+  planToolWorkbenchMarkup,
+  questionToolWorkbenchMarkup,
   toastWorkbenchMarkup,
 } from "../preview/component-workbench-config.js";
 
@@ -144,6 +148,37 @@ describe("preview behavior", () => {
       .not.toContain('data-display="image-only"');
     expect(fileAttachmentWorkbenchMarkup({ kind: "file", removable: false }))
       .not.toContain("oc-agent-file-remove");
+  });
+
+  test("maps shared tool lifecycle into visible running and complete output", () => {
+    expect(toolWorkbenchMarkup({ kind: "bash", state: "animating", open: true })).toContain(
+      "Running command",
+    );
+    expect(toolWorkbenchMarkup({ kind: "bash", state: "animating", open: true })).not.toContain(
+      "29 pass · 0 fail",
+    );
+    expect(toolWorkbenchMarkup({ kind: "bash", state: "complete", open: true })).toContain(
+      "29 pass · 0 fail",
+    );
+    expect(toolWorkbenchMarkup({ kind: "search", state: "complete", open: false })).not.toContain(
+      " open",
+    );
+    expect(toolWorkbenchMarkup({ kind: "thinking", state: "animating" })).toContain(
+      "Thinking",
+    );
+  });
+
+  test("keeps specialized tool states faithful to their public data", () => {
+    expect(todoToolWorkbenchMarkup({ status: "pending" })).toContain('data-state="pending"');
+    expect(todoToolWorkbenchMarkup({ status: "in_progress" })).toContain('data-state="active"');
+    expect(todoToolWorkbenchMarkup({ status: "completed" })).toContain('data-state="complete"');
+    expect(planToolWorkbenchMarkup({ state: "complete", approved: true })).toContain("Approved");
+    expect(questionToolWorkbenchMarkup({ state: "answered", allowSkip: true })).toContain(
+      "Small scoped patch",
+    );
+    expect(questionToolWorkbenchMarkup({ state: "open", allowSkip: false })).not.toContain(
+      "data-agent-question-skip",
+    );
   });
 
   test("renders distinct Agent Chat empty, streaming, and error states", () => {
