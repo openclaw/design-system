@@ -77,6 +77,15 @@ function createElement(tagName, className) {
   return element;
 }
 
+export function preserveWorkbenchScrollPosition(scroller, update) {
+  if (!scroller) return update();
+  const { scrollLeft, scrollTop } = scroller;
+  const result = update();
+  scroller.scrollLeft = scrollLeft;
+  scroller.scrollTop = scrollTop;
+  return result;
+}
+
 function createViewportSwitcher() {
   const group = createElement("div", "component-workbench-viewports");
   group.setAttribute("role", "group");
@@ -185,8 +194,10 @@ function mountWorkbenchDefinition(workbench, pageId) {
     definition.bind?.(specimen, state, update);
   };
   const update = (id, value) => {
-    state[id] = value;
-    apply();
+    preserveWorkbenchScrollPosition(document.scrollingElement, () => {
+      state[id] = value;
+      apply();
+    });
   };
 
   for (const control of definition.controls) {

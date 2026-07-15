@@ -2847,12 +2847,12 @@ body[data-reference-layout="workbench"][data-page-kind="reference"] .reference-p
 
 .component-workbench-choice input {
   position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
 }
 
 .component-workbench-toggle {
