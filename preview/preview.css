@@ -2723,6 +2723,55 @@ body[data-reference-layout="workbench"][data-page-kind="reference"] .reference-p
   white-space: nowrap;
 }
 
+.component-workbench-toggle {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--oc-space-4);
+  color: var(--oc-text-secondary);
+  cursor: pointer;
+}
+
+.component-workbench-toggle input {
+  position: relative;
+  width: 2.25rem;
+  height: 1.25rem;
+  flex: none;
+  appearance: none;
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-round);
+  background: var(--oc-surface-interactive);
+  cursor: pointer;
+}
+
+.component-workbench-toggle input::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: var(--oc-radius-round);
+  background: var(--oc-text-muted);
+  transition: transform var(--oc-duration-fast) var(--oc-ease-out);
+}
+
+.component-workbench-toggle input:checked {
+  border-color: var(--oc-accent-primary);
+  background: var(--oc-accent-primary);
+}
+
+.component-workbench-toggle input:checked::after {
+  background: var(--oc-text-on-accent);
+  transform: translateX(1rem);
+}
+
+.component-workbench-toggle input:focus-visible {
+  outline: 2px solid var(--oc-focus-ring);
+  outline-offset: 2px;
+}
+
 .component-workbench-dock {
   min-width: 0;
 }

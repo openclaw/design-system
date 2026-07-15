@@ -29,7 +29,10 @@ import { setCurrentSidebarLink } from "../preview/sidebar.js";
 import { setCurrentTableOfContentsLink } from "../preview/table-of-contents.js";
 import { bindSensitiveInputs } from "../preview/sensitive-input.js";
 import { setWorkbenchViewport } from "../preview/component-workbench.js";
-import { actionWorkbenchMarkup } from "../preview/component-workbench-config.js";
+import {
+  actionWorkbenchMarkup,
+  selectWorkbenchMarkup,
+} from "../preview/component-workbench-config.js";
 
 function keyboardEvent(key) {
   const event = new Event("keydown", { cancelable: true });
@@ -69,6 +72,18 @@ describe("preview behavior", () => {
     );
     expect(actionWorkbenchMarkup({ variant: "icon" })).toBe(
       '<button class="oc-action oc-action-icon" type="button" aria-label="Add item">\n  +\n</button>',
+    );
+  });
+
+  test("serializes the selected native option and disabled state", () => {
+    expect(selectWorkbenchMarkup({ value: "fast", disabled: true })).toContain(
+      '<select class="oc-select" id="workbench-select-model" name="model" disabled>',
+    );
+    expect(selectWorkbenchMarkup({ value: "fast", disabled: true })).toContain(
+      '<option value="fast" selected>Fast</option>',
+    );
+    expect(selectWorkbenchMarkup({ value: "fast", disabled: true })).not.toContain(
+      '<option value="balanced" selected>',
     );
   });
 

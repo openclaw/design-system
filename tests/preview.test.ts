@@ -66,6 +66,31 @@ describe("preview contracts", () => {
     });
   });
 
+  test("models native Select values and disabled state without synthetic variants", () => {
+    const definition = getWorkbenchDefinition("primitive-select");
+
+    expect(definition?.controls).toMatchObject([
+      {
+        id: "value",
+        type: "choice",
+        options: [
+          { label: "Balanced", value: "balanced" },
+          { label: "Fast", value: "fast" },
+          { label: "Deep", value: "deep" },
+        ],
+      },
+      { id: "disabled", type: "toggle" },
+    ]);
+    expect(normalizeWorkbenchState(definition, { value: "fast", disabled: true })).toEqual({
+      value: "fast",
+      disabled: true,
+    });
+    expect(normalizeWorkbenchState(definition, { value: "unknown", disabled: "yes" })).toEqual({
+      value: "balanced",
+      disabled: false,
+    });
+  });
+
   test("loads canonical styles through valid CSS", async () => {
     const css = await readFile("preview/preview.css", "utf8");
     const imports = [...css.matchAll(/@import\s+"([^"]+)"/g)].map(([, path]) => path);

@@ -84,6 +84,7 @@ function createChoiceControl(pageId, control, state, update) {
     input.type = "radio";
     input.name = `${pageId}-${control.id}`;
     input.value = option.value;
+    input.dataset.workbenchControl = control.id;
     input.checked = state[control.id] === option.value;
     input.addEventListener("change", () => {
       if (input.checked) update(control.id, input.value);
@@ -95,6 +96,27 @@ function createChoiceControl(pageId, control, state, update) {
   }
   fieldset.append(options);
   return fieldset;
+}
+
+function createToggleControl(control, state, update) {
+  const label = createElement("label", "component-workbench-toggle");
+  const text = document.createElement("span");
+  text.textContent = control.label;
+  const input = document.createElement("input");
+  input.type = "checkbox";
+  input.setAttribute("role", "switch");
+  input.dataset.workbenchControl = control.id;
+  input.checked = state[control.id];
+  input.addEventListener("change", () => update(control.id, input.checked));
+  label.append(text, input);
+  return label;
+}
+
+function syncControlInputs(controls, state) {
+  for (const input of controls.querySelectorAll("[data-workbench-control]")) {
+    const value = state[input.dataset.workbenchControl];
+    input.checked = input.type === "radio" ? input.value === value : Boolean(value);
+  }
 }
 
 function mountWorkbenchDefinition(workbench, pageId) {
@@ -109,6 +131,8 @@ function mountWorkbenchDefinition(workbench, pageId) {
   const apply = () => {
     definition.render(specimen, state);
     code.textContent = definition.markup(state);
+    syncControlInputs(controls, state);
+    definition.bind?.(specimen, state, update);
   };
   const update = (id, value) => {
     state[id] = value;
@@ -118,6 +142,8 @@ function mountWorkbenchDefinition(workbench, pageId) {
   for (const control of definition.controls) {
     if (control.type === "choice") {
       controls.append(createChoiceControl(pageId, control, state, update));
+    } else if (control.type === "toggle") {
+      controls.append(createToggleControl(control, state, update));
     }
   }
   apply();
