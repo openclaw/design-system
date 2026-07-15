@@ -43,6 +43,7 @@ describe("preview contracts", () => {
     expect(workbenchCanvasThemes.map(({ id }) => id)).toEqual(["light", "dark"]);
     expect(isComponentWorkbenchPage("primitive-action")).toBe(true);
     expect(isComponentWorkbenchPage("input-bar")).toBe(true);
+    expect(isComponentWorkbenchPage("interface-examples")).toBe(false);
     expect(isComponentWorkbenchPage("foundation-colors")).toBe(false);
     expect(isComponentWorkbenchPage("chart-base")).toBe(false);
     expect(isComponentWorkbenchPage("interface")).toBe(false);
