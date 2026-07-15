@@ -193,6 +193,20 @@ describe("preview contracts", () => {
     ]);
   });
 
+  test("models documented Markdown examples", () => {
+    const definition = getWorkbenchDefinition("markdown");
+
+    expect(definition?.controls[0]).toMatchObject({
+      id: "example",
+      type: "choice",
+      options: [
+        { label: "Release notes", value: "release" },
+        { label: "Table and links", value: "table" },
+        { label: "Streaming update", value: "streaming" },
+      ],
+    });
+  });
+
   test("models Agent tool lifecycle without synthetic states", () => {
     for (const pageId of [
       "bash-tool",

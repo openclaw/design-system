@@ -41,6 +41,7 @@ import {
   errorMessageWorkbenchMarkup,
   fileAttachmentWorkbenchMarkup,
   messageListWorkbenchMarkup,
+  markdownWorkbenchMarkup,
   modeSelectorWorkbenchMarkup,
   modelPickerWorkbenchMarkup,
   selectWorkbenchMarkup,
@@ -169,6 +170,12 @@ describe("preview behavior", () => {
     expect(retrying).toContain('aria-busy="true"');
     expect(retrying).toContain("Retrying…");
     expect(retrying).toContain(" disabled");
+  });
+
+  test("renders distinct Markdown content examples", () => {
+    expect(markdownWorkbenchMarkup({ example: "release" })).toContain("Release notes");
+    expect(markdownWorkbenchMarkup({ example: "table" })).toContain("Validation results");
+    expect(markdownWorkbenchMarkup({ example: "streaming" })).toContain("Final answer coming next");
   });
 
   test("renders exact input-family variants from the reference contract", () => {

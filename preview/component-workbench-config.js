@@ -94,6 +94,12 @@ const chatStatuses = [
   { label: "Error", value: "error" },
 ];
 
+const markdownExamples = [
+  { label: "Release notes", value: "release" },
+  { label: "Table and links", value: "table" },
+  { label: "Streaming update", value: "streaming" },
+];
+
 function escapeHtml(value = "") {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -407,6 +413,32 @@ export function messageListWorkbenchMarkup({ status = "ready", copyToolbar = tru
 </ol>`;
 }
 
+export function markdownWorkbenchMarkup({ example = "release" } = {}) {
+  if (example === "table") {
+    return `<article class="oc-agent-markdown">
+  <h3>Validation results</h3>
+  <p>Review the <a href="../../foundations/tokens/">token reference</a> before adoption.</p>
+  <div class="oc-agent-markdown-table" tabindex="0" role="region" aria-label="Validation results"><table><thead><tr><th scope="col">Check</th><th scope="col">Result</th></tr></thead><tbody><tr><td>CSS contract</td><td>Passed</td></tr><tr><td>Preview build</td><td>Passed</td></tr></tbody></table></div>
+</article>`;
+  }
+
+  if (example === "streaming") {
+    return `<article class="oc-agent-markdown">
+  <h3>Working plan</h3>
+  <ul><li>Parse input context</li><li>Extract constraints</li><li>Draft the response</li></ul>
+  <pre><code>const steps = ["parse", "outline", "draft"];</code></pre>
+  <p>Final answer coming next…</p>
+</article>`;
+  }
+
+  return `<article class="oc-agent-markdown">
+  <h3>Release notes</h3>
+  <p>The component workbench now keeps examples, usage, and code in one focused view.</p>
+  <ul><li>Responsive canvas previews</li><li>Interactive component states</li><li>Isolated light and dark themes</li></ul>
+  <blockquote><p>Review both themes before adoption.</p></blockquote>
+</article>`;
+}
+
 export function agentChatWorkbenchMarkup({
   example = "basic",
   status = "ready",
@@ -546,6 +578,21 @@ const definitions = {
       specimen.querySelector("[data-workbench-chat-retry]")?.addEventListener("click", () => {
         update("status", "submitted");
       });
+    },
+  },
+  markdown: {
+    defaults: { example: "release" },
+    controls: [
+      {
+        id: "example",
+        label: "Example",
+        type: "choice",
+        options: markdownExamples,
+      },
+    ],
+    markup: markdownWorkbenchMarkup,
+    render(specimen, state) {
+      specimen.innerHTML = markdownWorkbenchMarkup(state);
     },
   },
   "bash-tool": createToolWorkbenchDefinition("bash"),
