@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import { transform } from "lightningcss";
 import {
   isComponentWorkbenchPage,
+  preserveWorkbenchScrollPosition,
   workbenchCanvasThemes,
   workbenchViewportModes,
 } from "../preview/component-workbench.js";
@@ -45,6 +46,18 @@ describe("preview contracts", () => {
     expect(isComponentWorkbenchPage("foundation-colors")).toBe(false);
     expect(isComponentWorkbenchPage("chart-base")).toBe(false);
     expect(isComponentWorkbenchPage("interface")).toBe(false);
+  });
+
+  test("preserves page position while segmented controls update the specimen", () => {
+    const scroller = { scrollLeft: 18, scrollTop: 640 };
+    const result = preserveWorkbenchScrollPosition(scroller, () => {
+      scroller.scrollLeft = 0;
+      scroller.scrollTop = 0;
+      return "updated";
+    });
+
+    expect(result).toBe("updated");
+    expect(scroller).toEqual({ scrollLeft: 18, scrollTop: 640 });
   });
 
   test("publishes only real action variants through the workbench schema", () => {
