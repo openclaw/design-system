@@ -317,20 +317,25 @@ function renderPageContext() {
 function renderPageNavigation() {
   const currentId = document.body.dataset.previewPage || document.body.dataset.previewRoute;
   const mount = document.querySelector(".preview-stage");
-  if (!mount || mount.querySelector(".page-navigation")) return;
+  if (!mount || mount.querySelector(".page-navigation, .component-workbench-navigation")) return;
 
   const { previous, next } = getAdjacentReferencePages(currentId);
   if (!previous && !next) return;
 
   const navigation = document.createElement("nav");
-  navigation.className = "page-navigation";
-  if (!previous || !next) navigation.classList.add("page-navigation-single");
+  const workbenchSlot = mount.querySelector("[data-workbench-navigation]");
+  navigation.className = workbenchSlot
+    ? "component-workbench-navigation"
+    : "page-navigation";
+  if (!workbenchSlot && (!previous || !next)) navigation.classList.add("page-navigation-single");
   navigation.setAttribute("aria-label", "Adjacent reference pages");
-  navigation.innerHTML = `
-    ${previous ? `<a class="page-navigation-previous" href="${hrefFor(previous.path)}"><span>Previous</span><strong>${previous.label}</strong></a>` : ""}
-    ${next ? `<a class="page-navigation-next" href="${hrefFor(next.path)}"><span>Next</span><strong>${next.label}</strong></a>` : ""}
-  `;
-  mount.append(navigation);
+  navigation.innerHTML = workbenchSlot
+    ? `${previous ? `<a href="${hrefFor(previous.path)}" aria-label="Previous: ${previous.label}" title="Previous: ${previous.label}"><span aria-hidden="true">←</span></a>` : ""}${next ? `<a href="${hrefFor(next.path)}" aria-label="Next: ${next.label}" title="Next: ${next.label}"><span aria-hidden="true">→</span></a>` : ""}`
+    : `
+      ${previous ? `<a class="page-navigation-previous" href="${hrefFor(previous.path)}"><span>Previous</span><strong>${previous.label}</strong></a>` : ""}
+      ${next ? `<a class="page-navigation-next" href="${hrefFor(next.path)}"><span>Next</span><strong>${next.label}</strong></a>` : ""}
+    `;
+  (workbenchSlot || mount).append(navigation);
 }
 
 function bindGlobalSearch() {

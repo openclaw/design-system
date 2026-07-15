@@ -28,6 +28,7 @@ import { getScrollFadeState } from "../preview/shell.js";
 import { setCurrentSidebarLink } from "../preview/sidebar.js";
 import { setCurrentTableOfContentsLink } from "../preview/table-of-contents.js";
 import { bindSensitiveInputs } from "../preview/sensitive-input.js";
+import { setWorkbenchViewport } from "../preview/component-workbench.js";
 
 function keyboardEvent(key) {
   const event = new Event("keydown", { cancelable: true });
@@ -36,6 +37,31 @@ function keyboardEvent(key) {
 }
 
 describe("preview behavior", () => {
+  test("keeps the workbench canvas and viewport controls synchronized", () => {
+    class Button {
+      attributes = new Map();
+      constructor(viewport) { this.dataset = { workbenchViewport: viewport }; }
+      setAttribute(name, value) { this.attributes.set(name, value); }
+    }
+
+    const canvas = { dataset: { viewport: "desktop" } };
+    const buttons = [new Button("desktop"), new Button("tablet"), new Button("mobile")];
+    const workbench = {
+      querySelector: () => canvas,
+      querySelectorAll: () => buttons,
+    };
+
+    expect(setWorkbenchViewport(workbench, "mobile")).toBe(true);
+    expect(canvas.dataset.viewport).toBe("mobile");
+    expect(buttons.map((button) => button.attributes.get("aria-pressed"))).toEqual([
+      "false",
+      "false",
+      "true",
+    ]);
+    expect(setWorkbenchViewport(workbench, "wide")).toBe(false);
+    expect(canvas.dataset.viewport).toBe("mobile");
+  });
+
   test("moves table-of-contents location to the selected section", () => {
     class Link {
       attributes = new Map();

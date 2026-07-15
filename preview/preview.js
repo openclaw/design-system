@@ -2,6 +2,7 @@ import { bindExampleDialog } from "./interaction.js";
 import { bindAgentComponentDemos } from "./agent-components-interactions.js";
 import { bindCombobox } from "./combobox.js";
 import { bindCommandPalettes } from "./command-palette.js";
+import { bindComponentWorkbenches } from "./component-workbench.js";
 import { bindDialogs } from "./dialog.js";
 import { bindDropdowns } from "./dropdown.js";
 import { bindMenuBars } from "./menu-bar.js";
@@ -25,6 +26,7 @@ import { nextThemeMode, resolveThemeMode, themeModes } from "./theme.js";
 
 renderReferenceContent();
 renderShell();
+bindComponentWorkbenches();
 document.querySelectorAll(".home-component-link").forEach((link) => {
   const path = link.getAttribute("href")?.replace(/^\.\//, "");
   const page = referencePages.find((candidate) => candidate.path === path);
