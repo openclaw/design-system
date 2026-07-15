@@ -51,6 +51,22 @@ const agentModes = [
   { label: "Plan", value: "plan" },
 ];
 
+const toolLifecycleStates = [
+  { label: "Running", value: "animating" },
+  { label: "Complete", value: "complete" },
+];
+
+const todoItemStates = [
+  { label: "Pending", value: "pending" },
+  { label: "In progress", value: "in_progress" },
+  { label: "Completed", value: "completed" },
+];
+
+const questionStates = [
+  { label: "Open", value: "open" },
+  { label: "Answered", value: "answered" },
+];
+
 const chatExamples = [
   { label: "Basic", value: "basic" },
   { label: "Empty", value: "empty" },
@@ -187,6 +203,113 @@ export function fileAttachmentWorkbenchMarkup({
   return `<li class="oc-agent-file-attachment" data-display="${effectiveDisplay}" data-kind="${kind}">${content}${remove}</li>`;
 }
 
+function toolDisclosureAttributes(state, open) {
+  const status = state === "animating" ? "running" : "success";
+  return `data-status="${status}" data-state="${state}"${open ? " open" : ""}`;
+}
+
+function toolStateLabel(state, running, complete) {
+  return state === "animating"
+    ? `<span class="oc-agent-text-shimmer" role="status">${running}</span>`
+    : complete;
+}
+
+export function toolWorkbenchMarkup({
+  kind = "generic",
+  state = "complete",
+  open = true,
+} = {}) {
+  const attributes = toolDisclosureAttributes(state, open);
+  const complete = state === "complete";
+
+  if (kind === "bash") {
+    const content = complete
+      ? `<pre role="region" aria-label="Command output" tabindex="0"><code>29 pass · 0 fail\nFinished in 312ms</code></pre>`
+      : "";
+    return `<details class="oc-agent-tool oc-agent-bash-tool" ${attributes}><summary class="oc-agent-tool-summary"><span class="oc-agent-tool-icon" aria-hidden="true">${agentIcon("terminal")}</span><span>${toolStateLabel(state, "Running command", "Ran command")}</span><span class="oc-agent-tool-status">${complete ? "Exit 0" : "Running"}</span></summary><div class="oc-agent-tool-content"><div class="oc-agent-bash-command"><span aria-hidden="true">$</span><code>bun run check</code></div>${content}</div></details>`;
+  }
+
+  if (kind === "edit") {
+    const content = complete
+      ? `<div class="oc-agent-diff" role="region" aria-label="Changes to styles/components.css" tabindex="0"><div class="oc-agent-diff-line" data-kind="removed"><span>109</span><span aria-hidden="true">−</span><code>min-height: 3rem;</code></div><div class="oc-agent-diff-line" data-kind="added"><span>109</span><span aria-hidden="true">+</span><code>min-height: 2.25rem;</code></div></div>`
+      : `<p>Preparing the patch…</p>`;
+    return `<details class="oc-agent-tool oc-agent-edit-tool" ${attributes}><summary class="oc-agent-tool-summary"><span class="oc-agent-tool-icon" aria-hidden="true">${agentIcon("write")}</span><span>${toolStateLabel(state, "Updating styles/components.css", "styles/components.css")}</span><span class="oc-agent-tool-status">${complete ? "+3 −1" : "Running"}</span></summary><div class="oc-agent-tool-content">${content}</div></details>`;
+  }
+
+  if (kind === "search") {
+    const content = complete
+      ? `<p class="oc-agent-search-query">Searched for “semantic token adapter”</p><ol class="oc-agent-search-results"><li><a href="../../foundations/tokens/"><span class="oc-agent-search-result-icon" aria-hidden="true">${agentIcon("file")}</span><span><strong>Design tokens</strong><small>/foundations/tokens/</small></span></a></li></ol>`
+      : `<p class="oc-agent-search-query">Searching for “semantic token adapter”…</p>`;
+    return `<details class="oc-agent-tool oc-agent-search-tool" ${attributes}><summary class="oc-agent-tool-summary"><span class="oc-agent-tool-icon" aria-hidden="true">${agentIcon("search")}</span><span>${toolStateLabel(state, "Searching", "Found 3 results")}</span><span class="oc-agent-tool-status">Reference</span></summary><div class="oc-agent-tool-content">${content}</div></details>`;
+  }
+
+  if (kind === "mcp") {
+    const output = complete
+      ? `<pre class="oc-agent-mcp-output" role="region" aria-label="MCP tool result" tabindex="0"><code>{ "resources": 2 }</code></pre>`
+      : "";
+    return `<details class="oc-agent-tool oc-agent-mcp-tool" ${attributes}><summary class="oc-agent-tool-summary"><span class="oc-agent-mcp-mark" aria-hidden="true">M</span><span>${toolStateLabel(state, "Listing resources", "Listed resources")}</span><span class="oc-agent-tool-status">${complete ? "Completed" : "Running"}</span></summary><div class="oc-agent-tool-content"><dl class="oc-agent-mcp-meta"><div><dt>Server</dt><dd>workspace</dd></div><div><dt>Capability</dt><dd>read_resource</dd></div></dl>${output}</div></details>`;
+  }
+
+  if (kind === "thinking") {
+    const content = complete
+      ? `<div class="oc-agent-tool-content"><p>Reviewed component coverage and compatibility constraints before choosing the smallest sustainable change.</p></div>`
+      : "";
+    return `<details class="oc-agent-tool oc-agent-thinking-tool" ${attributes}><summary class="oc-agent-tool-summary"><span class="oc-agent-thinking-mark" aria-hidden="true">✦</span><span>${toolStateLabel(state, "Thinking", "Thought")}</span></summary>${content}</details>`;
+  }
+
+  if (kind === "subagent") {
+    const content = complete
+      ? `<div class="oc-agent-subagent-content"><dl class="oc-agent-subagent-meta"><div><dt>Worker</dt><dd>Accessibility reviewer</dd></div><div><dt>Result</dt><dd>No blocking issues</dd></div></dl></div>`
+      : "";
+    return `<details class="oc-agent-subagent-tool" ${attributes}><summary class="oc-agent-subagent-summary"><span class="oc-agent-tool-avatar" aria-hidden="true">A</span><strong>${toolStateLabel(state, "Running subagent", "Completed subagent")}</strong><span>Audit component accessibility</span><time datetime="PT6S">${complete ? "6s" : "Now"}</time></summary>${content}</details>`;
+  }
+
+  if (kind === "tool-group") {
+    const label = toolStateLabel(state, "Running task", "Task completed");
+    return `<details class="oc-agent-tool-group" ${attributes}><summary class="oc-agent-tool-group-summary"><strong>${label}</strong><span>1 file, 1 search, and 1 command</span><time datetime="PT6S">${complete ? "6s" : "Now"}</time></summary><ul class="oc-agent-tool-group-list"><li><span aria-hidden="true">${agentIcon("terminal")}</span><strong>${complete ? "Ran command" : "Running command"}</strong><code>bun run check</code></li><li><span aria-hidden="true">${agentIcon("search")}</span><strong>${complete ? "Found 3 results" : "Searching"}</strong><code>semantic tokens</code></li><li><span aria-hidden="true">${agentIcon("file")}</span><strong>Read</strong><code>styles/components.css</code></li></ul></details>`;
+  }
+
+  const content = complete
+    ? `<div class="oc-agent-tool-content"><p>Found three changed component files with no package-contract changes.</p></div>`
+    : "";
+  return `<details class="oc-agent-tool oc-agent-generic-tool" ${attributes}><summary class="oc-agent-tool-summary"><span class="oc-agent-tool-icon" aria-hidden="true">${agentIcon("code")}</span><span>${toolStateLabel(state, "Inspecting workspace", "Inspect workspace")}</span><span class="oc-agent-tool-status">${complete ? "Completed" : "Running"}</span></summary>${content}</details>`;
+}
+
+export function todoToolWorkbenchMarkup({ status = "in_progress" } = {}) {
+  const itemState = status === "in_progress" ? "active" : status === "completed" ? "complete" : "pending";
+  const itemPrefix = status === "in_progress" ? "In progress: " : status === "completed" ? "Completed: " : "Pending: ";
+  const count = status === "completed" ? 3 : 2;
+  return `<section class="oc-agent-todo-tool" aria-labelledby="workbench-todo-title"><header><strong id="workbench-todo-title">Update component reference</strong><span>${count} of 3 complete</span></header><ul class="oc-agent-todo-list"><li data-state="complete"><span class="sr-only">Completed: </span>Inspect contract</li><li data-state="complete"><span class="sr-only">Completed: </span>Implement component</li><li data-state="${itemState}"><span class="sr-only">${itemPrefix}</span>Run visual check</li></ul></section>`;
+}
+
+export function planToolWorkbenchMarkup({
+  state = "complete",
+  open = true,
+  approved = false,
+} = {}) {
+  const complete = state === "complete";
+  const status = approved ? "Approved" : complete ? "Ready" : "Running";
+  const action = approved
+    ? `<button class="oc-agent-plan-action" type="button" data-variant="primary" disabled>Approved</button>`
+    : `<button class="oc-agent-plan-action" type="button" data-variant="primary" data-workbench-plan-approve>Approve</button>`;
+  return `<details class="oc-agent-tool oc-agent-plan-tool" data-state="${approved ? "approved" : state}"${open ? " open" : ""}><summary class="oc-agent-tool-summary"><span class="oc-agent-tool-icon" aria-hidden="true">${agentIcon("file")}</span><span>${toolStateLabel(state, "Preparing implementation-plan.md", "implementation-plan.md")}</span><span class="oc-agent-tool-status">${status}</span></summary><div class="oc-agent-tool-content"><div class="oc-agent-plan-body"><h4>Refine agent component previews</h4><p>Align structure, interaction, and accessibility while preserving the component contract.</p><ol class="oc-agent-plan-list"><li data-state="complete"><span class="sr-only">Completed: </span>Inspect existing contract</li><li data-state="active"><span class="sr-only">In progress: </span>Implement the component</li><li><span class="sr-only">Not started: </span>Validate the preview</li></ol></div><footer class="oc-agent-plan-actions">${action}</footer></div></details>`;
+}
+
+export function questionToolWorkbenchMarkup({
+  state = "open",
+  allowSkip = true,
+} = {}) {
+  const answered = state === "answered";
+  const skip = allowSkip && !answered
+    ? `<button class="oc-agent-question-action" type="button" data-agent-question-skip>Skip</button>`
+    : "";
+  const disabled = answered ? " disabled" : "";
+  const action = answered
+    ? `<span class="oc-agent-tool-status" role="status">Answered · Small scoped patch</span>`
+    : `${skip}<button class="oc-agent-question-action" type="submit" data-variant="primary">Answer</button>`;
+  return `<form class="oc-agent-tool oc-agent-question-tool" data-workbench-question-form><header class="oc-agent-question-header"><span>${agentIcon("learn")} Question</span><span>1 of 1</span></header><fieldset${disabled}><legend><span aria-hidden="true">1</span> How should we apply this change?</legend><label class="oc-agent-question-option"><input type="radio" name="workbench-scope" value="small" checked${disabled}><span aria-hidden="true">A</span><span>Small scoped patch</span></label><label class="oc-agent-question-option"><input type="radio" name="workbench-scope" value="refactor"${disabled}><span aria-hidden="true">B</span><span>Full refactor</span></label></fieldset><div class="oc-agent-question-actions">${action}</div><span class="sr-only" data-workbench-question-status aria-live="polite"></span></form>`;
+}
+
 export function composerWorkbenchMarkup({
   status = "ready",
   disabled = false,
@@ -277,6 +400,31 @@ export function agentChatWorkbenchMarkup({
 </section>`;
 }
 
+function createToolWorkbenchDefinition(kind) {
+  return {
+    defaults: { state: "complete", open: true },
+    controls: [
+      {
+        id: "state",
+        label: "State",
+        type: "choice",
+        options: toolLifecycleStates,
+      },
+      {
+        id: "open",
+        label: "Open",
+        type: "toggle",
+      },
+    ],
+    markup(state) {
+      return compactIconMarkup(toolWorkbenchMarkup({ kind, ...state }));
+    },
+    render(specimen, state) {
+      specimen.innerHTML = toolWorkbenchMarkup({ kind, ...state });
+    },
+  };
+}
+
 const definitions = {
   "agent-chat": {
     defaults: { example: "basic", status: "ready", copyToolbar: false },
@@ -353,6 +501,92 @@ const definitions = {
     bind(specimen, _state, update) {
       specimen.querySelector("[data-workbench-chat-retry]")?.addEventListener("click", () => {
         update("status", "submitted");
+      });
+    },
+  },
+  "bash-tool": createToolWorkbenchDefinition("bash"),
+  "edit-tool": createToolWorkbenchDefinition("edit"),
+  "generic-tool": createToolWorkbenchDefinition("generic"),
+  "mcp-tool": createToolWorkbenchDefinition("mcp"),
+  "search-tool": createToolWorkbenchDefinition("search"),
+  "thinking-tool": createToolWorkbenchDefinition("thinking"),
+  "subagent-tool": createToolWorkbenchDefinition("subagent"),
+  "tool-group": createToolWorkbenchDefinition("tool-group"),
+  "todo-tool": {
+    defaults: { status: "in_progress" },
+    controls: [
+      {
+        id: "status",
+        label: "Current item",
+        type: "choice",
+        options: todoItemStates,
+      },
+    ],
+    markup: todoToolWorkbenchMarkup,
+    render(specimen, state) {
+      specimen.innerHTML = todoToolWorkbenchMarkup(state);
+    },
+  },
+  "plan-tool": {
+    defaults: { state: "complete", open: true, approved: false },
+    controls: [
+      {
+        id: "state",
+        label: "State",
+        type: "choice",
+        options: toolLifecycleStates,
+      },
+      {
+        id: "open",
+        label: "Open",
+        type: "toggle",
+      },
+      {
+        id: "approved",
+        label: "Approved",
+        type: "toggle",
+      },
+    ],
+    markup(state) {
+      return compactIconMarkup(planToolWorkbenchMarkup(state));
+    },
+    render(specimen, state) {
+      specimen.innerHTML = planToolWorkbenchMarkup(state);
+    },
+    bind(specimen, _state, update) {
+      specimen.querySelector("[data-workbench-plan-approve]")?.addEventListener("click", () => {
+        update("approved", true);
+      });
+    },
+  },
+  "question-tool": {
+    defaults: { state: "open", allowSkip: true },
+    controls: [
+      {
+        id: "state",
+        label: "State",
+        type: "choice",
+        options: questionStates,
+      },
+      {
+        id: "allowSkip",
+        label: "Allow skip",
+        type: "toggle",
+      },
+    ],
+    markup(state) {
+      return compactIconMarkup(questionToolWorkbenchMarkup(state));
+    },
+    render(specimen, state) {
+      specimen.innerHTML = questionToolWorkbenchMarkup(state);
+    },
+    bind(specimen, _state, update) {
+      specimen.querySelector("[data-workbench-question-form]")?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        update("state", "answered");
+      });
+      specimen.querySelector("[data-agent-question-skip]")?.addEventListener("click", () => {
+        update("state", "answered");
       });
     },
   },
