@@ -31,7 +31,9 @@ import { bindSensitiveInputs } from "../preview/sensitive-input.js";
 import { setWorkbenchViewport } from "../preview/component-workbench.js";
 import {
   actionWorkbenchMarkup,
+  agentChatWorkbenchMarkup,
   composerWorkbenchMarkup,
+  messageListWorkbenchMarkup,
   selectWorkbenchMarkup,
   toastWorkbenchMarkup,
 } from "../preview/component-workbench-config.js";
@@ -106,6 +108,33 @@ describe("preview behavior", () => {
     );
     expect(composerWorkbenchMarkup({ mode: "streaming" })).not.toContain(
       'aria-label="Send message"',
+    );
+  });
+
+  test("renders distinct Agent Chat empty, streaming, and error states", () => {
+    expect(agentChatWorkbenchMarkup({ example: "empty", status: "ready" })).not.toContain(
+      "Conversation history",
+    );
+    expect(agentChatWorkbenchMarkup({ example: "suggestions", status: "ready" })).toContain(
+      'aria-label="Suggested prompts"',
+    );
+    expect(agentChatWorkbenchMarkup({ example: "basic", status: "streaming" })).toContain(
+      'data-status="streaming"',
+    );
+    expect(agentChatWorkbenchMarkup({ example: "basic", status: "error" })).toContain(
+      "Request failed",
+    );
+    expect(agentChatWorkbenchMarkup({ example: "empty", status: "error" })).toContain(
+      "Request failed",
+    );
+  });
+
+  test("keeps transcript copy actions opt-in", () => {
+    expect(messageListWorkbenchMarkup({ status: "ready", copyToolbar: true })).toContain(
+      "Copy response",
+    );
+    expect(messageListWorkbenchMarkup({ status: "ready", copyToolbar: false })).not.toContain(
+      "Copy response",
     );
   });
 
