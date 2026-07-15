@@ -2772,6 +2772,21 @@ body[data-reference-layout="workbench"][data-page-kind="reference"] .reference-p
   outline-offset: 2px;
 }
 
+.component-workbench-toast-demo {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: 320px;
+  place-items: center;
+}
+
+.component-workbench-toast-region {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
 .component-workbench-dock {
   min-width: 0;
 }
