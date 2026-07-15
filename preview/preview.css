@@ -2783,6 +2783,11 @@ body[data-reference-layout="workbench"][data-page-kind="reference"] .reference-p
   display: none;
 }
 
+.component-workbench-controls {
+  display: grid;
+  gap: 20px;
+}
+
 .component-workbench-control {
   min-width: 0;
   margin: 0;
@@ -2798,23 +2803,32 @@ body[data-reference-layout="workbench"][data-page-kind="reference"] .reference-p
 
 .component-workbench-choice-list {
   display: grid;
-  gap: var(--oc-space-1);
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-control);
+  background: color-mix(in srgb, var(--preview-shell-bg) 72%, transparent);
 }
 
 .component-workbench-choice {
   position: relative;
   display: flex;
-  min-height: 2.5rem;
-  padding: 0 var(--oc-space-3);
+  min-height: 2.25rem;
+  justify-content: center;
+  padding: 0 10px;
   align-items: center;
   border-radius: var(--oc-radius-control);
   color: var(--oc-text-secondary);
   cursor: pointer;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .component-workbench-choice:hover,
 .component-workbench-choice:has(input:checked) {
-  background: var(--oc-surface-interactive);
+  background: var(--oc-surface-interactive-hover);
   color: var(--oc-text-primary);
 }
 
