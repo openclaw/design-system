@@ -122,6 +122,43 @@ describe("preview contracts", () => {
     });
   });
 
+  test("models Agent Chat examples and ChatStatus values from the reference contract", () => {
+    const definition = getWorkbenchDefinition("agent-chat");
+
+    expect(definition?.controls).toMatchObject([
+      {
+        id: "example",
+        type: "choice",
+        options: [
+          { label: "Basic", value: "basic" },
+          { label: "Empty", value: "empty" },
+          { label: "Suggestions", value: "suggestions" },
+          { label: "Attachments", value: "attachments" },
+        ],
+      },
+      {
+        id: "status",
+        type: "choice",
+        options: [
+          { label: "Ready", value: "ready" },
+          { label: "Submitted", value: "submitted" },
+          { label: "Streaming", value: "streaming" },
+          { label: "Error", value: "error" },
+        ],
+      },
+      { id: "copyToolbar", type: "toggle" },
+    ]);
+  });
+
+  test("models transcript status and copy affordance independently", () => {
+    const definition = getWorkbenchDefinition("message-list");
+
+    expect(normalizeWorkbenchState(definition, {
+      status: "streaming",
+      copyToolbar: false,
+    })).toEqual({ status: "streaming", copyToolbar: false });
+  });
+
   test("loads canonical styles through valid CSS", async () => {
     const css = await readFile("preview/preview.css", "utf8");
     const imports = [...css.matchAll(/@import\s+"([^"]+)"/g)].map(([, path]) => path);

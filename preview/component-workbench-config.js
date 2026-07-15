@@ -18,12 +18,33 @@ const composerModes = [
   { label: "Streaming", value: "streaming" },
 ];
 
+const chatExamples = [
+  { label: "Basic", value: "basic" },
+  { label: "Empty", value: "empty" },
+  { label: "Suggestions", value: "suggestions" },
+  { label: "Attachments", value: "attachments" },
+];
+
+const chatStatuses = [
+  { label: "Ready", value: "ready" },
+  { label: "Submitted", value: "submitted" },
+  { label: "Streaming", value: "streaming" },
+  { label: "Error", value: "error" },
+];
+
 function escapeHtml(value = "") {
   return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+
+function compactIconMarkup(markup) {
+  return markup.replace(
+    /<svg class="oc-agent-icon"[\s\S]*?<\/svg>/g,
+    '<svg aria-hidden="true">…</svg>',
+  );
 }
 
 export function actionWorkbenchMarkup({ variant = "primary" } = {}) {
@@ -86,7 +107,154 @@ export function composerWorkbenchMarkup({ mode = "idle" } = {}) {
 </form>`;
 }
 
+function chatResponseMarkup(status, copyToolbar) {
+  if (status === "error") {
+    return `<li class="oc-agent-error-message" role="alert">
+  <span class="oc-agent-error-icon" aria-hidden="true">${agentIcon("alert")}</span>
+  <div class="oc-agent-error-copy"><strong>Request failed</strong><p>The response could not be completed.</p><div class="oc-agent-error-actions"><button class="oc-agent-error-action" type="button" data-workbench-chat-retry>Try again</button></div></div>
+</li>`;
+  }
+
+  const statusAttribute = status === "streaming" ? ' data-status="streaming"' : "";
+  const role = status === "submitted" ? "OpenClaw · waiting" : status === "streaming" ? "OpenClaw · responding" : "OpenClaw";
+  const content = status === "submitted"
+    ? "Preparing a response…"
+    : status === "streaming"
+      ? "Reviewing the component contract and current validation output…"
+      : "The component contract is intact and ready for review.";
+  const actions = copyToolbar && status === "ready"
+    ? '<div class="oc-agent-message-actions"><button type="button" data-copy-text="The component contract is intact and ready for review.">Copy response</button></div>'
+    : "";
+
+  return `<li class="oc-agent-message"${statusAttribute}>
+  <header class="oc-agent-message-header"><span class="oc-agent-avatar" aria-hidden="true">${agentIcon("sparkle")}</span><span class="oc-agent-message-role">${role}</span></header>
+  <div class="oc-agent-message-body"><p>${content}</p></div>${actions}
+</li>`;
+}
+
+export function messageListWorkbenchMarkup({ status = "ready", copyToolbar = true } = {}) {
+  return `<ol class="oc-agent-message-list" aria-label="Conversation history">
+  <li class="oc-user-message"><p>Is the component contract ready for review?</p><footer class="oc-agent-message-meta">You · now</footer></li>
+  ${chatResponseMarkup(status, copyToolbar)}
+</ol>`;
+}
+
+export function agentChatWorkbenchMarkup({
+  example = "basic",
+  status = "ready",
+  copyToolbar = false,
+} = {}) {
+  const isEmpty = status !== "error" && (example === "empty" || example === "suggestions");
+  const messages = isEmpty ? "" : messageListWorkbenchMarkup({ status, copyToolbar });
+  const suggestions = example === "suggestions"
+    ? `<div class="oc-agent-chat-suggestions" aria-label="Suggested prompts">
+  <button class="oc-agent-suggestion" type="button" data-agent-suggestion-value="Review the pending changes">Review changes</button>
+  <button class="oc-agent-suggestion" type="button" data-agent-suggestion-value="Run the validation checks">Run checks</button>
+</div>`
+    : "";
+  const attachments = example === "attachments"
+    ? `<ul class="oc-agent-attachment-list" aria-label="Attached files">
+  <li class="oc-agent-file-attachment"><span class="oc-agent-file-type" aria-hidden="true">${agentIcon("file")}</span><span class="oc-agent-file-details"><strong>component-spec.md</strong><span>Markdown · 3.1 KB</span></span></li>
+</ul>`
+    : "";
+  const action = status === "streaming"
+    ? `<button class="oc-agent-send-button" type="button" data-state="stop" aria-label="Stop response">${agentIcon("stop")}</button>`
+    : `<button class="oc-agent-send-button" type="submit" aria-label="Send message"${status === "submitted" ? " disabled" : ""}>${agentIcon("send")}</button>`;
+
+  return `<section class="oc-agent-chat${isEmpty ? " oc-agent-chat-empty" : ""}" aria-label="Agent conversation">
+  ${messages}
+  <div class="oc-agent-chat-composer">
+    ${suggestions}
+    ${attachments}
+    <form class="oc-agent-input-bar" data-workbench-chat-form>
+      <label class="sr-only" for="workbench-chat-message">Message</label>
+      <textarea id="workbench-chat-message" class="oc-agent-input" rows="2" placeholder="Send a message…"></textarea>
+      <div class="oc-agent-input-toolbar"><button class="oc-agent-input-action" type="button" aria-label="Attach files">${agentIcon("paperclip")}</button>${action}</div>
+    </form>
+    <span class="sr-only" data-workbench-chat-status aria-live="polite"></span>
+  </div>
+</section>`;
+}
+
 const definitions = {
+  "agent-chat": {
+    defaults: { example: "basic", status: "ready", copyToolbar: false },
+    controls: [
+      {
+        id: "example",
+        label: "Example",
+        type: "choice",
+        options: chatExamples,
+      },
+      {
+        id: "status",
+        label: "Status",
+        type: "choice",
+        options: chatStatuses,
+      },
+      {
+        id: "copyToolbar",
+        label: "Copy toolbar",
+        type: "toggle",
+      },
+    ],
+    markup(state) {
+      return compactIconMarkup(agentChatWorkbenchMarkup(state));
+    },
+    render(specimen, state) {
+      specimen.innerHTML = agentChatWorkbenchMarkup(state);
+    },
+    bind(specimen, state, update) {
+      const input = specimen.querySelector(".oc-agent-input");
+      const status = specimen.querySelector("[data-workbench-chat-status]");
+      specimen.querySelectorAll("[data-agent-suggestion-value]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!input) return;
+          input.value = button.dataset.agentSuggestionValue;
+          input.focus();
+        });
+      });
+      specimen.querySelector("[data-workbench-chat-form]")?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!input?.value.trim()) return;
+        input.value = "";
+        if (status) status.textContent = "Message sent";
+      });
+      specimen.querySelector('[aria-label="Stop response"]')?.addEventListener("click", () => {
+        update("status", "ready");
+      });
+      specimen.querySelector("[data-workbench-chat-retry]")?.addEventListener("click", () => {
+        update("status", "submitted");
+      });
+    },
+  },
+  "message-list": {
+    defaults: { status: "ready", copyToolbar: true },
+    controls: [
+      {
+        id: "status",
+        label: "Status",
+        type: "choice",
+        options: chatStatuses,
+      },
+      {
+        id: "copyToolbar",
+        label: "Copy toolbar",
+        type: "toggle",
+      },
+    ],
+    markup(state) {
+      return compactIconMarkup(messageListWorkbenchMarkup(state));
+    },
+    render(specimen, state) {
+      specimen.innerHTML = messageListWorkbenchMarkup(state);
+    },
+    bind(specimen, _state, update) {
+      specimen.querySelector("[data-workbench-chat-retry]")?.addEventListener("click", () => {
+        update("status", "submitted");
+      });
+    },
+  },
   "primitive-action": {
     defaults: { variant: "primary" },
     controls: [
