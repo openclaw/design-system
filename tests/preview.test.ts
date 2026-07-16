@@ -566,7 +566,7 @@ describe("preview contracts", () => {
   test("publishes the introduction as a live primitive grid", async () => {
     const home = await readFile("preview/index.html", "utf8");
     const previewStyles = await readFile("preview/preview.css", "utf8");
-    const previewScript = await readFile("preview/preview.js", "utf8");
+    const pageLifecycle = await readFile("preview/page-lifecycle.js", "utf8");
     const destinations = [...home.matchAll(/href="([^"]+)"/g)].map(([, href]) => href);
     const componentLabels = [
       ...home.matchAll(/class="home-component-link"[^>]*>([^<]+)<\/a>/g),
@@ -605,7 +605,7 @@ describe("preview contracts", () => {
     expect(home).toContain(
       'class="oc-autocomplete home-input-demo"><span class="oc-field-label">Component</span><span class="oc-autocomplete-control">',
     );
-    expect(previewScript).toContain('.home-component-grid .oc-segmented');
+    expect(pageLifecycle).toContain('.home-component-grid .oc-segmented');
     expect(componentLabels.slice(0, 8)).toEqual([
       "Button",
       "Composer",
