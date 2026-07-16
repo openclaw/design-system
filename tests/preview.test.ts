@@ -17,6 +17,7 @@ import {
 import {
   avatarWorkbenchExamples,
   buttonWorkbenchExamples,
+  createFallbackComponentWorkbenchReference,
   formatComponentWorkbenchCode,
   formatWorkbenchMarkup,
   getComponentWorkbenchReference,
@@ -1099,6 +1100,34 @@ describe("preview contracts", () => {
     expect(allCode).toContain("oc-button-secondary");
     expect(allCode).toContain("oc-button-ghost");
     expect(allCode).toContain(" disabled");
+  });
+
+  test("renders legacy guidance through the shared Usage contract", async () => {
+    const reference = createFallbackComponentWorkbenchReference(
+      "Hover, focus, and active",
+      [
+        "Keep the whole surface responsible for one action.",
+        "Choose the semantic element in the consumer.",
+      ],
+    );
+    const source = await readFile("preview/component-workbench.js", "utf8");
+    const css = await readFile("preview/preview.css", "utf8");
+
+    expect(reference).toEqual({
+      usage: [
+        {
+          title: "Hover, focus, and active",
+          items: [
+            "Keep the whole surface responsible for one action.",
+            "Choose the semantic element in the consumer.",
+          ],
+        },
+      ],
+    });
+    expect(createFallbackComponentWorkbenchReference("Guidance", ["  ", ""])).toBeUndefined();
+    expect(source).toContain("createFallbackComponentWorkbenchReference");
+    expect(source).not.toContain("usagePanel.append(guidance)");
+    expect(css).not.toContain(".component-workbench-dock-panel > .guidance-list");
   });
 
   test("formats complete component markup through the shared workbench renderer", async () => {

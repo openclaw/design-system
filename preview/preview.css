@@ -3056,16 +3056,9 @@ body[data-reference-layout="workbench"][data-page-kind="reference"] .reference-p
   outline-offset: -2px;
 }
 
-.component-workbench-dock-panel > .guidance-list {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 12px 24px 32px;
-}
-
 .component-workbench-usage {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--workbench-usage-columns, 1), minmax(0, 1fr));
 }
 
 .component-workbench-usage-section {

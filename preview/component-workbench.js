@@ -6,6 +6,7 @@ import {
   normalizeWorkbenchState,
 } from "./component-workbench-config.js";
 import {
+  createFallbackComponentWorkbenchReference,
   formatComponentWorkbenchCode,
   formatWorkbenchMarkup,
   getComponentWorkbenchReference,
@@ -330,6 +331,7 @@ function prepareCodeBlock(codeBlock, pageId, sourceOverride) {
 
 function createUsageReference(reference) {
   const usage = createElement("div", "component-workbench-usage");
+  usage.style.setProperty("--workbench-usage-columns", reference.usage.length);
 
   for (const section of reference.usage) {
     const group = createElement("section", "component-workbench-usage-section");
@@ -417,12 +419,13 @@ function createDock(markupSection, guidanceSection, pageId) {
   usagePanel.id = `${pageId}-workbench-usage-panel`;
   usagePanel.setAttribute("role", "tabpanel");
   usagePanel.setAttribute("aria-labelledby", usageTab.id);
-  if (reference) {
-    usagePanel.append(createUsageReference(reference));
-  } else {
-    const guidance = guidanceSection.querySelector(".guidance-list");
-    if (guidance) usagePanel.append(guidance);
-  }
+  const guidanceItems = [...guidanceSection.querySelectorAll(".guidance-list li")].map(
+    (item) => item.textContent ?? "",
+  );
+  const guidanceTitle = guidanceSection.querySelector(".section-heading h2")?.textContent ?? "";
+  const usageReference =
+    reference ?? createFallbackComponentWorkbenchReference(guidanceTitle, guidanceItems);
+  if (usageReference) usagePanel.append(createUsageReference(usageReference));
 
   dock.append(tabList, usagePanel, codePanel);
   return dock;

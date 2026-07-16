@@ -152,6 +152,20 @@ const componentWorkbenchReferences = {
   },
 };
 
+export function createFallbackComponentWorkbenchReference(title, items) {
+  const normalizedItems = items.map((item) => item.trim()).filter(Boolean);
+  if (!normalizedItems.length) return undefined;
+
+  return {
+    usage: [
+      {
+        title: title.trim() || "Guidance",
+        items: normalizedItems,
+      },
+    ],
+  };
+}
+
 export function getComponentWorkbenchReference(pageId) {
   return componentWorkbenchReferences[pageId];
 }
