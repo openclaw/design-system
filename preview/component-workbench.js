@@ -15,20 +15,30 @@ import {
 export const workbenchViewportModes = [
   {
     id: "desktop",
-    label: "Desktop preview",
+    label: "Full width",
     icon: '<rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8M12 17v4"></path>',
   },
   {
     id: "tablet",
-    label: "Tablet preview",
+    label: "Medium width",
     icon: '<rect x="5" y="2.5" width="14" height="19" rx="2"></rect><path d="M11 18.5h2"></path>',
   },
   {
     id: "mobile",
-    label: "Mobile preview",
+    label: "Narrow width",
     icon: '<rect x="7" y="2.5" width="10" height="19" rx="2"></rect><path d="M11 18.5h2"></path>',
   },
 ];
+
+const workbenchViewportPageModes = new Map([
+  ["primitive-grid", ["desktop", "tablet", "mobile"]],
+  ["primitive-table", ["desktop", "mobile"]],
+]);
+
+export function getWorkbenchViewportModes(pageId) {
+  const enabledModes = workbenchViewportPageModes.get(pageId) ?? [];
+  return workbenchViewportModes.filter(({ id }) => enabledModes.includes(id));
+}
 
 export const workbenchCanvasThemes = [
   {
@@ -103,12 +113,12 @@ export function preventWorkbenchDemoLinkNavigation(event) {
   return true;
 }
 
-function createViewportSwitcher() {
+function createViewportSwitcher(modes) {
   const group = createElement("div", "component-workbench-viewports");
   group.setAttribute("role", "group");
-  group.setAttribute("aria-label", "Preview width");
+  group.setAttribute("aria-label", "Canvas width");
 
-  for (const mode of workbenchViewportModes) {
+  for (const mode of modes) {
     const button = createElement("button", "component-workbench-viewport");
     button.type = "button";
     button.dataset.workbenchViewport = mode.id;
@@ -141,9 +151,11 @@ function createCanvasThemeSwitcher(theme) {
   return group;
 }
 
-function createCanvasTools(theme) {
+function createCanvasTools(theme, pageId) {
   const tools = createElement("div", "component-workbench-canvas-tools");
-  tools.append(createCanvasThemeSwitcher(theme), createViewportSwitcher());
+  tools.append(createCanvasThemeSwitcher(theme));
+  const viewportModes = getWorkbenchViewportModes(pageId);
+  if (viewportModes.length > 0) tools.append(createViewportSwitcher(viewportModes));
   return tools;
 }
 
@@ -476,7 +488,7 @@ export function renderComponentWorkbench(mount, pageId) {
   const frame = createElement("div", "component-workbench-frame");
   frame.append(specimen);
   canvas.append(frame);
-  stage.append(stageTitle, canvas, createCanvasTools(canvasTheme));
+  stage.append(stageTitle, canvas, createCanvasTools(canvasTheme, pageId));
 
   const inspector = createElement("aside", "component-workbench-inspector");
   inspector.setAttribute("aria-labelledby", `${pageId}-workbench-controls`);

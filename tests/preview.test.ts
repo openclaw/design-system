@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { describe, expect, test } from "bun:test";
 import { transform } from "lightningcss";
 import {
+  getWorkbenchViewportModes,
   isComponentWorkbenchPage,
   preserveWorkbenchScrollPosition,
   workbenchCanvasThemes,
@@ -52,6 +53,22 @@ const legacyPackageName = ["@openclaw", "design-system"].join("/");
 describe("preview contracts", () => {
   test("limits the component workbench to component reference pages", () => {
     expect(workbenchViewportModes.map(({ id }) => id)).toEqual(["desktop", "tablet", "mobile"]);
+    expect(workbenchViewportModes.map(({ label }) => label)).toEqual([
+      "Full width",
+      "Medium width",
+      "Narrow width",
+    ]);
+    expect(getWorkbenchViewportModes("primitive-grid").map(({ id }) => id)).toEqual([
+      "desktop",
+      "tablet",
+      "mobile",
+    ]);
+    expect(getWorkbenchViewportModes("primitive-table").map(({ id }) => id)).toEqual([
+      "desktop",
+      "mobile",
+    ]);
+    expect(getWorkbenchViewportModes("primitive-card")).toEqual([]);
+    expect(getWorkbenchViewportModes("primitive-avatar")).toEqual([]);
     expect(workbenchCanvasThemes.map(({ id }) => id)).toEqual(["light", "dark"]);
     expect(isComponentWorkbenchPage("primitive-action")).toBe(true);
     expect(isComponentWorkbenchPage("input-bar")).toBe(true);
