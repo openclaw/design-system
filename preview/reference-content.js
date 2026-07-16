@@ -962,15 +962,21 @@ export function getReferenceContent(id) {
   return contents[id]?.() ?? getAgentReferenceContent(id);
 }
 
-export function renderReferenceContent() {
-  const mount = document.querySelector("[data-reference-content]");
-  if (!mount) return;
-  const pageId = document.body.dataset.previewPage;
-  const content = getReferenceContent(pageId);
-  if (!content) return;
+export function renderReferenceContent(
+  root = globalThis.document,
+  pageId,
+) {
+  const document = root?.ownerDocument || root;
+  const mount = root?.matches?.("[data-reference-content]")
+    ? root
+    : root?.querySelector?.("[data-reference-content]");
+  if (!mount) return null;
+  const resolvedPageId = pageId || document.body?.dataset.previewPage;
+  const content = getReferenceContent(resolvedPageId);
+  if (!content) return null;
 
   mount.innerHTML = content;
-  const maturity = getReferenceMaturity(pageId);
+  const maturity = getReferenceMaturity(resolvedPageId);
   const eyebrow = mount.querySelector(".reference-intro > .eyebrow");
   if (maturity && eyebrow) {
     const meta = document.createElement("div");
@@ -981,5 +987,6 @@ export function renderReferenceContent() {
     eyebrow.before(meta);
     meta.append(eyebrow, badge);
   }
-  renderComponentWorkbench(mount, pageId);
+  renderComponentWorkbench(mount, resolvedPageId);
+  return mount;
 }
