@@ -18,6 +18,11 @@
   --preview-nav-surface: var(--oc-bg-surface);
 }
 
+#preview-app,
+.preview-route-content {
+  display: contents;
+}
+
 html[data-theme="light"] {
   --preview-nav-surface: var(--oc-bg-page);
 
