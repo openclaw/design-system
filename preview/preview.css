@@ -804,6 +804,7 @@ body[data-page-kind="home"] .preview-stage {
   color: var(--oc-text-secondary);
   font-size: 16px;
   line-height: 1.6;
+  text-wrap: balance;
 }
 
 .home-brand-package {
