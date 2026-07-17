@@ -20,45 +20,27 @@ export async function createRouteHtml(indexHtml, route) {
   const routeId = route.areaId || route.id;
   const label = getRouteLabel(route);
   const title = label === "Home" ? "Carapace" : `${label} · Carapace`;
-  let foundBody = false;
 
-  const rewriteRelativeAsset = (element, attribute) => {
-    const value = element.getAttribute(attribute);
-    if (value?.startsWith("./")) {
-      element.setAttribute(attribute, `${root}${value.slice(2)}`);
-    }
+  const bodyPattern = /<body\b([^>]*)>[\s\S]*?<\/body>/i;
+  if (!bodyPattern.test(indexHtml)) {
+    throw new Error("The preview entry is missing a body element");
+  }
+
+  const rewriteAsset = (_match, attribute, quote, value) => {
+    const rewritten = value.startsWith("./") ? `${root}${value.slice(2)}` : value;
+    return `${attribute}=${quote}${rewritten}${quote}`;
   };
 
-  const response = new HTMLRewriter()
-    .on("title", {
-      element(element) {
-        element.setInnerContent(title);
-      },
-    })
-    .on("body", {
-      element(element) {
-        foundBody = true;
-        element.setAttribute("data-preview-root", root);
-        element.setAttribute("data-preview-page", route.id);
-        element.setAttribute("data-preview-route", routeId);
-        element.setInnerContent('<div id="preview-app"></div>', { html: true });
-      },
-    })
-    .on("[href]", {
-      element(element) {
-        rewriteRelativeAsset(element, "href");
-      },
-    })
-    .on("[src]", {
-      element(element) {
-        rewriteRelativeAsset(element, "src");
-      },
-    })
-    .transform(new Response(indexHtml));
-
-  const html = await response.text();
-  if (!foundBody) throw new Error("The preview entry is missing a body element");
-  return html;
+  return indexHtml
+    .replace(/<title\b[^>]*>[\s\S]*?<\/title>/i, `<title>${title}</title>`)
+    .replace(/\b(href|src)=(["'])(.*?)\2/gi, rewriteAsset)
+    .replace(bodyPattern, (_match, attributes) => {
+      const routeAttributes = attributes
+        .replace(/\sdata-preview-(?:root|page|route)=(["']).*?\1/gi, "")
+        .trim();
+      const preservedAttributes = routeAttributes ? ` ${routeAttributes}` : "";
+      return `<body${preservedAttributes} data-preview-root="${root}" data-preview-page="${route.id}" data-preview-route="${routeId}"><div id="preview-app"></div></body>`;
+    });
 }
 
 export function createPreviewRouteStubsPlugin(routes = previewRoutes) {
