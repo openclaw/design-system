@@ -2078,6 +2078,8 @@ a.oc-layer-card-primary:hover {
   background: var(--oc-surface-overlay);
   box-shadow: var(--oc-shadow-lg);
   color: var(--oc-text-secondary);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
 }
 
 .oc-toast-content {
