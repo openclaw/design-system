@@ -131,12 +131,12 @@ export function settingsApplicationMarkup({
             ${settingsRow({
               title: "Theme",
               description: "Use system appearance or select a persistent mode.",
-              control: '<div class="oc-segmented" aria-label="Theme"><button class="oc-segmented-item" type="button" aria-pressed="true">System</button><button class="oc-segmented-item" type="button" aria-pressed="false">Light</button><button class="oc-segmented-item" type="button" aria-pressed="false">Dark</button></div>',
+              control: '<div class="oc-segmented" role="group" aria-label="Theme"><button class="oc-segmented-item" type="button" aria-pressed="true">System</button><button class="oc-segmented-item" type="button" aria-pressed="false">Light</button><button class="oc-segmented-item" type="button" aria-pressed="false">Dark</button></div>',
             })}
             ${settingsRow({
               title: "Interface density",
               description: "Reduce row height while preserving control targets and readable labels.",
-              control: `<div class="oc-segmented" aria-label="Interface density"><button class="oc-segmented-item" type="button" aria-pressed="${density === "comfortable"}">Comfortable</button><button class="oc-segmented-item" type="button" aria-pressed="${density === "compact"}">Compact</button></div>`,
+              control: `<div class="oc-segmented" role="group" aria-label="Interface density"><button class="oc-segmented-item" type="button" aria-pressed="${density === "comfortable"}">Comfortable</button><button class="oc-segmented-item" type="button" aria-pressed="${density === "compact"}">Compact</button></div>`,
             })}
           </div>
         </section>

@@ -270,6 +270,9 @@ describe("preview contracts", () => {
     expect(workspace?.markup({ ...workspace.defaults, dock: "bottom" })).toContain(
       'data-split="balanced"',
     );
+    expect(getReferenceContent("application-operations")).toContain(
+      '&lt;section class="oc-pane oc-pane-split"&gt;',
+    );
   });
 
   test("models Hero lede and consumer-owned actions without inventing modifiers", () => {

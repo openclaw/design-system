@@ -281,7 +281,10 @@ describe("preview behavior", () => {
     expect(ready).toContain('class="oc-app-frame" data-navigation="expanded"');
     expect(ready).toContain('class="oc-settings-group"');
     expect(ready).toContain('class="oc-switch" type="checkbox" role="switch"');
-    expect(ready).toContain('class="oc-segmented" aria-label="Theme"');
+    expect(ready).toContain('class="oc-segmented" role="group" aria-label="Theme"');
+    expect(ready).toContain(
+      'class="oc-segmented" role="group" aria-label="Interface density"',
+    );
     expect(compactOffline).toContain('data-navigation="compact"');
     expect(compactOffline).toContain('data-density="compact"');
     expect(compactOffline).toContain("Gateway unavailable");

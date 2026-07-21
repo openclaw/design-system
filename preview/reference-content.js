@@ -982,17 +982,15 @@ const contents = {
   "application-operations": () =>
     `${pageIntro("Application", "Operations", "A master-detail surface for channels, automation, and other recurring operational workflows.")}
     <section data-section-kind="preview" aria-labelledby="application-operations-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="application-operations-preview">Channels and automation</h2></div><span class="oc-pill">candidate</span></div><div class="specimen-frame application-specimen">${operationsApplicationMarkup()}</div></section>
-    <section data-section-kind="markup" aria-labelledby="application-operations-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="application-operations-markup">Keep selection and detail in one bounded pane</h2></div></div>${codeBlock(`<section class="oc-pane">
-  <div class="oc-pane-split">
-    <section class="oc-pane" aria-label="Channels">
-      <header class="oc-pane-header">…</header>
-      <div class="oc-pane-body">…</div>
-    </section>
-    <section class="oc-pane" aria-label="Selected channel">
-      <header class="oc-pane-header">…</header>
-      <div class="oc-pane-body">…</div>
-    </section>
-  </div>
+    <section data-section-kind="markup" aria-labelledby="application-operations-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="application-operations-markup">Keep selection and detail in one bounded pane</h2></div></div>${codeBlock(`<section class="oc-pane oc-pane-split">
+  <section class="oc-pane" aria-label="Channels">
+    <header class="oc-pane-header">…</header>
+    <div class="oc-pane-body">…</div>
+  </section>
+  <section class="oc-pane" aria-label="Selected channel">
+    <header class="oc-pane-header">…</header>
+    <div class="oc-pane-body">…</div>
+  </section>
 </section>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="application-operations-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="application-operations-guidance">Optimize repeated inspection</h2></div></div>${guidanceList(["Keep list status visible before selection.", "Use a stable detail header for identity, state, and primary actions.", "Preserve loading, error, empty, and connected states in the same anatomy.", "Collapse master and detail vertically on narrow screens.", "Keep transport and scheduler behavior inside their owning consumer."])}</section>`,
 
