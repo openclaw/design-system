@@ -59,6 +59,7 @@ for (const required of [
   "styles/candidate/controls.css",
   "styles/candidate/feedback.css",
   "styles/candidate/data.css",
+  "styles/candidate/application.css",
   "styles/tailwind.css",
   "styles/compat/clawhub.css",
 ]) {

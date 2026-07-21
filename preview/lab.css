@@ -2592,63 +2592,6 @@ a.oc-layer-card-primary:hover {
   margin: 0;
 }
 
-.oc-page-header {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: var(--oc-space-5);
-  width: 100%;
-  padding-block: var(--oc-space-5);
-  border-bottom: 1px solid var(--oc-border-subtle);
-}
-
-.oc-page-header-content {
-  display: grid;
-  gap: var(--oc-space-2);
-  min-width: 0;
-}
-
-.oc-page-header-kicker,
-.oc-page-header-title,
-.oc-page-header-description {
-  min-width: 0;
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-
-.oc-page-header-kicker {
-  color: var(--oc-text-muted);
-  font-size: var(--oc-font-size-xs);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.oc-page-header-title {
-  color: var(--oc-text-primary);
-  font-size: var(--oc-font-size-2xl);
-  line-height: 1.1;
-}
-
-.oc-page-header-description {
-  max-width: var(--oc-content-narrow);
-  color: var(--oc-text-secondary);
-  font-size: var(--oc-font-size-base);
-  line-height: 1.6;
-}
-
-.oc-page-header-actions {
-  display: flex;
-  min-width: 0;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: var(--oc-space-2);
-}
-
-.oc-page-header-actions > * {
-  max-width: 100%;
-}
-
 .oc-custom-chart-value {
   order: -1;
   color: var(--oc-text-primary);
@@ -4433,15 +4376,6 @@ details.oc-agent-tool-row[open] > .oc-agent-tool-row-summary .oc-agent-tool-row-
 
   .oc-delete-resource-action {
     width: 100%;
-  }
-
-  .oc-page-header {
-    grid-template-columns: minmax(0, 1fr);
-    align-items: start;
-  }
-
-  .oc-page-header-actions {
-    justify-content: flex-start;
   }
 
   .oc-custom-chart {

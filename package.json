@@ -30,6 +30,7 @@
     "./candidate/controls.css": "./styles/candidate/controls.css",
     "./candidate/feedback.css": "./styles/candidate/feedback.css",
     "./candidate/data.css": "./styles/candidate/data.css",
+    "./candidate/application.css": "./styles/candidate/application.css",
     "./tailwind.css": "./styles/tailwind.css",
     "./compat/clawhub.css": "./styles/compat/clawhub.css",
     "./package.json": "./package.json"
