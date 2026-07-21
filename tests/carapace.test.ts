@@ -330,6 +330,12 @@ describe("CSS contract", () => {
       /\.oc-settings-row-interactive\[aria-pressed="true"\][\s\S]*?--oc-surface-accent-soft/,
     );
     expect(application).toMatch(
+      /@media \(max-width: 48rem\)[\s\S]*?\.oc-pane-split > \.oc-pane \{[\s\S]*?min-height: 0/,
+    );
+    expect(application).toMatch(
+      /@media \(max-width: 48rem\)[\s\S]*?grid-template-columns: 1\.25rem minmax\(0, 1fr\) auto/,
+    );
+    expect(application).toMatch(
       /@media \(forced-colors: active\)[\s\S]*?Highlight/,
     );
 

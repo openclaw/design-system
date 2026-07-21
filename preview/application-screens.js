@@ -219,6 +219,9 @@ function channelDetail(state) {
 }
 
 function automationDetail(state) {
+  if (state === "loading") {
+    return `<div class="oc-pane-body"><span class="oc-loader" role="status"><span class="oc-loader-spinner" aria-hidden="true"></span>Loading automation configuration</span></div>`;
+  }
   return `<div class="oc-pane-body">
   <div class="oc-settings-page">
     ${state === "error" ? '<div class="oc-banner oc-banner-error" role="alert"><span class="oc-banner-indicator" aria-hidden="true"></span><div class="oc-banner-content"><strong class="oc-banner-title">Last run failed</strong><p>The release digest could not reach its destination.</p></div></div>' : ""}

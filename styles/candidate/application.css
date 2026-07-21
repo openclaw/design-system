@@ -672,7 +672,7 @@
 
   .oc-app-navigation-item,
   .oc-app-frame[data-navigation="compact"] .oc-app-navigation-item {
-    grid-template-columns: 1.25rem auto;
+    grid-template-columns: 1.25rem minmax(0, 1fr) auto;
     justify-content: start;
     white-space: nowrap;
   }
@@ -715,6 +715,10 @@
   .oc-pane-split > .oc-pane + .oc-pane {
     border-top-width: 1px;
     border-left-width: 0;
+  }
+
+  .oc-pane-split > .oc-pane {
+    min-height: 0;
   }
 
   .oc-pane-header,

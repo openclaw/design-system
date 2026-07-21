@@ -291,6 +291,10 @@ describe("preview behavior", () => {
   test("renders Operations with channel, automation, loading, and error states", () => {
     const channels = operationsApplicationMarkup();
     const loading = operationsApplicationMarkup({ state: "loading" });
+    const automationLoading = operationsApplicationMarkup({
+      view: "automation",
+      state: "loading",
+    });
     const automationError = operationsApplicationMarkup({
       view: "automation",
       state: "error",
@@ -302,6 +306,7 @@ describe("preview behavior", () => {
     expect(channels).toContain('aria-pressed="true"');
     expect(channels).not.toContain("aria-selected");
     expect(loading).toContain("Loading Discord configuration");
+    expect(automationLoading).toContain("Loading automation configuration");
     expect(automationError).toContain("Scheduled work");
     expect(automationError).toContain("Last run failed");
   });
