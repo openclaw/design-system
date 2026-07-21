@@ -6,6 +6,11 @@ import {
 } from "../preview/agent-components-interactions.js";
 import { getAgentReferenceContent } from "../preview/agent-components.js";
 import {
+  operationsApplicationMarkup,
+  settingsApplicationMarkup,
+  workspaceApplicationMarkup,
+} from "../preview/application-screens.js";
+import {
   bindExampleDialog,
   exampleDialogAttribute,
   exampleDialogSelector,
@@ -263,6 +268,55 @@ describe("preview behavior", () => {
     expect(toolbarOnly).not.toContain("oc-card");
     expect(cardOnly).toContain('class="oc-card primitive-app-surface-card"');
     expect(cardOnly).not.toContain("primitive-app-surface-toolbar");
+  });
+
+  test("renders Settings as shared anatomy with existing controls and connection states", () => {
+    const ready = settingsApplicationMarkup();
+    const compactOffline = settingsApplicationMarkup({
+      navigation: "compact",
+      density: "compact",
+      state: "offline",
+    });
+
+    expect(ready).toContain('class="oc-app-frame" data-navigation="expanded"');
+    expect(ready).toContain('class="oc-settings-group"');
+    expect(ready).toContain('class="oc-switch" type="checkbox" role="switch"');
+    expect(ready).toContain('class="oc-segmented" aria-label="Theme"');
+    expect(compactOffline).toContain('data-navigation="compact"');
+    expect(compactOffline).toContain('data-density="compact"');
+    expect(compactOffline).toContain("Gateway unavailable");
+    expect(compactOffline).toContain("oc-status-error");
+  });
+
+  test("renders Operations with channel, automation, loading, and error states", () => {
+    const channels = operationsApplicationMarkup();
+    const loading = operationsApplicationMarkup({ state: "loading" });
+    const automationError = operationsApplicationMarkup({
+      view: "automation",
+      state: "error",
+    });
+
+    expect(channels).toContain('class="oc-pane oc-pane-split"');
+    expect(channels).toContain("Connected channels");
+    expect(channels).toContain("Discord");
+    expect(loading).toContain("Loading Discord configuration");
+    expect(automationError).toContain("Scheduled work");
+    expect(automationError).toContain("Last run failed");
+  });
+
+  test("renders Workspace with right, bottom, and hidden inspector modes", () => {
+    const right = workspaceApplicationMarkup();
+    const bottom = workspaceApplicationMarkup({ dock: "bottom", status: "idle" });
+    const hidden = workspaceApplicationMarkup({ dock: "hidden", inspector: false });
+
+    expect(right).toContain('data-dock="right"');
+    expect(right).toContain('data-split="inspector"');
+    expect(right).toContain('aria-label="Inspector"');
+    expect(bottom).toContain('data-dock="bottom"');
+    expect(bottom).toContain('data-split="balanced"');
+    expect(bottom).toContain("Agent idle");
+    expect(hidden).not.toContain('aria-label="Inspector"');
+    expect(hidden).not.toContain("oc-pane-split");
   });
 
   test("renders Hero with optional lede and consumer-owned actions", () => {

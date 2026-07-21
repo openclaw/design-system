@@ -155,6 +155,7 @@ describe("CSS contract", () => {
     const controls = await readFile("styles/candidate/controls.css", "utf8");
     const feedback = await readFile("styles/candidate/feedback.css", "utf8");
     const data = await readFile("styles/candidate/data.css", "utf8");
+    const application = await readFile("styles/candidate/application.css", "utf8");
 
     expectClasses(controls, [
       ".oc-field",
@@ -217,8 +218,67 @@ describe("CSS contract", () => {
       ".oc-resource-list-meta",
       ".oc-resource-list-arrow",
     ]);
+    expectClasses(application, [
+      ".oc-app-frame",
+      ".oc-app-main",
+      ".oc-app-navigation",
+      ".oc-app-navigation-body",
+      ".oc-app-navigation-footer",
+      ".oc-app-navigation-header",
+      ".oc-app-navigation-icon",
+      ".oc-app-navigation-item",
+      ".oc-app-navigation-item-label",
+      ".oc-app-navigation-label",
+      ".oc-app-navigation-list",
+      ".oc-app-navigation-mark",
+      ".oc-app-navigation-meta",
+      ".oc-app-navigation-section",
+      ".oc-app-navigation-title",
+      ".oc-field",
+      ".oc-page-header",
+      ".oc-page-header-actions",
+      ".oc-page-header-content",
+      ".oc-page-header-description",
+      ".oc-page-header-kicker",
+      ".oc-page-header-title",
+      ".oc-pane",
+      ".oc-pane-actions",
+      ".oc-pane-body",
+      ".oc-pane-body-flush",
+      ".oc-pane-description",
+      ".oc-pane-footer",
+      ".oc-pane-header",
+      ".oc-pane-heading",
+      ".oc-pane-layout",
+      ".oc-pane-split",
+      ".oc-pane-title",
+      ".oc-segmented",
+      ".oc-select-wrap",
+      ".oc-settings-group",
+      ".oc-settings-page",
+      ".oc-settings-row",
+      ".oc-settings-row-content",
+      ".oc-settings-row-control",
+      ".oc-settings-row-description",
+      ".oc-settings-row-interactive",
+      ".oc-settings-row-stacked",
+      ".oc-settings-row-title",
+      ".oc-settings-section",
+      ".oc-settings-section-actions",
+      ".oc-settings-section-description",
+      ".oc-settings-section-header",
+      ".oc-settings-section-heading",
+      ".oc-settings-section-title",
+      ".oc-status",
+      ".oc-status-error",
+      ".oc-status-indicator",
+      ".oc-status-info",
+      ".oc-status-label",
+      ".oc-status-success",
+      ".oc-status-warning",
+    ]);
 
-    for (const candidate of [controls, feedback, data]) {
+    for (const candidate of [controls, feedback, data, application]) {
       expect(candidate).not.toContain("@import");
       expect(
         [...customProperties(candidate, /var\((--[\w-]+)/g)].every((name) =>
@@ -232,6 +292,7 @@ describe("CSS contract", () => {
     const controls = await readFile("styles/candidate/controls.css", "utf8");
     const feedback = await readFile("styles/candidate/feedback.css", "utf8");
     const data = await readFile("styles/candidate/data.css", "utf8");
+    const application = await readFile("styles/candidate/application.css", "utf8");
 
     expect(controls).toMatch(
       /\.oc-input\[aria-invalid="true"\][\s\S]*?--oc-status-error-fg/,
@@ -250,6 +311,18 @@ describe("CSS contract", () => {
     );
     expect(data).toMatch(/\.oc-table-wrap[\s\S]*?overflow-x: auto/);
     expect(data).toMatch(/\.oc-resource-list-link:focus-visible[\s\S]*?--oc-focus-ring/);
+    expect(application).toMatch(
+      /\.oc-app-navigation-item:focus-visible[\s\S]*?--oc-focus-ring/,
+    );
+    expect(application).toMatch(
+      /\.oc-settings-row-interactive:focus-visible[\s\S]*?--oc-focus-ring/,
+    );
+    expect(application).toMatch(
+      /@media \(max-width: 48rem\)[\s\S]*?grid-template-columns: minmax\(0, 1fr\)/,
+    );
+    expect(application).toMatch(
+      /@media \(forced-colors: active\)[\s\S]*?Highlight/,
+    );
 
     for (const selector of [
       ".oc-input",
@@ -272,6 +345,10 @@ describe("CSS contract", () => {
 
     for (const selector of [".oc-table-wrap", ".oc-table", ".oc-resource-list"]) {
       expect(ruleDeclarations(data, selector)).toContain("box-sizing: border-box");
+    }
+
+    for (const selector of [".oc-app-frame", ".oc-page-header", ".oc-pane", ".oc-settings-row"]) {
+      expect(ruleDeclarations(application, selector)).toContain("box-sizing: border-box");
     }
 
     expect(data).toMatch(

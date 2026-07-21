@@ -84,6 +84,23 @@ describe("preview contracts", () => {
       "desktop",
       "mobile",
     ]);
+    for (const pageId of [
+      "application-settings",
+      "application-operations",
+      "application-workspace",
+    ]) {
+      expect(getWorkbenchViewportModes(pageId).map(({ id }) => id)).toEqual([
+        "desktop",
+        "tablet",
+        "mobile",
+      ]);
+      expect(isComponentWorkbenchPage(pageId)).toBe(true);
+      expect(getWorkbenchShellProfile(pageId)).toEqual({
+        canvasPreset: "viewport",
+        supportsViewport: true,
+      });
+      expect(getReferenceMaturity(pageId)).toBe("Candidate");
+    }
     expect(getWorkbenchViewportModes("primitive-card")).toEqual([]);
     expect(getWorkbenchViewportModes("primitive-avatar")).toEqual([]);
     expect(workbenchCanvasThemes.map(({ id }) => id)).toEqual(["light", "dark"]);
@@ -213,6 +230,45 @@ describe("preview contracts", () => {
     );
     expect(getReferenceContent("primitive-app-surface")).toContain(
       'class="oc-card primitive-app-surface-card"',
+    );
+  });
+
+  test("models application surfaces through bounded state controls", () => {
+    const settings = getWorkbenchDefinition("application-settings");
+    const operations = getWorkbenchDefinition("application-operations");
+    const workspace = getWorkbenchDefinition("application-workspace");
+
+    expect(settings?.defaults).toEqual({
+      navigation: "expanded",
+      density: "comfortable",
+      state: "ready",
+    });
+    expect(settings?.controls.map(({ id }) => id)).toEqual([
+      "navigation",
+      "density",
+      "state",
+    ]);
+    expect(settings?.markup({ ...settings.defaults, state: "offline" })).toContain(
+      "Gateway unavailable",
+    );
+
+    expect(operations?.controls.map(({ id }) => id)).toEqual([
+      "view",
+      "state",
+      "navigation",
+    ]);
+    expect(
+      operations?.markup({ ...operations.defaults, view: "automation" }),
+    ).toContain("Scheduled work");
+
+    expect(workspace?.controls.map(({ id }) => id)).toEqual([
+      "dock",
+      "inspector",
+      "status",
+      "navigation",
+    ]);
+    expect(workspace?.markup({ ...workspace.defaults, dock: "bottom" })).toContain(
+      'data-split="balanced"',
     );
   });
 
