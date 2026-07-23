@@ -16,6 +16,7 @@ import {
 import {
   appSurfaceWorkbenchMarkup,
   providerLogoWorkbenchMarkup,
+  sidebarWorkbenchMarkup,
 } from "./component-workbench-config.js";
 import { renderComponentWorkbench } from "./component-workbench.js";
 import { icon } from "./icons.js";
@@ -763,46 +764,7 @@ const contents = {
   "primitive-sidebar": () =>
     `${pageIntro("Component", "Sidebar", "A compact application rail with workspace selection, grouped navigation, account identity, and an explicit collapsed state.")}
     <section data-section-kind="preview" aria-labelledby="sidebar-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="sidebar-preview">Primary navigation rail</h2></div><span class="oc-pill">.oc-sidebar</span></div>
-      <div class="specimen-frame">
-        <aside class="oc-sidebar" id="component-sidebar" aria-label="Workspace" data-collapsed="false">
-          <header class="oc-sidebar-header">
-            <div class="oc-sidebar-workspace" data-sidebar-workspace>
-              <button class="oc-sidebar-workspace-trigger" type="button" aria-expanded="false" aria-controls="component-sidebar-workspaces" data-sidebar-workspace-toggle>
-                <span class="oc-avatar oc-avatar-sm" role="img" aria-label="OpenClaw workspace" data-sidebar-workspace-avatar><span class="oc-avatar-fallback" aria-hidden="true">OC</span></span>
-                <span class="oc-sidebar-workspace-copy"><strong data-sidebar-workspace-title>OpenClaw</strong><small data-sidebar-workspace-subtitle>Design workspace</small></span>
-                <i data-lucide="chevrons-up-down" aria-hidden="true"></i>
-              </button>
-              <div class="oc-sidebar-workspace-menu" id="component-sidebar-workspaces" aria-label="Choose workspace" data-sidebar-workspace-menu hidden>
-                <button class="oc-sidebar-workspace-option" type="button" aria-pressed="true" data-sidebar-workspace-option data-sidebar-workspace-name="OpenClaw" data-sidebar-workspace-description="Design workspace" data-sidebar-workspace-initials="OC"><span class="oc-avatar oc-avatar-sm" aria-hidden="true"><span class="oc-avatar-fallback">OC</span></span><span><strong>OpenClaw</strong><small>Design workspace</small></span><i data-lucide="check" aria-hidden="true"></i></button>
-                <button class="oc-sidebar-workspace-option" type="button" aria-pressed="false" data-sidebar-workspace-option data-sidebar-workspace-name="Labs" data-sidebar-workspace-description="Product experiments" data-sidebar-workspace-initials="LA"><span class="oc-avatar oc-avatar-sm" aria-hidden="true"><span class="oc-avatar-fallback">LA</span></span><span><strong>Labs</strong><small>Product experiments</small></span><i data-lucide="check" aria-hidden="true"></i></button>
-                <button class="oc-sidebar-workspace-option" type="button" aria-pressed="false" data-sidebar-workspace-option data-sidebar-workspace-name="Personal" data-sidebar-workspace-description="Private drafts" data-sidebar-workspace-initials="ME"><span class="oc-avatar oc-avatar-sm" aria-hidden="true"><span class="oc-avatar-fallback">ME</span></span><span><strong>Personal</strong><small>Private drafts</small></span><i data-lucide="check" aria-hidden="true"></i></button>
-              </div>
-            </div>
-            <button class="oc-sidebar-collapse" type="button" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="component-sidebar" data-sidebar-collapse><i data-lucide="panel-left-close" aria-hidden="true"></i></button>
-          </header>
-          <nav class="oc-sidebar-nav" aria-label="Workspace navigation">
-            <section class="oc-sidebar-group" data-sidebar-group>
-              <button class="oc-sidebar-group-toggle" type="button" aria-label="Workspace navigation" aria-expanded="true" aria-controls="component-sidebar-workspace-group" data-sidebar-group-toggle><i data-lucide="layout-grid" aria-hidden="true"></i><span>Workspace</span><i class="oc-sidebar-group-chevron" data-lucide="chevron-down" aria-hidden="true"></i></button>
-              <div class="oc-sidebar-group-items" id="component-sidebar-workspace-group" data-sidebar-group-panel>
-                <a class="oc-sidebar-link" href="#sidebar-preview" aria-label="Overview" aria-current="page"><i data-lucide="layout-dashboard" aria-hidden="true"></i><span class="oc-sidebar-link-label">Overview</span></a>
-                <a class="oc-sidebar-link" href="#sidebar-markup" aria-label="Activity"><i data-lucide="activity" aria-hidden="true"></i><span class="oc-sidebar-link-label">Activity</span><span class="oc-sidebar-count">8</span></a>
-              </div>
-            </section>
-            <section class="oc-sidebar-group" data-sidebar-group>
-              <button class="oc-sidebar-group-toggle" type="button" aria-label="Manage navigation" aria-expanded="true" aria-controls="component-sidebar-manage-group" data-sidebar-group-toggle><i data-lucide="blocks" aria-hidden="true"></i><span>Manage</span><i class="oc-sidebar-group-chevron" data-lucide="chevron-down" aria-hidden="true"></i></button>
-              <div class="oc-sidebar-group-items" id="component-sidebar-manage-group" data-sidebar-group-panel>
-                <a class="oc-sidebar-link" href="#sidebar-markup" aria-label="Components"><i data-lucide="box" aria-hidden="true"></i><span class="oc-sidebar-link-label">Components</span></a>
-                <a class="oc-sidebar-link" href="#sidebar-guidance" aria-label="Settings"><i data-lucide="settings" aria-hidden="true"></i><span class="oc-sidebar-link-label">Settings</span></a>
-              </div>
-            </section>
-          </nav>
-          <footer class="oc-sidebar-footer">
-            <span class="oc-avatar oc-avatar-sm" role="img" aria-label="Operator"><span class="oc-avatar-fallback" aria-hidden="true">OP</span></span>
-            <span class="oc-sidebar-account"><strong class="oc-sidebar-account-name">Operator</strong><small class="oc-sidebar-account-role">Maintainer</small></span>
-            <button class="oc-sidebar-footer-action" type="button" aria-label="Account options"><i data-lucide="ellipsis" aria-hidden="true"></i></button>
-          </footer>
-        </aside>
-      </div>
+      <div class="specimen-frame">${sidebarWorkbenchMarkup()}</div>
     </section>
     <section data-section-kind="markup" aria-labelledby="sidebar-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="sidebar-markup">Keep the landmark explicit</h2></div></div>${codeBlock(
       `<aside class="oc-sidebar" aria-label="Workspace" data-collapsed="false">
@@ -832,7 +794,7 @@ const contents = {
 </aside>`,
       "html",
     )}</section>
-    <section data-section-kind="guidance" aria-labelledby="sidebar-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="sidebar-guidance">Navigation stays predictable</h2></div></div>${guidanceList(["Use one sidebar for one bounded navigation context.", "Name the landmark when more than one navigation region exists.", "Mark the current destination with aria-current=page.", "Keep workspace, disclosure, and rail state explicit; consumers decide whether to persist it."])}</section>`,
+    <section data-section-kind="guidance" aria-labelledby="sidebar-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="sidebar-guidance">Navigation stays predictable</h2></div></div>${guidanceList(["Use one sidebar for one bounded navigation context.", "Use the shared generated avatar primitive for workspace and account identity.", "Mark the current destination with aria-current=page.", "Workspace changes emit oc-sidebar-workspace-change so applications can load the selected context.", "Keep workspace, disclosure, and rail state explicit; consumers decide whether to persist it."])}</section>`,
 
   "primitive-skeleton-line": () =>
     `${pageIntro("Component", "Skeleton Line", "A quiet placeholder that reserves text rhythm while content is loading.")}

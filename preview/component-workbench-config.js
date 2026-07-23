@@ -10,6 +10,7 @@ import {
 import { bindCombobox } from "./combobox.js";
 import { avatarFixtureUrl } from "./avatar-fixtures.js";
 import { buttonWorkbenchExamples } from "./component-reference.js";
+import { bindSidebars } from "./sidebar.js";
 
 export const WORKBENCH_ALL_VALUE = "__all__";
 
@@ -53,6 +54,95 @@ const inputGroupStates = [
   { label: "Invalid", value: "invalid" },
   { label: "Disabled", value: "disabled" },
 ];
+
+const sidebarWorkspaces = [
+  {
+    id: "openclaw",
+    label: "OpenClaw",
+    description: "Design workspace",
+    avatarSeed: "OpenClaw workspace",
+    groups: [
+      {
+        id: "workspace",
+        label: "Workspace",
+        icon: "layout-grid",
+        links: [
+          { label: "Overview", icon: "layout-dashboard", current: true },
+          { label: "Activity", icon: "activity", count: "8" },
+          { label: "Sessions", icon: "messages-square" },
+        ],
+      },
+      {
+        id: "manage",
+        label: "Manage",
+        icon: "blocks",
+        links: [
+          { label: "Components", icon: "box" },
+          { label: "Settings", icon: "settings" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "labs",
+    label: "Labs",
+    description: "Product experiments",
+    avatarSeed: "OpenClaw Labs",
+    groups: [
+      {
+        id: "experiments",
+        label: "Experiments",
+        icon: "flask-conical",
+        links: [
+          { label: "Prototype queue", icon: "list-filter", current: true, count: "4" },
+          { label: "Live runs", icon: "radio" },
+          { label: "Evaluations", icon: "chart-no-axes-combined" },
+        ],
+      },
+      {
+        id: "resources",
+        label: "Resources",
+        icon: "library",
+        links: [
+          { label: "Datasets", icon: "database" },
+          { label: "Playgrounds", icon: "panel-top" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "personal",
+    label: "Personal",
+    description: "Private drafts",
+    avatarSeed: "Mina personal workspace",
+    groups: [
+      {
+        id: "personal",
+        label: "Personal",
+        icon: "sparkles",
+        links: [
+          { label: "Inbox", icon: "inbox", current: true, count: "3" },
+          { label: "Drafts", icon: "notebook-pen" },
+          { label: "Saved", icon: "bookmark" },
+        ],
+      },
+      {
+        id: "automation",
+        label: "Automation",
+        icon: "workflow",
+        links: [
+          { label: "Schedules", icon: "calendar-clock" },
+          { label: "Shortcuts", icon: "zap" },
+        ],
+      },
+    ],
+  },
+];
+
+const sidebarWorkspaceOptions = sidebarWorkspaces.map(({ id: value, label }) => ({
+  label,
+  value,
+}));
 
 const autocompleteOptions = [
   { label: "Empty", value: "" },
@@ -507,6 +597,99 @@ export function appSurfaceWorkbenchMarkup({ toolbar = true, card = true } = {}) 
     <p>Children inherit the canonical interface foundation.</p>${cardMarkup}
   </div>
 </div>`;
+}
+
+function sidebarAvatarMarkup(seed, label, attributes = "") {
+  return `<span class="oc-avatar oc-avatar-sm oc-avatar-pixel" ${attributes}>
+  <img class="oc-avatar-image" src="${avatarFixtureUrl(seed)}" alt="${label}" width="28" height="28" />
+</span>`;
+}
+
+function sidebarWorkspacePanelMarkup(workspace, active) {
+  return `<div class="oc-sidebar-workspace-panel" data-sidebar-workspace-panel="${workspace.id}" data-active="${active}" aria-hidden="${!active}"${active ? "" : " inert"}>
+  ${workspace.groups
+    .map(
+      (group) => `<section class="oc-sidebar-group" data-sidebar-group>
+    <button class="oc-sidebar-group-toggle" type="button" aria-label="${group.label} navigation" aria-expanded="true" aria-controls="sidebar-${workspace.id}-${group.id}" data-sidebar-group-toggle>
+      <i data-lucide="${group.icon}" aria-hidden="true"></i>
+      <span>${group.label}</span>
+      <i class="oc-sidebar-group-chevron" data-lucide="chevron-down" aria-hidden="true"></i>
+    </button>
+    <div class="oc-sidebar-group-items" id="sidebar-${workspace.id}-${group.id}" data-sidebar-group-panel data-open="true" aria-hidden="false">
+      <div class="oc-sidebar-group-items-inner">
+        ${group.links
+          .map(
+            (link) => `<a class="oc-sidebar-link" href="#sidebar-${workspace.id}-${group.id}" aria-label="${link.label}"${link.current ? ' aria-current="page"' : ""}>
+          <i data-lucide="${link.icon}" aria-hidden="true"></i>
+          <span class="oc-sidebar-link-label">${link.label}</span>
+          ${link.count ? `<span class="oc-sidebar-count">${link.count}</span>` : ""}
+        </a>`,
+          )
+          .join("")}
+      </div>
+    </div>
+  </section>`,
+    )
+    .join("")}
+</div>`;
+}
+
+export function sidebarWorkbenchMarkup({
+  workspace = "openclaw",
+  collapsed = false,
+} = {}) {
+  const activeWorkspace =
+    sidebarWorkspaces.find((candidate) => candidate.id === workspace) ?? sidebarWorkspaces[0];
+
+  return `<aside class="oc-sidebar" id="component-sidebar" aria-label="Workspace" data-sidebar-workspace="${activeWorkspace.id}" data-collapsed="${collapsed}">
+  <header class="oc-sidebar-header">
+    <div class="oc-sidebar-workspace">
+      <button class="oc-sidebar-workspace-trigger" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="component-sidebar-workspaces" data-sidebar-workspace-toggle>
+        ${sidebarAvatarMarkup(
+          activeWorkspace.avatarSeed,
+          "",
+          `role="img" aria-label="${activeWorkspace.label} workspace" data-sidebar-workspace-avatar`,
+        )}
+        <span class="oc-sidebar-workspace-copy">
+          <strong data-sidebar-workspace-title>${activeWorkspace.label}</strong>
+          <small data-sidebar-workspace-subtitle>${activeWorkspace.description}</small>
+        </span>
+        <i data-lucide="chevrons-up-down" aria-hidden="true"></i>
+      </button>
+      <div class="oc-sidebar-workspace-menu" id="component-sidebar-workspaces" role="menu" aria-label="Choose workspace" aria-hidden="true" data-open="false" data-sidebar-workspace-menu inert>
+        ${sidebarWorkspaces
+          .map(
+            (candidate) => `<button class="oc-sidebar-workspace-option" type="button" role="menuitemradio" aria-checked="${candidate.id === activeWorkspace.id}" data-sidebar-workspace-option data-sidebar-workspace-id="${candidate.id}" data-sidebar-workspace-name="${candidate.label}" data-sidebar-workspace-description="${candidate.description}" data-sidebar-workspace-avatar-src="${avatarFixtureUrl(candidate.avatarSeed)}">
+          ${sidebarAvatarMarkup(candidate.avatarSeed, "")}
+          <span><strong>${candidate.label}</strong><small>${candidate.description}</small></span>
+          <i data-lucide="check" aria-hidden="true"></i>
+        </button>`,
+          )
+          .join("")}
+      </div>
+    </div>
+    <button class="oc-sidebar-collapse" type="button" aria-label="${collapsed ? "Expand" : "Collapse"} sidebar" aria-expanded="${!collapsed}" aria-controls="component-sidebar" data-sidebar-collapse>
+      <i data-lucide="${collapsed ? "panel-left-open" : "panel-left-close"}" aria-hidden="true"></i>
+    </button>
+  </header>
+  <nav class="oc-sidebar-nav" aria-label="Workspace navigation">
+    ${sidebarWorkspaces
+      .map((candidate) =>
+        sidebarWorkspacePanelMarkup(candidate, candidate.id === activeWorkspace.id),
+      )
+      .join("")}
+  </nav>
+  <footer class="oc-sidebar-footer">
+    ${sidebarAvatarMarkup("Mina operator", "Mina")}
+    <span class="oc-sidebar-account">
+      <strong class="oc-sidebar-account-name">Mina</strong>
+      <small class="oc-sidebar-account-role">Maintainer</small>
+    </span>
+    <button class="oc-sidebar-footer-action" type="button" aria-label="Account options">
+      <i data-lucide="ellipsis" aria-hidden="true"></i>
+    </button>
+  </footer>
+</aside>`;
 }
 
 export function heroWorkbenchMarkup({ lede = true, actions = false } = {}) {
@@ -2206,6 +2389,32 @@ ${appSurfaceWorkbenchMarkup(state)}
     },
     render(specimen, state) {
       specimen.innerHTML = appSurfaceWorkbenchMarkup(state);
+    },
+  },
+  "primitive-sidebar": {
+    defaults: { workspace: "openclaw", collapsed: false },
+    controls: [
+      {
+        id: "workspace",
+        label: "Workspace",
+        type: "choice",
+        options: sidebarWorkspaceOptions,
+      },
+      {
+        id: "collapsed",
+        label: "Compact rail",
+        type: "toggle",
+      },
+    ],
+    markup: sidebarWorkbenchMarkup,
+    render(specimen, state) {
+      specimen.innerHTML = sidebarWorkbenchMarkup(state);
+    },
+    bind(specimen, _state, update) {
+      bindSidebars(specimen, {
+        onWorkspaceChange: (workspace) => update("workspace", workspace, { render: false }),
+        onCollapsedChange: (collapsed) => update("collapsed", collapsed, { render: false }),
+      });
     },
   },
   "primitive-action": {

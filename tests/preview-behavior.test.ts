@@ -35,6 +35,7 @@ import { resolveTokenHash, syncTokenHash } from "../preview/token-catalog.js";
 import { bindTabs } from "../preview/tabs.js";
 import { getScrollFadeState } from "../preview/shell.js";
 import {
+  bindSidebars,
   setCurrentSidebarLink,
   setSidebarCollapsed,
   setSidebarDisclosure,
@@ -72,6 +73,7 @@ import {
   modelPickerWorkbenchMarkup,
   selectWorkbenchMarkup,
   sendButtonWorkbenchMarkup,
+  sidebarWorkbenchMarkup,
   spiralLoaderWorkbenchMarkup,
   suggestionsWorkbenchMarkup,
   tableWorkbenchMarkup,
@@ -1054,12 +1056,15 @@ describe("preview behavior", () => {
 
     const overview = new Link();
     const activity = new Link();
+    const inactiveWorkspace = new Link();
     overview.setAttribute("aria-current", "page");
+    inactiveWorkspace.setAttribute("aria-current", "page");
     const nav = { querySelectorAll: () => [overview, activity] };
 
     expect(setCurrentSidebarLink(nav, activity)).toBe(true);
     expect(overview.getAttribute("aria-current")).toBeUndefined();
     expect(activity.getAttribute("aria-current")).toBe("page");
+    expect(inactiveWorkspace.getAttribute("aria-current")).toBe("page");
   });
 
   test("keeps sidebar disclosure state aligned with its controlled panel", () => {
@@ -1069,27 +1074,81 @@ describe("preview behavior", () => {
         attributes.set(name, value);
       },
     };
-    const panel = { hidden: true };
+    const panelAttributes = new Map();
+    const panel = {
+      hidden: true,
+      inert: true,
+      querySelector() {
+        return {};
+      },
+      setAttribute(name, value) {
+        panelAttributes.set(name, value);
+      },
+    };
 
     expect(setSidebarDisclosure(toggle, panel, true)).toBe(true);
     expect(attributes.get("aria-expanded")).toBe("true");
     expect(panel.hidden).toBe(false);
+    expect(panel.inert).toBe(false);
+    expect(panelAttributes.get("data-open")).toBe("true");
+    expect(panelAttributes.get("aria-hidden")).toBe("false");
 
     expect(setSidebarDisclosure(toggle, panel, false)).toBe(true);
     expect(attributes.get("aria-expanded")).toBe("false");
+    expect(panel.hidden).toBe(false);
+    expect(panel.inert).toBe(true);
+    expect(panelAttributes.get("data-open")).toBe("false");
+    expect(panelAttributes.get("aria-hidden")).toBe("true");
+  });
+
+  test("preserves hidden fallback behavior for direct-child disclosure markup", () => {
+    const toggle = { setAttribute() {} };
+    const panel = {
+      hidden: false,
+      inert: false,
+      querySelector() {
+        return null;
+      },
+      matches() {
+        return false;
+      },
+      setAttribute() {},
+    };
+
+    expect(setSidebarDisclosure(toggle, panel, false)).toBe(true);
     expect(panel.hidden).toBe(true);
+    expect(setSidebarDisclosure(toggle, panel, true)).toBe(true);
+    expect(panel.hidden).toBe(false);
   });
 
   test("uses the shared avatar contract across the sidebar specimen", () => {
     const sidebar = getReferenceContent("primitive-sidebar");
 
-    expect(sidebar).toContain('class="oc-avatar oc-avatar-sm"');
+    expect(sidebar).toContain('class="oc-avatar oc-avatar-sm oc-avatar-pixel"');
+    expect(sidebar).toContain('class="oc-avatar-image"');
     expect(sidebar).toContain("data-sidebar-workspace-toggle");
     expect(sidebar).toContain("data-sidebar-group-toggle");
+    expect(sidebar).toContain('role="menuitemradio"');
     expect(sidebar).toContain('aria-label="Workspace navigation"');
-    expect(sidebar).toContain('aria-label="Manage navigation"');
     expect(sidebar).toContain("data-sidebar-collapse");
     expect(sidebar).not.toContain("oc-sidebar-avatar");
+  });
+
+  test("renders distinct workspace presets and compact rail state", () => {
+    const expanded = sidebarWorkbenchMarkup({ workspace: "labs" });
+    const collapsed = sidebarWorkbenchMarkup({ workspace: "personal", collapsed: true });
+
+    expect(expanded).toContain('data-sidebar-workspace="labs"');
+    expect(expanded).toContain(
+      'data-sidebar-workspace-panel="labs" data-active="true" aria-hidden="false"',
+    );
+    expect(expanded).toContain("Prototype queue");
+    expect(collapsed).toContain('data-sidebar-workspace="personal" data-collapsed="true"');
+    expect(collapsed).toContain(
+      'data-sidebar-workspace-panel="personal" data-active="true" aria-hidden="false"',
+    );
+    expect(collapsed).toContain("Inbox");
+    expect(collapsed).toContain('aria-label="Expand sidebar"');
   });
 
   test("collapses the sidebar rail and closes an open workspace menu", () => {
@@ -1108,6 +1167,7 @@ describe("preview behavior", () => {
     const workspaceToggle = new Element();
     workspaceToggle.setAttribute("aria-expanded", "true");
     const workspaceMenu = new Element();
+    workspaceMenu.matches = (selector) => selector === "[data-sidebar-workspace-menu]";
     const sidebar = new Element();
     sidebar.querySelector = (selector) =>
       ({
@@ -1122,16 +1182,19 @@ describe("preview behavior", () => {
     expect(collapse.getAttribute("aria-label")).toBe("Expand sidebar");
     expect(collapse.innerHTML).toContain('data-lucide="panel-left-open"');
     expect(workspaceToggle.getAttribute("aria-expanded")).toBe("false");
-    expect(workspaceMenu.hidden).toBe(true);
+    expect(workspaceMenu.hidden).toBe(false);
+    expect(workspaceMenu.getAttribute("data-open")).toBe("false");
+    expect(workspaceMenu.inert).toBe(true);
   });
 
   test("updates the visible workspace identity and selected option", () => {
     class Option {
       attributes = new Map();
-      constructor(name, description, initials) {
+      constructor(id, name, description, avatarSrc) {
+        this.attributes.set("data-sidebar-workspace-id", id);
         this.attributes.set("data-sidebar-workspace-name", name);
         this.attributes.set("data-sidebar-workspace-description", description);
-        this.attributes.set("data-sidebar-workspace-initials", initials);
+        this.attributes.set("data-sidebar-workspace-avatar-src", avatarSrc);
       }
       setAttribute(name, value) {
         this.attributes.set(name, value);
@@ -1141,38 +1204,149 @@ describe("preview behavior", () => {
       }
     }
 
-    const current = new Option("OpenClaw", "Design workspace", "OC");
-    const selected = new Option("Labs", "Product experiments", "LA");
+    const current = new Option("openclaw", "OpenClaw", "Design workspace", "openclaw.png");
+    const selected = new Option("labs", "Labs", "Product experiments", "labs.png");
     const title = { textContent: "" };
     const subtitle = { textContent: "" };
     const avatarAttributes = new Map();
+    const avatarImage = { src: "", alt: "Workspace" };
     const avatar = {
       setAttribute(name, value) {
         avatarAttributes.set(name, value);
       },
+      querySelector() {
+        return avatarImage;
+      },
     };
-    const fallback = { textContent: "" };
-    const sidebar = {
-      querySelectorAll: () => [current, selected],
+    class Panel {
+      attributes = new Map();
+      inert = false;
+      constructor(id) {
+        this.attributes.set("data-sidebar-workspace-panel", id);
+      }
+      setAttribute(name, value) {
+        this.attributes.set(name, value);
+      }
+      getAttribute(name) {
+        return this.attributes.get(name);
+      }
+    }
+    const currentPanel = new Panel("openclaw");
+    const selectedPanel = new Panel("labs");
+    const sidebarAttributes = new Map();
+    class Sidebar extends EventTarget {
+      setAttribute(name, value) {
+        sidebarAttributes.set(name, value);
+      }
+      querySelectorAll(selector) {
+        if (selector === "[data-sidebar-workspace-option]") return [current, selected];
+        if (selector === "[data-sidebar-workspace-panel]") return [currentPanel, selectedPanel];
+        return [];
+      }
       querySelector(selector) {
         return (
           {
             "[data-sidebar-workspace-title]": title,
             "[data-sidebar-workspace-subtitle]": subtitle,
             "[data-sidebar-workspace-avatar]": avatar,
-            "[data-sidebar-workspace-avatar] .oc-avatar-fallback": fallback,
           }[selector] ?? null
         );
-      },
-    };
+      }
+    }
+    const sidebar = new Sidebar();
+    let selectedWorkspace = "";
+    sidebar.addEventListener("oc-sidebar-workspace-change", (event) => {
+      selectedWorkspace = event.detail.workspace;
+    });
 
     expect(setSidebarWorkspace(sidebar, selected)).toBe(true);
-    expect(current.getAttribute("aria-pressed")).toBe("false");
-    expect(selected.getAttribute("aria-pressed")).toBe("true");
+    expect(sidebarAttributes.get("data-sidebar-workspace")).toBe("labs");
+    expect(current.getAttribute("aria-checked")).toBe("false");
+    expect(selected.getAttribute("aria-checked")).toBe("true");
     expect(title.textContent).toBe("Labs");
     expect(subtitle.textContent).toBe("Product experiments");
     expect(avatarAttributes.get("aria-label")).toBe("Labs workspace");
-    expect(fallback.textContent).toBe("LA");
+    expect(avatarImage.src).toBe("labs.png");
+    expect(currentPanel.getAttribute("data-active")).toBe("false");
+    expect(currentPanel.inert).toBe(true);
+    expect(selectedPanel.getAttribute("data-active")).toBe("true");
+    expect(selectedPanel.inert).toBe(false);
+    expect(selectedWorkspace).toBe("labs");
+  });
+
+  test("opens the workspace menu from the keyboard and dismisses it outside", () => {
+    class Element extends EventTarget {
+      attributes = new Map();
+      inert = false;
+      hidden = false;
+      focused = false;
+      setAttribute(name, value) {
+        this.attributes.set(name, value);
+      }
+      getAttribute(name) {
+        return this.attributes.get(name);
+      }
+      focus() {
+        this.focused = true;
+      }
+    }
+
+    const document = new (class extends EventTarget {
+      querySelectorAll() {
+        return [sidebar];
+      }
+    })();
+    const toggle = new Element();
+    toggle.setAttribute("aria-expanded", "false");
+    const menu = new Element();
+    menu.matches = (selector) => selector === "[data-sidebar-workspace-menu]";
+    menu.contains = (target) => target === selected;
+    const selected = new Element();
+    selected.setAttribute("aria-checked", "true");
+    const sidebar = new (class extends Element {
+      ownerDocument = document;
+      contains(target) {
+        return target === this || target === toggle || target === menu || target === selected;
+      }
+      querySelector(selector) {
+        return (
+          {
+            "[data-sidebar-workspace-toggle]": toggle,
+            "[data-sidebar-workspace-menu]": menu,
+            ".oc-sidebar-nav": null,
+            "[data-sidebar-collapse]": null,
+          }[selector] ?? null
+        );
+      }
+      querySelectorAll(selector) {
+        if (selector === "[data-sidebar-workspace-option]") return [selected];
+        return [];
+      }
+    })();
+    const root = { querySelectorAll: () => [sidebar] };
+
+    expect(bindSidebars(root)).toBe(1);
+    toggle.dispatchEvent(keyboardEvent("ArrowDown"));
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(menu.getAttribute("data-open")).toBe("true");
+    expect(selected.focused).toBe(true);
+
+    const triggerFocus = new Event("focusout");
+    Object.defineProperty(triggerFocus, "relatedTarget", { value: toggle });
+    menu.dispatchEvent(triggerFocus);
+    expect(menu.getAttribute("data-open")).toBe("true");
+    toggle.dispatchEvent(new Event("click"));
+    expect(menu.getAttribute("data-open")).toBe("false");
+
+    toggle.dispatchEvent(keyboardEvent("ArrowDown"));
+    selected.dispatchEvent(keyboardEvent("Tab"));
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(menu.getAttribute("data-open")).toBe("false");
+
+    toggle.dispatchEvent(keyboardEvent("ArrowDown"));
+    document.dispatchEvent(new Event("pointerdown"));
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(menu.getAttribute("data-open")).toBe("false");
   });
 
   test("keeps combobox active state aligned with filtered options", () => {
