@@ -330,8 +330,8 @@ describe("preview behavior", () => {
     expect(channels).toContain('class="oc-app-resource-list"');
     expect(channels).toContain("Recent delivery");
     expect(channels).toContain("Discord");
-    expect(channels).toContain('data-workbench-application-view="channels"');
-    expect(channels).toContain('data-workbench-application-view="automation"');
+    expect(channels).not.toContain('aria-label="Operations view"');
+    expect(channels).toContain("Add channel");
     expect(channels).toContain("5 configured");
     expect(channels).toContain("4 connected");
     expect(channels).not.toContain("6 configured");
@@ -399,6 +399,8 @@ describe("preview behavior", () => {
     );
     expect(controls).toContain('data-workbench-model-search');
     expect(controls).toContain('data-workbench-model-provider="Anthropic"');
+    expect(controls).toContain("Reset to GPT-5.6 Sol");
+    expect(controls).toContain("data-workbench-model-reset");
     expect(controls).toContain("data-workbench-model-picker");
     expect(controls).toContain('data-workbench-model-thinking="medium"');
     expect(controls).toContain("data-workbench-model-fast");
@@ -410,6 +412,7 @@ describe("preview behavior", () => {
     expect(controls).not.toContain('type="checkbox" checked');
     expect(locked).toContain('data-locked="true"');
     expect(locked).toContain(" disabled");
+    expect(locked).not.toContain("data-workbench-model-reset");
     expect(locked).not.toContain("<details");
     expect(locked).not.toContain('role="group"');
     expect(locked).toContain(
@@ -825,18 +828,19 @@ describe("preview behavior", () => {
       'data-lucide="paperclip"',
     );
     expect(suggestionsWorkbenchMarkup({ disabled: true })).toContain(" disabled");
-    expect(modelPickerWorkbenchMarkup({ value: "claude-opus" })).toContain(
-      'type="radio" name="workbench-agent-model" value="claude-opus" checked',
+    expect(modelPickerWorkbenchMarkup({ model: "claude-opus" })).toContain(
+      'data-workbench-application-model="claude-opus"',
     );
-    expect(modelPickerWorkbenchMarkup({ value: "claude-opus" })).toContain(
+    expect(modelPickerWorkbenchMarkup({ model: "claude-opus" })).toContain(
       "<strong>Claude Opus</strong>",
     );
-    expect(modelPickerWorkbenchMarkup({ value: "claude-opus" })).toContain(
-      "<small>Anthropic · 4.1</small>",
+    expect(modelPickerWorkbenchMarkup({ model: "claude-opus" })).toContain(
+      "<small>Anthropic</small>",
     );
-    expect(modelPickerWorkbenchMarkup({ value: "claude-opus" })).toContain(
-      'class="oc-agent-model-provider">Anthropic</span>',
+    expect(modelPickerWorkbenchMarkup({ model: "claude-opus" })).toContain(
+      'data-workbench-model-provider="Anthropic"',
     );
+    expect(modelPickerWorkbenchMarkup({ locked: true })).toContain(" disabled");
     expect(modeSelectorWorkbenchMarkup({ value: "plan" })).toContain(
       "<span data-agent-mode-label>Plan</span>",
     );
@@ -867,6 +871,9 @@ describe("preview behavior", () => {
     expect(toolWorkbenchMarkup({ kind: "bash", state: "complete", open: true })).toContain(
       "29 pass · 0 fail",
     );
+    expect(toolWorkbenchMarkup({ kind: "bash", state: "complete", open: false })).not.toContain(
+      '<details class="oc-agent-tool-row" open',
+    );
     expect(toolWorkbenchMarkup({ kind: "search", state: "complete", open: false })).not.toContain(
       " open",
     );
@@ -880,6 +887,9 @@ describe("preview behavior", () => {
     expect(planToolWorkbenchMarkup({ state: "complete", approved: true })).toContain("Approved");
     expect(questionToolWorkbenchMarkup({ state: "answered", allowSkip: true })).toContain(
       "Focused checks",
+    );
+    expect(questionToolWorkbenchMarkup({ state: "answered" })).toContain(
+      'class="oc-agent-question-summary"',
     );
     expect(questionToolWorkbenchMarkup({ state: "open", allowSkip: false })).not.toContain(
       "data-agent-question-skip",
@@ -917,6 +927,30 @@ describe("preview behavior", () => {
     );
     expect(agentChatWorkbenchMarkup({ example: "media", status: "ready" })).toContain(
       'data-kind="video"',
+    );
+    expect(agentChatWorkbenchMarkup({ example: "media", status: "ready" })).toContain(
+      'data-kind="audio"',
+    );
+    expect(agentChatWorkbenchMarkup({ example: "media", status: "ready" })).toContain(
+      "4 attachments ready",
+    );
+    expect(agentChatWorkbenchMarkup({ example: "media", status: "ready" })).not.toContain(
+      "Inspecting 4 attachments",
+    );
+    expect(agentChatWorkbenchMarkup({ example: "media", status: "streaming" })).toContain(
+      "Inspecting 4 attachments",
+    );
+    expect(agentChatWorkbenchMarkup({ example: "media", status: "submitted" })).toContain(
+      "surface-audit.pdf · queued",
+    );
+    expect(agentChatWorkbenchMarkup({ example: "media", status: "submitted" })).toContain(
+      "Queued 4 attachments",
+    );
+    expect(agentChatWorkbenchMarkup({ example: "media", status: "error" })).toContain(
+      "Attachment inspection failed",
+    );
+    expect(agentChatWorkbenchMarkup({ example: "empty", status: "ready" })).toContain(
+      "data-agent-file-drop",
     );
   });
 

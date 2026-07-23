@@ -587,6 +587,7 @@ export function renderComponentWorkbench(mount, pageId) {
   const definition = getWorkbenchDefinition(pageId);
   const hasControls = Boolean(definition?.controls?.length);
   const shellProfile = getWorkbenchShellProfile(pageId);
+  const canvasTheme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
 
   const workbench = createElement("div", "component-workbench");
   workbench.dataset.componentWorkbench = "";
@@ -598,8 +599,16 @@ export function renderComponentWorkbench(mount, pageId) {
   titleGroup.append(title);
   if (badge) titleGroup.append(badge);
   const navigation = createWorkbenchNavigation(pageId);
+  const canvasTools = createCanvasTools(canvasTheme, pageId);
   header.append(titleGroup);
-  if (navigation) header.append(navigation);
+  if (shellProfile.canvasPreset === "viewport") {
+    const headerActions = createElement("div", "component-workbench-header-actions");
+    headerActions.append(...canvasTools);
+    if (navigation) headerActions.append(navigation);
+    header.append(headerActions);
+  } else if (navigation) {
+    header.append(navigation);
+  }
 
   const stage = createElement("section", "component-workbench-stage");
   const stageTitle = createElement("h2", "sr-only");
@@ -610,17 +619,20 @@ export function renderComponentWorkbench(mount, pageId) {
   const canvas = createElement("div", "component-workbench-canvas");
   canvas.dataset.workbenchCanvas = "";
   canvas.dataset.viewport = "desktop";
-  const canvasTheme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
   canvas.dataset.workbenchTheme = canvasTheme;
   const frame = createElement("div", "component-workbench-frame");
   frame.append(specimen);
   canvas.append(frame);
-  stage.append(stageTitle, canvas, ...createCanvasTools(canvasTheme, pageId));
+  stage.append(
+    stageTitle,
+    canvas,
+    ...(shellProfile.canvasPreset === "viewport" ? [] : canvasTools),
+  );
 
   workbench.append(header, stage);
   if (hasControls) {
     const inspector = createElement("aside", "component-workbench-inspector");
-    inspector.dataset.expanded = "true";
+    inspector.dataset.expanded = "false";
     inspector.setAttribute("aria-labelledby", `${pageId}-workbench-controls`);
     const inspectorHeader = createElement("header", "component-workbench-inspector-header");
     const inspectorTitle = createElement("h2");
@@ -629,9 +641,9 @@ export function renderComponentWorkbench(mount, pageId) {
     const inspectorToggle = createElement("button", "component-workbench-inspector-toggle");
     inspectorToggle.type = "button";
     inspectorToggle.dataset.workbenchControlsToggle = "";
-    inspectorToggle.setAttribute("aria-expanded", "true");
+    inspectorToggle.setAttribute("aria-expanded", "false");
     inspectorToggle.setAttribute("aria-controls", `${pageId}-workbench-controls-panel`);
-    inspectorToggle.setAttribute("aria-label", "Collapse controls");
+    inspectorToggle.setAttribute("aria-label", "Expand controls");
     inspectorToggle.innerHTML =
       '<i data-lucide="sliders-horizontal" aria-hidden="true"></i>';
     inspectorHeader.append(inspectorTitle, inspectorToggle);

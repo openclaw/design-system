@@ -96,7 +96,7 @@ export function applicationModelControlsMarkup({
 } = {}) {
   const selected = applicationModels.find((entry) => entry.value === model) ?? applicationModels[0];
   const trigger = `<span class="oc-model-provider-mark">${agentIcon("box")}</span>
-      <span><strong>${selected.label}</strong><small>${selected.provider}</small></span>
+      <span><strong>${selected.label}</strong><small>${selected.provider} · ${selected.meta}</small></span>
       ${agentIcon("chevron")}`;
   const options = applicationModels
     .map(
@@ -128,6 +128,7 @@ export function applicationModelControlsMarkup({
         </nav>
         <div class="oc-model-options" role="group" aria-label="Models">${options}</div>
       </div>
+      <footer class="oc-model-menu-footer"><span>Session override</span><button type="button" data-workbench-model-reset${locked ? " disabled" : ""}>Reset to GPT-5.6 Sol</button></footer>
     </div>
   </details>`
   }
@@ -423,10 +424,6 @@ export function operationsApplicationMarkup({
           <p class="oc-page-header-description">${channels ? `5 configured · ${state === "error" ? "3" : "4"} connected` : "3 recurring tasks · 2 enabled"}</p>
         </div>
         <div class="oc-page-header-actions">
-          <div class="oc-segmented" role="group" aria-label="Operations view">
-            <button class="oc-segmented-item" type="button" aria-pressed="${channels}" data-workbench-application-view="channels">Channels</button>
-            <button class="oc-segmented-item" type="button" aria-pressed="${!channels}" data-workbench-application-view="automation">Automation</button>
-          </div>
           <button class="oc-action oc-action-primary" type="button">${agentIcon("plus")} ${channels ? "Add channel" : "New automation"}</button>
         </div>
       </header>

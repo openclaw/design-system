@@ -536,6 +536,7 @@ describe("preview contracts", () => {
 
   test("adapts application specimens to simulated workbench viewports", async () => {
     const css = await readFile("preview/lab.css", "utf8");
+    const workbench = await readFile("preview/component-workbench.js", "utf8");
 
     expect(css).toContain(
       '.component-workbench-canvas[data-viewport="tablet"] .oc-summary-strip {\n  grid-template-columns: repeat(2, minmax(0, 1fr));',
@@ -573,6 +574,10 @@ describe("preview contracts", () => {
     expect(css).toContain(
       '.component-workbench-canvas[data-viewport="mobile"] .oc-model-menu {\n  position: absolute;',
     );
+    expect(css).toContain(
+      '.component-workbench-canvas[data-viewport="mobile"] .oc-session-cell {\n  min-width: 0;',
+    );
+    expect(workbench).toContain('createElement("div", "component-workbench-header-actions")');
   });
 
   test("provides a surface role for the Layer Card specimen", () => {
@@ -1265,7 +1270,13 @@ describe("preview contracts", () => {
     expect(getWorkbenchDefinition("suggestions")?.controls).toMatchObject([
       { id: "disabled", type: "toggle" },
     ]);
-    expect(getWorkbenchDefinition("model-picker")?.controls[0].id).toBe("value");
+    expect(getWorkbenchDefinition("model-picker")?.controls.map(({ id }) => id)).toEqual([
+      "model",
+      "picker",
+      "thinking",
+      "fast",
+      "locked",
+    ]);
     expect(getWorkbenchDefinition("mode-selector")?.controls[0].id).toBe("value");
   });
 
@@ -1613,9 +1624,11 @@ describe("preview contracts", () => {
           { label: "Failed", value: "failed" },
         ],
       },
+      { id: "open", type: "toggle" },
     ]);
-    expect(normalizeWorkbenchState(bashDefinition, { state: "failed" })).toEqual({
+    expect(normalizeWorkbenchState(bashDefinition, { state: "failed", open: "yes" })).toEqual({
       state: "failed",
+      open: true,
     });
 
     for (const pageId of ["edit-tool", "generic-tool"]) {
@@ -1666,29 +1679,31 @@ describe("preview contracts", () => {
         type: "choice",
         options: [
           { label: "Running", value: "animating" },
-          { label: "Complete", value: "complete" },
+          { label: "Completed", value: "complete" },
+          { label: "Failed", value: "failed" },
+          { label: "Timed out", value: "timed_out" },
         ],
       },
       {
-        id: "subagentName",
+        id: "taskTitle",
         type: "choice",
         options: [
-          { label: "Volta", value: "Volta" },
-          { label: "Averroes", value: "Averroes" },
-          { label: "Bacon", value: "Bacon" },
+          { label: "Accessibility audit", value: "Accessibility audit" },
+          { label: "Control UI parity", value: "Control UI parity" },
+          { label: "macOS surface review", value: "macOS surface review" },
         ],
       },
       { id: "open", type: "toggle" },
     ]);
     expect(
       normalizeWorkbenchState(subagentDefinition, {
-        state: "pending",
-        subagentName: "Averroes",
+        state: "timed_out",
+        taskTitle: "Control UI parity",
         open: "yes",
       }),
     ).toEqual({
-      state: "complete",
-      subagentName: "Averroes",
+      state: "timed_out",
+      taskTitle: "Control UI parity",
       open: true,
     });
   });
@@ -1731,6 +1746,7 @@ describe("preview contracts", () => {
   test("models Agent Chat examples and ChatStatus values from the reference contract", () => {
     const definition = getWorkbenchDefinition("agent-chat");
 
+    expect(definition?.defaults.example).toBe("multi-user");
     expect(definition?.controls).toMatchObject([
       {
         id: "example",

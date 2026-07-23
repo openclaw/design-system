@@ -450,7 +450,7 @@
   border: 1px solid var(--oc-border-subtle);
   border-radius: var(--oc-radius-round);
   background: var(--oc-surface-secondary-soft);
-  color: var(--oc-accent-secondary);
+  color: var(--oc-text-muted);
   font: inherit;
   font-size: var(--oc-font-size-xs);
   font-weight: 750;
@@ -768,6 +768,10 @@
 .oc-app-resource-list-icon {
   width: 2.25rem;
   height: 2.25rem;
+}
+
+.oc-app-resource-list-item[aria-pressed="true"] .oc-app-resource-list-icon {
+  color: var(--oc-accent-secondary);
 }
 
 .oc-app-resource-list-icon svg,
@@ -2143,7 +2147,7 @@
 }
 
 .oc-settings-section-title {
-  font-size: var(--oc-font-size-sm);
+  font-size: var(--oc-font-size-xs);
 }
 
 .oc-settings-group {
@@ -2503,6 +2507,31 @@
   border-top: 1px solid var(--oc-border-subtle);
 }
 
+.oc-model-menu-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--oc-space-3);
+  padding: var(--oc-space-2) var(--oc-space-3);
+  border-top: 1px solid var(--oc-border-subtle);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-model-menu-footer button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--oc-text-secondary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.oc-model-menu-footer button:hover {
+  color: var(--oc-text-primary);
+}
+
 .oc-model-providers {
   display: grid;
   align-content: start;
@@ -2756,7 +2785,7 @@
 
 .oc-quick-chat-reply {
   display: grid;
-  min-height: 8rem;
+  min-height: 3rem;
   grid-template-columns: auto minmax(0, 1fr);
   align-content: start;
   gap: var(--oc-space-2);
@@ -2803,7 +2832,7 @@
 .oc-quick-chat-composer textarea {
   box-sizing: border-box;
   width: 100%;
-  min-height: 4rem;
+  min-height: 3rem;
   resize: none;
   padding: var(--oc-space-3);
   border: 0;
@@ -3270,7 +3299,15 @@
   }
 
   .oc-session-table {
-    min-width: 40rem;
+    min-width: 0;
+  }
+
+  .oc-session-cell {
+    min-width: 0;
+  }
+
+  .oc-session-table :is(th, td):nth-child(5) {
+    display: none;
   }
 
   .oc-quick-chat-stage {

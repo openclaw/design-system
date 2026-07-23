@@ -2909,6 +2909,17 @@ body[data-reference-layout="workbench"][data-page-kind="reference"] .reference-p
   margin-top: var(--oc-space-2);
 }
 
+.component-workbench-header-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--oc-space-2);
+}
+
+.component-workbench-header-actions .component-workbench-canvas-tools {
+  position: static;
+}
+
 .component-workbench-title h1 {
   overflow: hidden;
   margin: 0;

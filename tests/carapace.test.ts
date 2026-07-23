@@ -290,6 +290,7 @@ describe("CSS contract", () => {
       ".oc-model-control",
       ".oc-model-controls",
       ".oc-model-menu",
+      ".oc-model-menu-footer",
       ".oc-model-menu-layout",
       ".oc-model-option",
       ".oc-model-option-copy",

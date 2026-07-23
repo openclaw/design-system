@@ -1,5 +1,6 @@
 import { agentIcon } from "./agent-components.js";
 import {
+  applicationModelControlsMarkup,
   operationsApplicationMarkup,
   quickChatApplicationMarkup,
   sessionsApplicationMarkup,
@@ -93,13 +94,6 @@ const errorMessageExamples = [
   { label: "Rate limit", value: "rate-limit" },
 ];
 
-const agentModels = [
-  { label: "GPT-5.6 Fast", value: "gpt-5-6-fast", provider: "OpenAI", version: "5.6" },
-  { label: "GPT-5.6 Sol", value: "extra-high", provider: "OpenAI", version: "5.6 Sol" },
-  { label: "Claude Opus", value: "claude-opus", provider: "Anthropic", version: "4.1" },
-  { label: "Gemini Pro", value: "gemini-pro", provider: "Google", version: "2.5" },
-];
-
 const agentModes = [
   { label: "Agent", value: "agent" },
   { label: "Plan", value: "plan" },
@@ -115,10 +109,17 @@ const bashLifecycleStates = [
   { label: "Failed", value: "failed" },
 ];
 
-const subagentNames = [
-  { label: "Volta", value: "Volta" },
-  { label: "Averroes", value: "Averroes" },
-  { label: "Bacon", value: "Bacon" },
+const subagentTaskTitles = [
+  { label: "Accessibility audit", value: "Accessibility audit" },
+  { label: "Control UI parity", value: "Control UI parity" },
+  { label: "macOS surface review", value: "macOS surface review" },
+];
+
+const subagentLifecycleStates = [
+  { label: "Running", value: "animating" },
+  { label: "Completed", value: "complete" },
+  { label: "Failed", value: "failed" },
+  { label: "Timed out", value: "timed_out" },
 ];
 
 const todoItemStates = [
@@ -871,22 +872,20 @@ export function suggestionsWorkbenchMarkup({ disabled = false } = {}) {
 </div>`;
 }
 
-export function modelPickerWorkbenchMarkup({ value = "extra-high" } = {}) {
-  const active = agentModels.find((model) => model.value === value) ?? agentModels[1];
-  const options = agentModels
-    .map(({ label, value: optionValue, provider, version }, index, models) => {
-      const checked = optionValue === value ? " checked" : "";
-      const providerHeading =
-        index === 0 || models[index - 1].provider !== provider
-          ? `<span class="oc-agent-model-provider">${provider}</span>`
-          : "";
-      return `${providerHeading}<label class="oc-agent-model-option"><input class="sr-only" type="radio" name="workbench-agent-model" value="${optionValue}"${checked}><span class="oc-agent-model-option-copy"><strong>${label}</strong><small>${provider} · ${version}</small></span><span class="oc-agent-mode-check" aria-hidden="true">${agentIcon("check")}</span></label>`;
-    })
-    .join("");
-  return `<details class="oc-agent-model-picker" data-workbench-model-picker>
-  <summary aria-label="Select model"><span class="oc-agent-model-provider-mark">${active.provider.slice(0, 1)}</span><strong>${active.label}</strong><span>${active.provider}</span>${agentIcon("chevron")}</summary>
-  <fieldset class="oc-agent-model-menu"><legend class="sr-only">Model</legend>${options}</fieldset>
-</details>`;
+export function modelPickerWorkbenchMarkup({
+  model = "gpt-5.6-sol",
+  thinking = "high",
+  fast = true,
+  picker = true,
+  locked = false,
+} = {}) {
+  return applicationModelControlsMarkup({
+    model,
+    thinking,
+    fast,
+    open: picker,
+    locked,
+  });
 }
 
 export function modeSelectorWorkbenchMarkup({ value = "agent" } = {}) {
@@ -947,23 +946,30 @@ export function toolWorkbenchMarkup({
   kind = "generic",
   state = "complete",
   open = true,
-  subagentName = "Volta",
+  taskTitle = "Accessibility audit",
 } = {}) {
   const complete = state === "complete";
 
   if (kind === "bash") {
     const failed = state === "failed";
-    const header = complete
-      ? `<span class="oc-agent-tool-card-title">Command succeeded</span><span class="oc-agent-tool-state">312 ms</span>`
-      : failed
-        ? `<span class="oc-agent-tool-card-title">Command failed</span><span class="oc-agent-tool-state">exit 1</span>`
-        : `<span class="oc-agent-tool-card-title"><span class="oc-agent-text-shimmer">Running command</span></span>${agentSpinner()}`;
     const output = complete
       ? `<pre class="oc-agent-bash-output" role="region" aria-label="Command output" tabindex="0"><code>29 pass · 0 fail\nFinished in 312ms</code></pre>`
       : failed
         ? `<pre class="oc-agent-bash-output" role="region" aria-label="Command error" tabindex="0"><code>Error: expected application pane to fit viewport\nProcess exited with code 1</code></pre>`
-        : "";
-    return `<div class="oc-agent-tool-card oc-agent-bash-tool" data-state="${state}"><header class="oc-agent-tool-card-header">${header}</header><div class="oc-agent-tool-card-body oc-agent-bash-terminal"><div class="oc-agent-bash-command"><span aria-hidden="true">$ </span><code>bun run check</code></div>${output}</div></div>`;
+        : `<p class="oc-agent-bash-progress"><span class="oc-agent-text-shimmer">Waiting for test output</span></p>`;
+    const panel = `<div class="oc-agent-tool-card oc-agent-bash-tool" data-state="${state}">
+  <dl class="oc-agent-bash-meta"><div><dt>cwd</dt><dd>openclaw/carapace</dd></div><div><dt>timeout</dt><dd>30s</dd></div><div><dt>env</dt><dd>CI=1</dd></div></dl>
+  <div class="oc-agent-tool-card-body oc-agent-bash-terminal"><div class="oc-agent-bash-command"><span aria-hidden="true">$ </span><code>bun run check</code></div>${output}</div>
+</div>`;
+    return `<div class="oc-agent-bash-tool-row">${agentToolRow({
+      icon: agentIcon("terminal"),
+      label: complete ? "Ran command" : failed ? "Command failed" : "Running command",
+      shimmer: !complete && !failed,
+      detail: "bun run check",
+      meta: complete ? "312 ms" : failed ? "exit 1" : "",
+      open,
+      panel,
+    })}</div>`;
   }
 
   if (kind === "edit") {
@@ -1002,12 +1008,25 @@ export function toolWorkbenchMarkup({
   }
 
   if (kind === "subagent") {
-    const nested = `<div class="oc-agent-tool-row-list">${agentToolRow({ icon: agentIcon("file"), label: "Read file", detail: "styles/components.css" })}${agentToolRow({ icon: agentIcon("search"), label: complete ? "Grep" : "Grepping", shimmer: !complete, detail: "aria-label" })}</div>`;
+    const failed = state === "failed";
+    const timedOut = state === "timed_out";
+    const statusLabel = complete
+      ? "Completed task"
+      : failed
+        ? "Task failed"
+        : timedOut
+          ? "Task timed out"
+          : "Running task";
+    const nested = `<div class="oc-agent-subagent-panel">
+  <div class="oc-agent-subagent-progress"><span style="width: ${complete ? "100" : failed || timedOut ? "72" : "58"}%"></span></div>
+  <div class="oc-agent-tool-row-list">${agentToolRow({ icon: agentIcon("file"), label: "Last tool", detail: "Read styles/components.css" })}${agentToolRow({ icon: agentIcon(failed || timedOut ? "x" : "search"), label: complete ? "Transcript ready" : failed ? "Stopped after error" : timedOut ? "Stopped at timeout" : "Reviewing selectors", shimmer: !complete && !failed && !timedOut, detail: "application surfaces" })}</div>
+</div>`;
     return `<div class="oc-agent-subagent-tool">${agentToolRow({
-      label: complete ? "Completed Subagent" : "Running Subagent",
-      shimmer: !complete,
-      detail: `<span class="oc-agent-subagent-name">${escapeHtml(subagentName)}</span> · Audit component accessibility`,
-      meta: complete ? "6s" : "",
+      icon: agentIcon("sparkles"),
+      label: statusLabel,
+      shimmer: !complete && !failed && !timedOut,
+      detail: `<span class="oc-agent-subagent-name">${escapeHtml(taskTitle)}</span>`,
+      meta: complete ? "6s" : failed ? "error" : timedOut ? "30s" : "58%",
       open,
       panel: nested,
     })}</div>`;
@@ -1081,16 +1100,10 @@ export function planToolWorkbenchMarkup({
 export function questionToolWorkbenchMarkup({ state = "open", allowSkip = true } = {}) {
   const answered = state === "answered";
   if (answered) {
-    return `<form class="oc-agent-question-tool" data-workbench-question-form data-state="answered">
-  <header class="oc-agent-question-header"><span class="oc-agent-question-header-label">${agentIcon("question")}Question</span><span class="oc-agent-question-nav">1 of 1</span></header>
-  <div class="oc-agent-question-body"><p class="oc-agent-question-answered" role="status">Answered · Focused checks</p></div>
-</form>`;
+    return `<div class="oc-agent-question-summary" data-state="answered" role="status">${agentIcon("check")}<span><strong>Focused checks</strong><small>Answer submitted</small></span></div>`;
   }
   if (state === "skipped") {
-    return `<form class="oc-agent-question-tool" data-workbench-question-form data-state="skipped">
-  <header class="oc-agent-question-header"><span class="oc-agent-question-header-label">${agentIcon("question")}Question</span><span class="oc-agent-question-nav">1 of 1</span></header>
-  <div class="oc-agent-question-body"><p class="oc-agent-question-answered" role="status">Skipped · The agent will continue with its best judgment.</p></div>
-</form>`;
+    return `<div class="oc-agent-question-summary" data-state="skipped" role="status">${agentIcon("arrow-right")}<span><strong>Question skipped</strong><small>Continuing with best judgment</small></span></div>`;
   }
   const submitting = state === "submitting";
   const failed = state === "error";
@@ -1154,7 +1167,47 @@ function chatResponseMarkup(status, copyToolbar) {
   return `<div class="oc-agent-assistant-turn">${agentToolRow({ icon: agentIcon("terminal"), label: "Ran command", detail: "bun run check" })}<div class="oc-agent-markdown"><p>The component contract is intact. The preview changes are local, the focused tests pass, and no exported token or component contract changed.</p></div>${toolbar}</div>`;
 }
 
-export function messageListWorkbenchMarkup({ status = "ready", copyToolbar = true } = {}) {
+function mediaGalleryMarkup(status) {
+  const documentState =
+    status === "ready"
+      ? "ready"
+      : status === "error"
+        ? "failed"
+        : status === "submitted"
+          ? "queued"
+          : "checking";
+  return `<div class="oc-agent-media-grid">
+  <figure class="oc-agent-media" data-kind="image"><span class="oc-agent-media-placeholder">${agentIcon("image")}</span><figcaption>settings-light.png</figcaption></figure>
+  <figure class="oc-agent-media" data-kind="video"><span class="oc-agent-media-placeholder">${agentIcon("play")}</span><figcaption>control-ui.mp4 · 0:18</figcaption></figure>
+  <figure class="oc-agent-media" data-kind="audio"><span class="oc-agent-media-placeholder">${agentIcon("audio-lines")}</span><figcaption>voice-note.m4a · 0:12</figcaption></figure>
+  <figure class="oc-agent-media" data-kind="document"><span class="oc-agent-media-placeholder">${agentIcon("file")}</span><figcaption>surface-audit.pdf · ${documentState}</figcaption></figure>
+</div>`;
+}
+
+function mediaStatusMarkup(status) {
+  if (status === "error") {
+    return `<div class="oc-agent-media-status" data-state="error">${agentIcon("x")} Attachment inspection failed</div>`;
+  }
+  if (status === "ready") {
+    return `<div class="oc-agent-media-status" data-state="ready">${agentIcon("check")} 4 attachments ready</div>`;
+  }
+  return `<div class="oc-agent-media-status" data-state="${status}"><span class="oc-loader-spinner" aria-hidden="true"></span> ${status === "submitted" ? "Queued 4 attachments" : "Inspecting 4 attachments"}</div>`;
+}
+
+export function messageListWorkbenchMarkup({
+  status = "ready",
+  copyToolbar = true,
+  mode = "direct",
+  media = false,
+} = {}) {
+  if (mode === "attributed") {
+    return `<div class="oc-agent-message-list" role="log" aria-label="Conversation history">
+  <div class="oc-agent-message-list-content">
+    <div class="oc-agent-attributed-message" data-author="user"><span class="oc-avatar oc-avatar-sm" role="img" aria-label="Mina"><span class="oc-avatar-fallback" aria-hidden="true">MI</span></span><div><span class="oc-agent-message-author">Mina</span><div class="oc-agent-user-message"><p>Can we make the application panes feel closer to the mac app?</p></div>${media ? mediaGalleryMarkup(status) : ""}</div></div>
+    <div class="oc-agent-attributed-message" data-author="agent"><span class="oc-avatar oc-avatar-sm" role="img" aria-label="OpenClaw"><span class="oc-avatar-fallback" aria-hidden="true">OC</span></span><div><span class="oc-agent-message-author">OpenClaw</span>${chatResponseMarkup(status, copyToolbar)}${media ? mediaStatusMarkup(status) : ""}</div></div>
+  </div>
+</div>`;
+  }
   return `<div class="oc-agent-message-list" role="log" aria-label="Conversation history">
   <div class="oc-agent-message-list-content">
     <div class="oc-agent-turn">
@@ -1313,25 +1366,14 @@ export function agentChatWorkbenchMarkup({
   copyToolbar = false,
 } = {}) {
   const isEmpty = status !== "error" && (example === "empty" || example === "suggestions");
-  const attributedMessages =
-    example === "multi-user"
-      ? `<div class="oc-agent-message-list" role="log" aria-label="Conversation history">
-  <div class="oc-agent-message-list-content">
-    <div class="oc-agent-attributed-message" data-author="user"><span class="oc-avatar oc-avatar-sm" role="img" aria-label="Mina"><span class="oc-avatar-fallback" aria-hidden="true">MI</span></span><div><span class="oc-agent-message-author">Mina</span><div class="oc-agent-user-message"><p>Can we make the application panes feel closer to the mac app?</p></div></div></div>
-    <div class="oc-agent-attributed-message" data-author="agent"><span class="oc-avatar oc-avatar-sm" role="img" aria-label="OpenClaw"><span class="oc-avatar-fallback" aria-hidden="true">OC</span></span><div><span class="oc-agent-message-author">OpenClaw</span><div class="oc-agent-markdown"><p>Yes. I’m reducing chrome, tightening rows, and giving every viewport one scroll owner.</p></div></div></div>
-  </div>
-</div>`
-      : "";
-  const mediaMessages =
-    example === "media"
-      ? `<div class="oc-agent-message-list" role="log" aria-label="Conversation history">
-  <div class="oc-agent-message-list-content"><div class="oc-agent-attributed-message" data-author="user"><span class="oc-avatar oc-avatar-sm" role="img" aria-label="Mina"><span class="oc-avatar-fallback" aria-hidden="true">MI</span></span><div><span class="oc-agent-message-author">Mina</span><div class="oc-agent-user-message"><p>Compare these two states.</p></div><div class="oc-agent-media-grid"><figure class="oc-agent-media" data-kind="image"><span class="oc-agent-media-placeholder">${agentIcon("image")}</span><figcaption>settings-light.png</figcaption></figure><figure class="oc-agent-media" data-kind="video"><span class="oc-agent-media-placeholder">${agentIcon("play")}</span><figcaption>control-ui.mp4 · 0:18</figcaption></figure></div></div></div></div>
-</div>`
-      : "";
-  const customTranscript = status === "ready" ? attributedMessages || mediaMessages : "";
   const messages = isEmpty
     ? ""
-    : customTranscript || messageListWorkbenchMarkup({ status, copyToolbar });
+    : messageListWorkbenchMarkup({
+        status,
+        copyToolbar,
+        mode: example === "multi-user" || example === "media" ? "attributed" : "direct",
+        media: example === "media",
+      });
   const suggestions =
     example === "suggestions"
       ? `<div class="oc-agent-suggestions oc-agent-chat-suggestions" aria-label="Suggested prompts">
@@ -1360,7 +1402,8 @@ export function agentChatWorkbenchMarkup({
   </form>`;
 
   if (isEmpty) {
-    return `<section class="oc-agent-chat oc-agent-chat-empty" aria-label="Agent conversation">
+    return `<section class="oc-agent-chat oc-agent-chat-empty" aria-label="Agent conversation" data-agent-file-drop>
+  <div class="oc-agent-drop-overlay" aria-hidden="true">${agentIcon("paperclip")}<strong>Drop files to attach</strong><span>Images, video, audio, documents, and code</span></div>
   <div class="oc-agent-chat-center">${composer}${suggestions}</div>
 </section>`;
   }
@@ -1373,10 +1416,15 @@ export function agentChatWorkbenchMarkup({
 }
 
 function createToolWorkbenchDefinition(kind) {
-  const expandable = !["bash", "edit", "generic"].includes(kind);
-  const stateOptions = kind === "bash" ? bashLifecycleStates : toolLifecycleStates;
+  const expandable = !["edit", "generic"].includes(kind);
+  const stateOptions =
+    kind === "bash"
+      ? bashLifecycleStates
+      : kind === "subagent"
+        ? subagentLifecycleStates
+        : toolLifecycleStates;
   const defaults = expandable ? { state: "complete", open: true } : { state: "complete" };
-  if (kind === "subagent") defaults.subagentName = "Volta";
+  if (kind === "subagent") defaults.taskTitle = "Accessibility audit";
   const controls = [
     {
       id: "state",
@@ -1387,10 +1435,10 @@ function createToolWorkbenchDefinition(kind) {
   ];
   if (kind === "subagent") {
     controls.push({
-      id: "subagentName",
-      label: "Subagent",
+      id: "taskTitle",
+      label: "Task",
       type: "choice",
-      options: subagentNames,
+      options: subagentTaskTitles,
     });
   }
   if (expandable) {
@@ -1429,6 +1477,7 @@ function bindApplicationModelControls(specimen, update) {
   const picker = specimen.querySelector("[data-workbench-model-picker]");
   const thinking = specimen.querySelector("[data-workbench-model-thinking]");
   const fast = specimen.querySelector("[data-workbench-model-fast]");
+  const reset = specimen.querySelector("[data-workbench-model-reset]");
 
   const applyFilters = () => {
     const query = search?.value.trim().toLowerCase() ?? "";
@@ -1467,6 +1516,13 @@ function bindApplicationModelControls(specimen, update) {
     update("thinking", levels[(current + 1) % levels.length]);
   });
   fast?.addEventListener("change", () => update("fast", fast.checked));
+  reset?.addEventListener("click", () => {
+    if (reset.hasAttribute("disabled")) {
+      return;
+    }
+    update("picker", false, { render: false });
+    update("model", "gpt-5.6-sol");
+  });
 }
 
 const definitions = {
@@ -1687,7 +1743,7 @@ const definitions = {
     },
   },
   "agent-chat": {
-    defaults: { example: "basic", status: "ready", copyToolbar: false },
+    defaults: { example: "multi-user", status: "ready", copyToolbar: false },
     controls: [
       {
         id: "example",
@@ -1911,7 +1967,7 @@ const definitions = {
           update("state", "answered");
         });
       specimen.querySelector("[data-agent-question-skip]")?.addEventListener("click", () => {
-        update("state", "answered");
+        update("state", "skipped");
       });
       for (const custom of specimen.querySelectorAll(".oc-agent-question-option-custom")) {
         const radio = custom.querySelector('input[type="radio"]');
@@ -2556,13 +2612,40 @@ ${appSurfaceWorkbenchMarkup(state)}
     },
   },
   "model-picker": {
-    defaults: { value: "extra-high" },
+    defaults: {
+      model: "gpt-5.6-sol",
+      picker: true,
+      thinking: "high",
+      fast: true,
+      locked: false,
+    },
     controls: [
       {
-        id: "value",
+        id: "model",
         label: "Model",
         type: "choice",
-        options: agentModels,
+        options: applicationModels,
+      },
+      {
+        id: "picker",
+        label: "Picker open",
+        type: "toggle",
+      },
+      {
+        id: "thinking",
+        label: "Thinking",
+        type: "choice",
+        options: applicationThinkingLevels,
+      },
+      {
+        id: "fast",
+        label: "Fast mode",
+        type: "toggle",
+      },
+      {
+        id: "locked",
+        label: "Locked",
+        type: "toggle",
       },
     ],
     markup(state) {
@@ -2572,11 +2655,7 @@ ${appSurfaceWorkbenchMarkup(state)}
       specimen.innerHTML = `<div class="oc-agent-model-demo">${modelPickerWorkbenchMarkup(state)}</div>`;
     },
     bind(specimen, _state, update) {
-      specimen.querySelectorAll('input[name="workbench-agent-model"]').forEach((input) => {
-        input.addEventListener("change", () => {
-          if (input.checked) update("value", input.value);
-        });
-      });
+      bindApplicationModelControls(specimen, update);
     },
   },
   "mode-selector": {
