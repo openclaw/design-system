@@ -8,6 +8,7 @@ import {
   workspaceApplicationMarkup,
 } from "./application-screens.js";
 import {
+  avatarFixtureUrl,
   avatarWorkbenchExamples,
   buttonWorkbenchExamples,
   formatComponentWorkbenchCode,
@@ -86,6 +87,14 @@ export const skillsInstallCommand = `npx skills@1.5.16 add \\
 export const skillsUpdateCommand = "npx skills@1.5.16 update --project --yes";
 
 const contents = {
+  effects: () =>
+    `${pageIntro("Effects", "Motion that explains what changed.", "Carapace motion is tied to product state. Every pattern has a static reduced-motion outcome and avoids moving surrounding layout.")}
+    <section class="effects-overview-grid" aria-label="Effect families">
+      <a class="reference-card" href="./interaction/"><span>Hover · focus · press</span><strong>Interaction</strong><p>Small emphasis changes that confirm input without adding noise.</p></a>
+      <a class="reference-card" href="./loading/"><span>Pending · streaming</span><strong>Loading</strong><p>Spinners, shimmer, skeletons, and progress matched to the work.</p></a>
+      <a class="reference-card" href="./attention/"><span>Presence · activity</span><strong>Attention</strong><p>Pulse and sheen for active agents, live meters, and meaningful state changes.</p></a>
+    </section>`,
+
   "foundation-tokens": () =>
     `${pageIntro("Foundations", "Design tokens", "Use the shared variables to build consistent color, type, spacing, shape, depth, and motion across OpenClaw interfaces.")}${tokenSection()}`,
 
@@ -323,6 +332,30 @@ const contents = {
       </div>
     </section>`,
 
+  "effect-interaction": () =>
+    `${pageIntro("Effect", "Interaction", "Small state changes that confirm hover, focus, selection, and activation without moving surrounding layout.")}
+    <section data-section-kind="preview" aria-labelledby="effect-interaction-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="effect-interaction-preview">Responsive emphasis</h2></div><span class="oc-pill">State driven</span></div>
+      <div class="specimen-frame"><div class="effect-interaction-demo"><button class="oc-avatar-button" type="button" aria-label="Open agent profile"><span class="oc-avatar oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Interaction")}" alt="" /></span></button><button class="oc-provider-logo" data-brand-color style="--provider-brand-color:#ff6b45" type="button"><span class="oc-provider-logo-mark" aria-hidden="true">${icon("sparkles")}</span><span>Provider identity</span></button><a class="oc-link oc-link-standalone" href="../" data-workbench-inert-link>Continue ${icon("arrow-right")}</a></div></div>
+    </section>
+    <section data-section-kind="markup" aria-labelledby="effect-interaction-markup"><div class="section-heading"><div><p class="eyebrow">Contract</p><h2 id="effect-interaction-markup">Animate the changed property</h2></div></div>${codeBlock(`<button class="oc-avatar-button">\n  <span class="oc-avatar">…</span>\n</button>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="effect-interaction-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="effect-interaction-guidance">Feedback stays close to the input</h2></div></div>${guidanceList(["Prefer color, border, and small transform changes under 200ms.", "Focus feedback must remain visible without animation.", "Never use hover-only disclosure for required information."])}</section>`,
+
+  "effect-loading": () =>
+    `${pageIntro("Effect", "Loading", "Progress signals matched to unknown duration, reserved content, and streaming work.")}
+    <section data-section-kind="preview" aria-labelledby="effect-loading-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="effect-loading-preview">Different work, different signals</h2></div><span class="oc-pill">Reduced motion safe</span></div>
+      <div class="specimen-frame"><div class="effect-loading-demo"><span class="oc-loader" role="status"><span class="oc-loader-spinner" aria-hidden="true"></span><span>Connecting…</span></span><span class="oc-agent-text-shimmer" role="status">Reviewing component contracts</span><div class="workbench-skeleton-demo" aria-busy="true" aria-label="Loading content"><span class="oc-skeleton-line"></span><span class="oc-skeleton-line"></span><span class="oc-skeleton-line oc-skeleton-line-short"></span></div></div></div>
+    </section>
+    <section data-section-kind="markup" aria-labelledby="effect-loading-markup"><div class="section-heading"><div><p class="eyebrow">Contract</p><h2 id="effect-loading-markup">Name the pending state</h2></div></div>${codeBlock(`<span class="oc-loader" role="status">\n  <span class="oc-loader-spinner" aria-hidden="true"></span>\n  <span>Connecting…</span>\n</span>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="effect-loading-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="effect-loading-guidance">Do not decorate idle time</h2></div></div>${guidanceList(["Use a spinner when duration is unknown.", "Use skeletons only when the resulting layout is predictable.", "Use text shimmer for an active agent phase, not generic page loading."])}</section>`,
+
+  "effect-attention": () =>
+    `${pageIntro("Effect", "Attention", "Subtle continuous motion for active work, presence, and live measurements that stops when the state settles.")}
+    <section data-section-kind="preview" aria-labelledby="effect-attention-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="effect-attention-preview">Active, not alarming</h2></div><span class="oc-pill">State driven</span></div>
+      <div class="specimen-frame"><div class="effect-attention-demo"><div class="oc-meter" data-effect="sheen"><label class="oc-meter-header" for="effect-context-meter"><strong>Context ready</strong><span>82%</span></label><meter class="oc-meter-value" id="effect-context-meter" min="0" max="100" value="82">82%</meter><p class="oc-meter-caption">The sheen moves; the value does not.</p></div><span class="effect-presence" role="status"><span aria-hidden="true"></span>Agent actively responding</span></div></div>
+    </section>
+    <section data-section-kind="markup" aria-labelledby="effect-attention-markup"><div class="section-heading"><div><p class="eyebrow">Contract</p><h2 id="effect-attention-markup">Bind motion to state</h2></div></div>${codeBlock(`<div class="oc-meter" data-effect="sheen">\n  <meter class="oc-meter-value" value="82" max="100">82%</meter>\n</div>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="effect-attention-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="effect-attention-guidance">Continuous motion earns its place</h2></div></div>${guidanceList(["Stop the effect when work completes or fails.", "Keep elapsed timers outside live regions.", "Reduced motion renders the final visible state without pulsing or sweeping."])}</section>`,
+
   "primitive-app-surface": () =>
     `${pageIntro("Interface primitive", "App surface", "Establishes the canonical background, foreground, typography, and component surface aliases for an application subtree.")}
     <section data-section-kind="preview" aria-labelledby="app-surface-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="app-surface-preview">Root visual context</h2></div><span class="oc-pill">.oc-app-surface</span></div>
@@ -340,12 +373,13 @@ const contents = {
     <section data-section-kind="guidance" aria-labelledby="autocomplete-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="autocomplete-guidance">Suggestions do not constrain entry</h2></div></div>${guidanceList(["Use Select when the value must come from a fixed set.", "Keep a visible label even when the placeholder is descriptive.", "Support arrow keys, Enter, Escape, and a visible active option."])}</section>`,
 
   "primitive-avatar": () =>
-    `${pageIntro("Component", "Avatar", "A compact visual identity for a person or agent, with image, fallback, size, and optional status roles.")}
-    <section data-section-kind="preview" aria-labelledby="avatar-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="avatar-preview">Identity at useful sizes</h2></div><span class="oc-pill">.oc-avatar</span></div>
+    `${pageIntro("Component", "Avatar", "A compact identity system for people, agents, collaborators, and live presence across dense application surfaces.")}
+    <section data-section-kind="preview" aria-labelledby="avatar-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="avatar-preview">Identity, presence, and collaboration</h2></div><span class="oc-pill">.oc-avatar</span></div>
       <div class="specimen-frame"><div class="primitive-avatar-row primitive-avatar-variants">${avatarPreview()}</div></div>
     </section>
+    <section class="avatar-generator-note" aria-labelledby="avatar-generator-title"><div><p class="eyebrow">Preview fixture</p><h2 id="avatar-generator-title">Deterministic pixel identities</h2><p>Carapace creates the colorful examples locally from a stable text seed. No image request leaves the browser, and the same seed always produces the same preview character. The public <code>.oc-avatar</code> contract remains generator-agnostic: applications can provide uploaded images, initials, or another compatible service.</p></div><a class="oc-link oc-link-standalone" href="https://www.dicebear.com/styles/pixel-art/" target="_blank" rel="noreferrer">Explore DiceBear Pixel Art ${icon("arrow-right")}</a></section>
     <section data-section-kind="markup" aria-labelledby="avatar-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="avatar-markup">Name fallback identity explicitly</h2></div></div>${codeBlock(formatComponentWorkbenchCode(avatarWorkbenchExamples), "html")}</section>
-    <section data-section-kind="guidance" aria-labelledby="avatar-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="avatar-guidance">Identity remains understandable without the image</h2></div></div>${guidanceList(["Use an empty image alt when adjacent text names the same person or agent.", "When the avatar stands alone, give the wrapper an image role and accessible name; hide fallback initials from assistive technology.", "Never rely on the status indicator alone; pair it with visible text or an equivalent accessible state.", "Preview fixtures use lightweight deterministic pixel avatars. Consumers may use another generator without changing the .oc-avatar contract.", "Wrap interactive avatars in .oc-avatar-button so hover and focus belong to the control, not a passive image."])}</section>`,
+    <section data-section-kind="guidance" aria-labelledby="avatar-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="avatar-guidance">Identity remains understandable without the image</h2></div></div>${guidanceList(["Use the extra-small inline size beside an author name; do not detach it into a separate transcript column.", "Use a stack for compact participant context and the thinking state only while collaboration is actively progressing.", "Use an empty image alt when adjacent text names the same person or agent.", "When the avatar stands alone, give the wrapper an image role and accessible name; hide fallback initials from assistive technology.", "Never rely on the status indicator or animation alone; pair it with visible text or an equivalent accessible state.", "Wrap interactive avatars in .oc-avatar-button so hover and focus belong to the control, not a passive image."])}</section>`,
 
   "primitive-badge": () =>
     `${pageIntro("Component", "Badge", "A compact label for status or short metadata that remains readable without relying on color alone.")}
@@ -452,12 +486,12 @@ const contents = {
     <section data-section-kind="guidance" aria-labelledby="empty-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="empty-guidance">The state must help users continue</h2></div></div>${guidanceList(["Distinguish an empty collection from an error or loading state.", "Explain why content is absent only when it is not obvious.", "Offer one primary recovery or creation action."])}</section>`,
 
   "primitive-flow": () =>
-    `${pageIntro("Component", "Flow", "A horizontally readable sequence for a small number of ordered steps or dependencies.")}
-    <section data-section-kind="preview" aria-labelledby="flow-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="flow-preview">Release path</h2></div><span class="oc-pill">.oc-flow</span></div>
-      <div class="specimen-frame"><ol class="oc-flow oc-flow-list" aria-label="Release path" tabindex="0"><li class="oc-flow-step" data-state="complete"><span class="oc-flow-marker"><i data-lucide="check"></i></span><span><strong>Draft</strong><small>Changes prepared</small></span></li><li class="oc-flow-step" aria-current="step"><span class="oc-flow-marker">2</span><span><strong>Review</strong><small>Validate the contract</small></span></li><li class="oc-flow-step"><span class="oc-flow-marker">3</span><span><strong>Publish</strong><small>Tag the release</small></span></li></ol></div>
+    `${pageIntro("Component", "Flow", "An ordered sequence that can run horizontally across a compact workflow or vertically through a longer process.")}
+    <section data-section-kind="preview" aria-labelledby="flow-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="flow-preview">Horizontal and vertical steps</h2></div><span class="oc-pill">.oc-flow</span></div>
+      <div class="specimen-frame"><div class="flow-demo-grid"><div><p class="specimen-label">Horizontal</p><div class="oc-flow-viewport" data-orientation="horizontal"><ol class="oc-flow oc-flow-list" data-orientation="horizontal" aria-label="Horizontal release path" tabindex="0"><li class="oc-flow-step" data-state="complete"><span class="oc-flow-marker"><i data-lucide="check"></i></span><span><strong>Draft</strong><small>Changes prepared</small></span></li><li class="oc-flow-step" aria-current="step"><span class="oc-flow-marker">2</span><span><strong>Review</strong><small>Validate the contract</small></span></li><li class="oc-flow-step"><span class="oc-flow-marker">3</span><span><strong>Publish</strong><small>Tag the release</small></span></li></ol></div></div><div><p class="specimen-label">Vertical</p><ol class="oc-flow oc-flow-list" data-orientation="vertical" aria-label="Vertical release path" tabindex="0"><li class="oc-flow-step" data-state="complete"><span class="oc-flow-marker"><i data-lucide="check"></i></span><span><strong>Draft</strong><small>Changes prepared</small></span></li><li class="oc-flow-step" aria-current="step"><span class="oc-flow-marker">2</span><span><strong>Review</strong><small>Validate the contract</small></span></li><li class="oc-flow-step"><span class="oc-flow-marker">3</span><span><strong>Publish</strong><small>Tag the release</small></span></li></ol></div></div></div>
     </section>
-    <section data-section-kind="markup" aria-labelledby="flow-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="flow-markup">Mark the current step</h2></div></div>${codeBlock(`<ol class="oc-flow oc-flow-list" aria-label="Release path" tabindex="0">\n  <li class="oc-flow-step">Draft</li>\n  <li class="oc-flow-step" aria-current="step">Review</li>\n</ol>`, "html")}</section>
-    <section data-section-kind="guidance" aria-labelledby="flow-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="flow-guidance">Keep the sequence finite and legible</h2></div></div>${guidanceList(["Use ordered content rather than Flow for long procedural documentation.", "Name each step with a concrete state or action.", "Allow horizontal scrolling instead of compressing labels below readability."])}</section>`,
+    <section data-section-kind="markup" aria-labelledby="flow-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="flow-markup">Set the axis and current step</h2></div></div>${codeBlock(`<ol class="oc-flow oc-flow-list" data-orientation="horizontal" aria-label="Release path" tabindex="0">\n  <li class="oc-flow-step">Draft</li>\n  <li class="oc-flow-step" aria-current="step">Review</li>\n</ol>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="flow-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="flow-guidance">Keep the sequence finite and legible</h2></div></div>${guidanceList(["Use horizontal steps for a short status path and vertical steps when supporting copy needs more room.", "Name each step with a concrete state or action.", "Use an end fade only when horizontal content can continue beyond the visible viewport."])}</section>`,
 
   "primitive-grid": () =>
     `${pageIntro("Component", "Grid", "Equal-width fixed and intrinsic grids for consumer-owned repeated content.")}
@@ -502,7 +536,7 @@ const contents = {
   "primitive-meter": () =>
     `${pageIntro("Component", "Meter", "A native measurement within a known range, suitable for capacity, quality, or score.")}
     <section data-section-kind="preview" aria-labelledby="meter-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="meter-preview">Storage used</h2></div><span class="oc-pill">.oc-meter</span></div>
-      <div class="specimen-frame"><div class="oc-meter"><label class="oc-meter-header" for="storage-meter"><strong>Storage used</strong><span aria-hidden="true">64%</span></label><meter class="oc-meter-value" id="storage-meter" min="0" max="100" low="50" high="80" optimum="0" value="64">64%</meter><p class="oc-meter-caption">6.4 GB of 10 GB</p></div></div>
+      <div class="specimen-frame"><div class="meter-demo-grid"><div class="oc-meter"><label class="oc-meter-header" for="storage-meter"><strong>Storage used</strong><span aria-hidden="true">64%</span></label><meter class="oc-meter-value" id="storage-meter" min="0" max="100" low="50" high="80" optimum="0" value="64">64%</meter><p class="oc-meter-caption">6.4 GB of 10 GB</p></div><div class="oc-meter" data-effect="sheen"><label class="oc-meter-header" for="context-meter"><strong>Context ready</strong><span aria-hidden="true">82%</span></label><meter class="oc-meter-value" id="context-meter" min="0" max="100" low="40" high="75" optimum="100" value="82">82%</meter><p class="oc-meter-caption">Animated attention, static value</p></div></div></div>
     </section>
     <section data-section-kind="markup" aria-labelledby="meter-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="meter-markup">Expose the numeric range</h2></div></div>${codeBlock(`<div class="oc-meter">\n  <label class="oc-meter-header" for="storage"><strong>Storage used</strong><span aria-hidden="true">64%</span></label>\n  <meter class="oc-meter-value" id="storage" min="0" max="100" low="50" high="80" optimum="0" value="64">64%</meter>\n</div>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="meter-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="meter-guidance">Measure state, not task completion</h2></div></div>${guidanceList(["Use progress for an operation moving toward completion.", "Keep the numeric value visible when exactness matters.", "Set low, high, and optimum when the range has qualitative thresholds."])}</section>`,
@@ -727,24 +761,78 @@ const contents = {
     <section data-section-kind="guidance" aria-labelledby="sensitive-input-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="sensitive-input-guidance">Protect secrets without blocking correction</h2></div></div>${guidanceList(["Use type=password for secrets and credentials.", "Let users reveal the current value with an explicitly named button.", "Do not copy or expose the value without a deliberate action.", "Keep storage, validation, and clipboard policy in the consumer."])}</section>`,
 
   "primitive-sidebar": () =>
-    `${pageIntro("Component", "Sidebar", "Persistent navigation for a bounded product area, with explicit structure and current-page state.")}
+    `${pageIntro("Component", "Sidebar", "A compact application rail with workspace selection, grouped navigation, account identity, and an explicit collapsed state.")}
     <section data-section-kind="preview" aria-labelledby="sidebar-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="sidebar-preview">Primary navigation rail</h2></div><span class="oc-pill">.oc-sidebar</span></div>
-      <div class="specimen-frame"><aside class="oc-sidebar" aria-label="Workspace"><header class="oc-sidebar-header"><img class="oc-sidebar-workspace-mark" src="${brandFaviconUrl}" alt="" width="32" height="32" aria-hidden="true" /><div class="oc-sidebar-brand"><h3 class="oc-sidebar-title">OpenClaw</h3><span class="oc-sidebar-subtitle">Design workspace</span></div><button type="button" aria-label="Workspace options"><i data-lucide="chevrons-up-down"></i></button></header><nav class="oc-sidebar-nav"><p>Workspace</p><a class="oc-sidebar-link" href="#sidebar-preview" aria-current="page"><i data-lucide="layout-dashboard"></i><span>Overview</span></a><a class="oc-sidebar-link" href="#sidebar-markup"><i data-lucide="activity"></i><span>Activity</span><span class="oc-sidebar-count">8</span></a><a class="oc-sidebar-link" href="#sidebar-guidance"><i data-lucide="settings"></i><span>Settings</span></a></nav><footer class="oc-sidebar-footer"><span class="oc-sidebar-avatar">OP</span><span class="oc-sidebar-account"><strong class="oc-sidebar-account-name">Operator</strong><small class="oc-sidebar-account-role">Maintainer</small></span><i data-lucide="ellipsis"></i></footer></aside></div>
+      <div class="specimen-frame">
+        <aside class="oc-sidebar" id="component-sidebar" aria-label="Workspace" data-collapsed="false">
+          <header class="oc-sidebar-header">
+            <div class="oc-sidebar-workspace" data-sidebar-workspace>
+              <button class="oc-sidebar-workspace-trigger" type="button" aria-expanded="false" aria-controls="component-sidebar-workspaces" data-sidebar-workspace-toggle>
+                <span class="oc-avatar oc-avatar-sm" role="img" aria-label="OpenClaw workspace" data-sidebar-workspace-avatar><span class="oc-avatar-fallback" aria-hidden="true">OC</span></span>
+                <span class="oc-sidebar-workspace-copy"><strong data-sidebar-workspace-title>OpenClaw</strong><small data-sidebar-workspace-subtitle>Design workspace</small></span>
+                <i data-lucide="chevrons-up-down" aria-hidden="true"></i>
+              </button>
+              <div class="oc-sidebar-workspace-menu" id="component-sidebar-workspaces" aria-label="Choose workspace" data-sidebar-workspace-menu hidden>
+                <button class="oc-sidebar-workspace-option" type="button" aria-pressed="true" data-sidebar-workspace-option data-sidebar-workspace-name="OpenClaw" data-sidebar-workspace-description="Design workspace" data-sidebar-workspace-initials="OC"><span class="oc-avatar oc-avatar-sm" aria-hidden="true"><span class="oc-avatar-fallback">OC</span></span><span><strong>OpenClaw</strong><small>Design workspace</small></span><i data-lucide="check" aria-hidden="true"></i></button>
+                <button class="oc-sidebar-workspace-option" type="button" aria-pressed="false" data-sidebar-workspace-option data-sidebar-workspace-name="Labs" data-sidebar-workspace-description="Product experiments" data-sidebar-workspace-initials="LA"><span class="oc-avatar oc-avatar-sm" aria-hidden="true"><span class="oc-avatar-fallback">LA</span></span><span><strong>Labs</strong><small>Product experiments</small></span><i data-lucide="check" aria-hidden="true"></i></button>
+                <button class="oc-sidebar-workspace-option" type="button" aria-pressed="false" data-sidebar-workspace-option data-sidebar-workspace-name="Personal" data-sidebar-workspace-description="Private drafts" data-sidebar-workspace-initials="ME"><span class="oc-avatar oc-avatar-sm" aria-hidden="true"><span class="oc-avatar-fallback">ME</span></span><span><strong>Personal</strong><small>Private drafts</small></span><i data-lucide="check" aria-hidden="true"></i></button>
+              </div>
+            </div>
+            <button class="oc-sidebar-collapse" type="button" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="component-sidebar" data-sidebar-collapse><i data-lucide="panel-left-close" aria-hidden="true"></i></button>
+          </header>
+          <nav class="oc-sidebar-nav" aria-label="Workspace navigation">
+            <section class="oc-sidebar-group" data-sidebar-group>
+              <button class="oc-sidebar-group-toggle" type="button" aria-label="Workspace navigation" aria-expanded="true" aria-controls="component-sidebar-workspace-group" data-sidebar-group-toggle><i data-lucide="layout-grid" aria-hidden="true"></i><span>Workspace</span><i class="oc-sidebar-group-chevron" data-lucide="chevron-down" aria-hidden="true"></i></button>
+              <div class="oc-sidebar-group-items" id="component-sidebar-workspace-group" data-sidebar-group-panel>
+                <a class="oc-sidebar-link" href="#sidebar-preview" aria-label="Overview" aria-current="page"><i data-lucide="layout-dashboard" aria-hidden="true"></i><span class="oc-sidebar-link-label">Overview</span></a>
+                <a class="oc-sidebar-link" href="#sidebar-markup" aria-label="Activity"><i data-lucide="activity" aria-hidden="true"></i><span class="oc-sidebar-link-label">Activity</span><span class="oc-sidebar-count">8</span></a>
+              </div>
+            </section>
+            <section class="oc-sidebar-group" data-sidebar-group>
+              <button class="oc-sidebar-group-toggle" type="button" aria-label="Manage navigation" aria-expanded="true" aria-controls="component-sidebar-manage-group" data-sidebar-group-toggle><i data-lucide="blocks" aria-hidden="true"></i><span>Manage</span><i class="oc-sidebar-group-chevron" data-lucide="chevron-down" aria-hidden="true"></i></button>
+              <div class="oc-sidebar-group-items" id="component-sidebar-manage-group" data-sidebar-group-panel>
+                <a class="oc-sidebar-link" href="#sidebar-markup" aria-label="Components"><i data-lucide="box" aria-hidden="true"></i><span class="oc-sidebar-link-label">Components</span></a>
+                <a class="oc-sidebar-link" href="#sidebar-guidance" aria-label="Settings"><i data-lucide="settings" aria-hidden="true"></i><span class="oc-sidebar-link-label">Settings</span></a>
+              </div>
+            </section>
+          </nav>
+          <footer class="oc-sidebar-footer">
+            <span class="oc-avatar oc-avatar-sm" role="img" aria-label="Operator"><span class="oc-avatar-fallback" aria-hidden="true">OP</span></span>
+            <span class="oc-sidebar-account"><strong class="oc-sidebar-account-name">Operator</strong><small class="oc-sidebar-account-role">Maintainer</small></span>
+            <button class="oc-sidebar-footer-action" type="button" aria-label="Account options"><i data-lucide="ellipsis" aria-hidden="true"></i></button>
+          </footer>
+        </aside>
+      </div>
     </section>
     <section data-section-kind="markup" aria-labelledby="sidebar-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="sidebar-markup">Keep the landmark explicit</h2></div></div>${codeBlock(
-      `<aside class="oc-sidebar" aria-label="Workspace">
+      `<aside class="oc-sidebar" aria-label="Workspace" data-collapsed="false">
   <header class="oc-sidebar-header">
-    <h2 class="oc-sidebar-title">Workspace</h2>
+    <button class="oc-sidebar-workspace-trigger" type="button" aria-expanded="false" data-sidebar-workspace-toggle>
+      <span class="oc-avatar oc-avatar-sm" role="img" aria-label="OpenClaw workspace">
+        <span class="oc-avatar-fallback" aria-hidden="true">OC</span>
+      </span>
+      <span class="oc-sidebar-workspace-copy">OpenClaw</span>
+    </button>
+    <button class="oc-sidebar-collapse" type="button" aria-label="Collapse sidebar" data-sidebar-collapse>…</button>
   </header>
-  <nav class="oc-sidebar-nav">
-    <a class="oc-sidebar-link" href="/" aria-current="page">Overview</a>
-    <a class="oc-sidebar-link" href="/activity">Activity</a>
+  <nav class="oc-sidebar-nav" aria-label="Workspace navigation">
+    <section class="oc-sidebar-group" data-sidebar-group>
+      <button class="oc-sidebar-group-toggle" type="button" aria-expanded="true" data-sidebar-group-toggle>Workspace</button>
+      <div class="oc-sidebar-group-items" data-sidebar-group-panel>
+        <a class="oc-sidebar-link" href="/" aria-current="page">Overview</a>
+      </div>
+    </section>
   </nav>
-  <footer class="oc-sidebar-footer">OpenClaw</footer>
+  <footer class="oc-sidebar-footer">
+    <span class="oc-avatar oc-avatar-sm" role="img" aria-label="Operator">
+      <span class="oc-avatar-fallback" aria-hidden="true">OP</span>
+    </span>
+    <span class="oc-sidebar-account">Operator</span>
+  </footer>
 </aside>`,
       "html",
     )}</section>
-    <section data-section-kind="guidance" aria-labelledby="sidebar-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="sidebar-guidance">Navigation stays predictable</h2></div></div>${guidanceList(["Use one sidebar for one bounded navigation context.", "Name the landmark when more than one navigation region exists.", "Mark the current destination with aria-current=page.", "Keep disclosure state and responsive behavior in the consumer."])}</section>`,
+    <section data-section-kind="guidance" aria-labelledby="sidebar-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="sidebar-guidance">Navigation stays predictable</h2></div></div>${guidanceList(["Use one sidebar for one bounded navigation context.", "Name the landmark when more than one navigation region exists.", "Mark the current destination with aria-current=page.", "Keep workspace, disclosure, and rail state explicit; consumers decide whether to persist it."])}</section>`,
 
   "primitive-skeleton-line": () =>
     `${pageIntro("Component", "Skeleton Line", "A quiet placeholder that reserves text rhythm while content is loading.")}

@@ -405,16 +405,22 @@ export const referenceAreas = [
         keywords: "oc-agent-chat conversation messages suggestions input",
       },
       {
+        id: "agent-collaboration",
+        label: "Multi-agent Activity",
+        path: "agent-components/agent-collaboration/",
+        keywords: "multi agent collaboration subagent avatars thinking activity leader",
+      },
+      {
         id: "attachment-button",
         label: "Attachment Button",
         path: "agent-components/attachment-button/",
         keywords: "oc-agent-attachment-button attach upload file composer",
       },
       {
-        id: "bash-tool",
-        label: "Bash Tool",
-        path: "agent-components/bash-tool/",
-        keywords: "oc-agent-bash-tool terminal command output status",
+        id: "interactive-tool",
+        label: "Interactive Tool",
+        path: "agent-components/interactive-tool/",
+        keywords: "oc-agent-interactive-tool terminal command preview browser media output status",
       },
       {
         id: "error-message",
@@ -547,6 +553,38 @@ export const referenceAreas = [
         label: "Send Button",
         path: "agent-components/send-button/",
         keywords: "oc-agent-send-button send submit stop streaming message",
+      },
+    ],
+  },
+  {
+    id: "effects",
+    label: "Effects",
+    description: "State-driven motion, loading, attention, and transitions",
+    path: "effects/",
+    pages: [
+      {
+        id: "effects",
+        label: "Overview",
+        path: "effects/",
+        keywords: "effects animation motion transition reduced motion",
+      },
+      {
+        id: "effect-interaction",
+        label: "Interaction",
+        path: "effects/interaction/",
+        keywords: "hover focus press selection movement interaction",
+      },
+      {
+        id: "effect-loading",
+        label: "Loading",
+        path: "effects/loading/",
+        keywords: "loader shimmer skeleton progress streaming pending",
+      },
+      {
+        id: "effect-attention",
+        label: "Attention",
+        path: "effects/attention/",
+        keywords: "pulse meter presence agent activity status attention",
       },
     ],
   },
@@ -812,7 +850,14 @@ const candidateReferenceIds = new Set([
   "application-quick-chat",
 ]);
 
-const labAreaIds = new Set(["interface", "agent-components", "charts", "blocks", "applications"]);
+const labAreaIds = new Set([
+  "interface",
+  "agent-components",
+  "effects",
+  "charts",
+  "blocks",
+  "applications",
+]);
 
 export function getReferenceMaturity(id) {
   if (stableReferenceIds.has(id)) return "Stable";
@@ -824,6 +869,7 @@ const sequencedAreaIds = new Set([
   "foundations",
   "interface",
   "agent-components",
+  "effects",
   "charts",
   "blocks",
   "applications",

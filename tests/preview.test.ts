@@ -106,6 +106,9 @@ describe("preview contracts", () => {
     expect(isComponentWorkbenchPage("primitive-action")).toBe(true);
     expect(isComponentWorkbenchPage("input-bar")).toBe(true);
     expect(isComponentWorkbenchPage("interface-examples")).toBe(false);
+    expect(isComponentWorkbenchPage("effect-interaction")).toBe(false);
+    expect(isComponentWorkbenchPage("effect-loading")).toBe(false);
+    expect(isComponentWorkbenchPage("effect-attention")).toBe(false);
     expect(isComponentWorkbenchPage("foundation-colors")).toBe(false);
     expect(isComponentWorkbenchPage("chart-base")).toBe(false);
     expect(isComponentWorkbenchPage("interface")).toBe(false);
@@ -1308,6 +1311,8 @@ describe("preview contracts", () => {
       options: [
         { label: "Release notes", value: "release" },
         { label: "Table and links", value: "table" },
+        { label: "Long-form answer", value: "long-form" },
+        { label: "Task checklist", value: "tasks" },
         { label: "Streaming update", value: "streaming" },
       ],
     });
@@ -1441,6 +1446,7 @@ describe("preview contracts", () => {
           { label: "Wrap", value: "wrap" },
           { label: "Row", value: "row" },
           { label: "Stack", value: "stack" },
+          { label: "Profiles", value: "profiles" },
         ],
       },
     ]);
@@ -1615,8 +1621,17 @@ describe("preview contracts", () => {
   });
 
   test("models Agent tool lifecycle without synthetic states", () => {
-    const bashDefinition = getWorkbenchDefinition("bash-tool");
-    expect(bashDefinition?.controls).toMatchObject([
+    const interactiveDefinition = getWorkbenchDefinition("interactive-tool");
+    expect(interactiveDefinition?.controls).toMatchObject([
+      {
+        id: "variant",
+        type: "choice",
+        options: [
+          { label: "Terminal", value: "terminal" },
+          { label: "Browser preview", value: "browser" },
+          { label: "Artifact", value: "artifact" },
+        ],
+      },
       {
         id: "state",
         type: "choice",
@@ -1628,7 +1643,14 @@ describe("preview contracts", () => {
       },
       { id: "open", type: "toggle" },
     ]);
-    expect(normalizeWorkbenchState(bashDefinition, { state: "failed", open: "yes" })).toEqual({
+    expect(
+      normalizeWorkbenchState(interactiveDefinition, {
+        variant: "browser",
+        state: "failed",
+        open: "yes",
+      }),
+    ).toEqual({
+      variant: "browser",
       state: "failed",
       open: true,
     });
@@ -1687,6 +1709,15 @@ describe("preview contracts", () => {
         ],
       },
       {
+        id: "agentName",
+        type: "choice",
+        options: [
+          { label: "Atlas", value: "Atlas" },
+          { label: "Sora", value: "Sora" },
+          { label: "Quinn", value: "Quinn" },
+        ],
+      },
+      {
         id: "taskTitle",
         type: "choice",
         options: [
@@ -1700,11 +1731,13 @@ describe("preview contracts", () => {
     expect(
       normalizeWorkbenchState(subagentDefinition, {
         state: "timed_out",
+        agentName: "Quinn",
         taskTitle: "Control UI parity",
         open: "yes",
       }),
     ).toEqual({
       state: "timed_out",
+      agentName: "Quinn",
       taskTitle: "Control UI parity",
       open: true,
     });
@@ -1749,7 +1782,7 @@ describe("preview contracts", () => {
     const definition = getWorkbenchDefinition("agent-chat");
 
     expect(definition?.defaults.example).toBe("multi-user");
-    expect(definition?.controls).toMatchObject([
+    expect(definition?.controls.filter((control) => !control.hidden)).toMatchObject([
       {
         id: "example",
         type: "choice",
@@ -1787,6 +1820,24 @@ describe("preview contracts", () => {
     ).toEqual({ status: "streaming", copyToolbar: false });
   });
 
+  test("keeps Agent Chat model controls in normalized workbench state", () => {
+    const definition = getWorkbenchDefinition("agent-chat");
+
+    expect(
+      normalizeWorkbenchState(definition, {
+        model: "claude-opus",
+        picker: true,
+        thinking: "medium",
+        fast: false,
+      }),
+    ).toMatchObject({
+      model: "claude-opus",
+      picker: true,
+      thinking: "medium",
+      fast: false,
+    });
+  });
+
   test("loads canonical styles through valid CSS", async () => {
     const css = await readFile("preview/preview.css", "utf8");
     const imports = [...css.matchAll(/@import\s+"([^"]+)"/g)].map(([, path]) => path);
@@ -1804,7 +1855,12 @@ describe("preview contracts", () => {
     expect(new Set(referencePages.map(({ id }) => id)).size).toBe(referencePages.length);
     expect(new Set(referencePages.map(({ path }) => path)).size).toBe(referencePages.length);
 
-    const areaOverviewIds = new Set(["foundations", "interface", "compositions", "resources"]);
+    const areaOverviewIds = new Set([
+      "foundations",
+      "interface",
+      "compositions",
+      "resources",
+    ]);
     for (const area of referenceAreas.filter(({ id }) => areaOverviewIds.has(id))) {
       const routeFile = area.id === "foundations" ? "introduction" : area.id;
       const fragment = await readFile(`preview/static-routes/${routeFile}.html`, "utf8");
@@ -1909,12 +1965,13 @@ describe("preview contracts", () => {
     expect(home).toContain('class="oc-clipboard-action oc-clipboard-action-icon"');
     expect(home).toContain('data-lucide="copy"');
     expect(home).toContain('class="oc-sensitive-mask"');
-    expect(home.match(/home-component-cell/g)).toHaveLength(44);
-    expect(home.match(/class="home-component-cell"/g)).toHaveLength(43);
-    expect(new Set(componentLabels).size).toBe(43);
-    expect(new Set(componentPaths).size).toBe(43);
+    expect(home.match(/home-component-cell/g)).toHaveLength(45);
+    expect(home.match(/class="home-component-cell"/g)).toHaveLength(44);
+    expect(new Set(componentLabels).size).toBe(44);
+    expect(new Set(componentPaths).size).toBe(44);
     expect(componentLabels).toContain("Suggestions");
-    expect(componentLabels).toContain("Bash Tool");
+    expect(componentLabels).toContain("Interactive Tool");
+    expect(componentLabels).toContain("Multi-agent Activity");
     expect(componentLabels).toContain("Thinking Tool");
     expect(componentLabels).toContain("Dialog");
     expect(componentLabels).toContain("Clipboard Text");
@@ -1925,7 +1982,8 @@ describe("preview contracts", () => {
     expect(componentLabels).toContain("Application Surface");
     expect(componentLabels).not.toContain("Plan Tool");
     expect(home).toContain('href="./agent-components/suggestions/"');
-    expect(home).toContain('href="./agent-components/bash-tool/"');
+    expect(home).toContain('href="./agent-components/interactive-tool/"');
+    expect(home).toContain('href="./agent-components/agent-collaboration/"');
     expect(home).toContain('href="./agent-components/thinking-tool/"');
     expect(home).toContain('href="./interface/primitives/dialog/"');
     expect(home).toContain('href="./interface/primitives/clipboard-text/"');
@@ -2270,7 +2328,7 @@ describe("preview contracts", () => {
     expect(avatar).toContain('aria-label="OpenClaw"');
     expect(avatar).toContain('class="oc-avatar-status" aria-hidden="true"');
     expect(avatar).toContain("Online");
-    expect(avatar).toContain("Never rely on the status indicator alone");
+    expect(avatar).toContain("Never rely on the status indicator or animation alone");
   });
 
   test("keeps Avatar preview, usage, and code variants on one reference model", () => {
@@ -2279,19 +2337,28 @@ describe("preview contracts", () => {
 
     expect(reference?.examples).toBe(avatarWorkbenchExamples);
     expect(avatarWorkbenchExamples.map(({ id }) => id)).toEqual([
+      "inline",
       "small",
       "default",
       "large",
       "presence",
+      "stack",
+      "thinking",
     ]);
-    expect(allCode.match(/<!-- (Small|Default|Large|Presence) -->/g)).toHaveLength(4);
+    expect(
+      allCode.match(/<!-- (Inline|Small|Default|Large|Presence|Stack|Thinking) -->/g),
+    ).toHaveLength(7);
     expect(allCode).not.toContain("...");
     expect(allCode).toContain("oc-avatar-sm");
     expect(allCode).toContain("oc-avatar-lg");
     expect(allCode).toContain("oc-avatar-status");
+    expect(allCode).toContain("oc-avatar-stack");
+    expect(allCode).toContain('data-state="thinking"');
     const content = getReferenceContent("primitive-avatar");
+    expect(content).toContain("&lt;!-- Inline --&gt;");
     expect(content).toContain("&lt;!-- Small --&gt;");
     expect(content).toContain("&lt;!-- Presence --&gt;");
+    expect(content).toContain("&lt;!-- Thinking --&gt;");
   });
 
   test("keeps every Button variant discoverable in canvas, usage, and code", () => {

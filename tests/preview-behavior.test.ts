@@ -34,7 +34,12 @@ import {
 import { resolveTokenHash, syncTokenHash } from "../preview/token-catalog.js";
 import { bindTabs } from "../preview/tabs.js";
 import { getScrollFadeState } from "../preview/shell.js";
-import { setCurrentSidebarLink } from "../preview/sidebar.js";
+import {
+  setCurrentSidebarLink,
+  setSidebarCollapsed,
+  setSidebarDisclosure,
+  setSidebarWorkspace,
+} from "../preview/sidebar.js";
 import { setCurrentTableOfContentsLink } from "../preview/table-of-contents.js";
 import { bindSensitiveInputs } from "../preview/sensitive-input.js";
 import {
@@ -742,6 +747,13 @@ describe("preview behavior", () => {
       state: "muted",
       layout: "stack",
     });
+    const profiles = providerLogoWorkbenchMarkup({
+      size: "sm",
+      label: false,
+      framed: true,
+      state: "muted",
+      layout: "profiles",
+    });
 
     expect(defaults).toContain('class="provider-logo-gallery" data-layout="wrap"');
     expect(defaults).toContain('data-provider="openai"');
@@ -767,6 +779,13 @@ describe("preview behavior", () => {
     expect(muted).toContain(" disabled");
     expect(muted).toContain('data-layout="stack"');
     expect(muted).not.toContain("data-selected");
+    expect(profiles).toContain('data-layout="profiles"');
+    expect(profiles).toContain("oc-provider-logo-sm");
+    expect(profiles).toContain("oc-provider-logo-framed");
+    expect(profiles).toContain("oc-provider-logo-muted");
+    expect(profiles).toContain('<span class="sr-only">OpenAI</span>');
+    expect(profiles).toContain(" disabled");
+    expect(profiles).not.toContain("</svg>OpenAI</span>");
 
     const reference = getReferenceContent("primitive-provider-logo");
     expect(reference).toContain('data-provider="openai"');
@@ -862,18 +881,47 @@ describe("preview behavior", () => {
   });
 
   test("maps shared tool lifecycle into visible running and complete output", () => {
-    expect(toolWorkbenchMarkup({ kind: "bash", state: "animating", open: true })).toContain(
+    expect(toolWorkbenchMarkup({ kind: "interactive", state: "animating", open: true })).toContain(
       "Running command",
     );
-    expect(toolWorkbenchMarkup({ kind: "bash", state: "animating", open: true })).not.toContain(
+    expect(
+      toolWorkbenchMarkup({ kind: "interactive", state: "animating", open: true }),
+    ).not.toContain(
       "29 pass · 0 fail",
     );
-    expect(toolWorkbenchMarkup({ kind: "bash", state: "complete", open: true })).toContain(
+    expect(toolWorkbenchMarkup({ kind: "interactive", state: "complete", open: true })).toContain(
       "29 pass · 0 fail",
     );
-    expect(toolWorkbenchMarkup({ kind: "bash", state: "complete", open: false })).not.toContain(
-      '<details class="oc-agent-tool-row" open',
-    );
+    expect(
+      toolWorkbenchMarkup({ kind: "interactive", state: "complete", open: false }),
+    ).not.toContain('<details class="oc-agent-tool-row" open');
+    expect(
+      toolWorkbenchMarkup({
+        kind: "interactive",
+        variant: "browser",
+        state: "complete",
+        open: true,
+      }),
+    ).toContain('data-variant="browser"');
+    const openingBrowser = toolWorkbenchMarkup({
+      kind: "interactive",
+      variant: "browser",
+      state: "animating",
+      open: true,
+    });
+    expect(openingBrowser).toContain("Connecting to preview");
+    expect(openingBrowser).not.toContain('aria-label="Compact application preview"');
+    expect(openingBrowser).not.toContain('aria-label="Open preview"');
+    const failedArtifact = toolWorkbenchMarkup({
+      kind: "interactive",
+      variant: "artifact",
+      state: "failed",
+      open: true,
+    });
+    expect(failedArtifact).toContain("Artifact generation failed");
+    expect(failedArtifact).toContain('role="alert"');
+    expect(failedArtifact).not.toContain("Ready to inspect");
+    expect(failedArtifact).not.toContain('aria-label="Download artifact"');
     expect(toolWorkbenchMarkup({ kind: "search", state: "complete", open: false })).not.toContain(
       " open",
     );
@@ -1009,6 +1057,119 @@ describe("preview behavior", () => {
     expect(setCurrentSidebarLink(nav, activity)).toBe(true);
     expect(overview.getAttribute("aria-current")).toBeUndefined();
     expect(activity.getAttribute("aria-current")).toBe("page");
+  });
+
+  test("keeps sidebar disclosure state aligned with its controlled panel", () => {
+    const attributes = new Map();
+    const toggle = {
+      setAttribute(name, value) {
+        attributes.set(name, value);
+      },
+    };
+    const panel = { hidden: true };
+
+    expect(setSidebarDisclosure(toggle, panel, true)).toBe(true);
+    expect(attributes.get("aria-expanded")).toBe("true");
+    expect(panel.hidden).toBe(false);
+
+    expect(setSidebarDisclosure(toggle, panel, false)).toBe(true);
+    expect(attributes.get("aria-expanded")).toBe("false");
+    expect(panel.hidden).toBe(true);
+  });
+
+  test("uses the shared avatar contract across the sidebar specimen", () => {
+    const sidebar = getReferenceContent("primitive-sidebar");
+
+    expect(sidebar).toContain('class="oc-avatar oc-avatar-sm"');
+    expect(sidebar).toContain("data-sidebar-workspace-toggle");
+    expect(sidebar).toContain("data-sidebar-group-toggle");
+    expect(sidebar).toContain('aria-label="Workspace navigation"');
+    expect(sidebar).toContain('aria-label="Manage navigation"');
+    expect(sidebar).toContain("data-sidebar-collapse");
+    expect(sidebar).not.toContain("oc-sidebar-avatar");
+  });
+
+  test("collapses the sidebar rail and closes an open workspace menu", () => {
+    class Element {
+      attributes = new Map();
+      hidden = false;
+      innerHTML = "";
+      setAttribute(name, value) {
+        this.attributes.set(name, value);
+      }
+      getAttribute(name) {
+        return this.attributes.get(name);
+      }
+    }
+
+    const workspaceToggle = new Element();
+    workspaceToggle.setAttribute("aria-expanded", "true");
+    const workspaceMenu = new Element();
+    const sidebar = new Element();
+    sidebar.querySelector = (selector) =>
+      ({
+        "[data-sidebar-workspace-toggle]": workspaceToggle,
+        "[data-sidebar-workspace-menu]": workspaceMenu,
+      })[selector] ?? null;
+    const collapse = new Element();
+
+    expect(setSidebarCollapsed(sidebar, collapse, true)).toBe(true);
+    expect(sidebar.getAttribute("data-collapsed")).toBe("true");
+    expect(collapse.getAttribute("aria-expanded")).toBe("false");
+    expect(collapse.getAttribute("aria-label")).toBe("Expand sidebar");
+    expect(collapse.innerHTML).toContain('data-lucide="panel-left-open"');
+    expect(workspaceToggle.getAttribute("aria-expanded")).toBe("false");
+    expect(workspaceMenu.hidden).toBe(true);
+  });
+
+  test("updates the visible workspace identity and selected option", () => {
+    class Option {
+      attributes = new Map();
+      constructor(name, description, initials) {
+        this.attributes.set("data-sidebar-workspace-name", name);
+        this.attributes.set("data-sidebar-workspace-description", description);
+        this.attributes.set("data-sidebar-workspace-initials", initials);
+      }
+      setAttribute(name, value) {
+        this.attributes.set(name, value);
+      }
+      getAttribute(name) {
+        return this.attributes.get(name);
+      }
+    }
+
+    const current = new Option("OpenClaw", "Design workspace", "OC");
+    const selected = new Option("Labs", "Product experiments", "LA");
+    const title = { textContent: "" };
+    const subtitle = { textContent: "" };
+    const avatarAttributes = new Map();
+    const avatar = {
+      setAttribute(name, value) {
+        avatarAttributes.set(name, value);
+      },
+    };
+    const fallback = { textContent: "" };
+    const sidebar = {
+      querySelectorAll: () => [current, selected],
+      querySelector(selector) {
+        return (
+          {
+            "[data-sidebar-workspace-title]": title,
+            "[data-sidebar-workspace-subtitle]": subtitle,
+            "[data-sidebar-workspace-avatar]": avatar,
+            "[data-sidebar-workspace-avatar] .oc-avatar-fallback": fallback,
+          }[selector] ?? null
+        );
+      },
+    };
+
+    expect(setSidebarWorkspace(sidebar, selected)).toBe(true);
+    expect(current.getAttribute("aria-pressed")).toBe("false");
+    expect(selected.getAttribute("aria-pressed")).toBe("true");
+    expect(title.textContent).toBe("Labs");
+    expect(subtitle.textContent).toBe("Product experiments");
+    expect(avatarAttributes.get("aria-label")).toBe("Labs workspace");
+    expect(fallback.textContent).toBe("LA");
   });
 
   test("keeps combobox active state aligned with filtered options", () => {

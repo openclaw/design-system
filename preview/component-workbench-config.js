@@ -8,6 +8,7 @@ import {
   workspaceApplicationMarkup,
 } from "./application-screens.js";
 import { bindCombobox } from "./combobox.js";
+import { avatarFixtureUrl } from "./avatar-fixtures.js";
 import { buttonWorkbenchExamples } from "./component-reference.js";
 
 export const WORKBENCH_ALL_VALUE = "__all__";
@@ -115,6 +116,12 @@ const subagentTaskTitles = [
   { label: "macOS surface review", value: "macOS surface review" },
 ];
 
+const subagentNames = [
+  { label: "Atlas", value: "Atlas" },
+  { label: "Sora", value: "Sora" },
+  { label: "Quinn", value: "Quinn" },
+];
+
 const subagentLifecycleStates = [
   { label: "Running", value: "animating" },
   { label: "Completed", value: "complete" },
@@ -155,7 +162,15 @@ const chatStatuses = [
 const markdownExamples = [
   { label: "Release notes", value: "release" },
   { label: "Table and links", value: "table" },
+  { label: "Long-form answer", value: "long-form" },
+  { label: "Task checklist", value: "tasks" },
   { label: "Streaming update", value: "streaming" },
+];
+
+const interactiveToolVariants = [
+  { label: "Terminal", value: "terminal" },
+  { label: "Browser preview", value: "browser" },
+  { label: "Artifact", value: "artifact" },
 ];
 
 const loaderSizes = [
@@ -186,6 +201,7 @@ const providerLogoLayouts = [
   { label: "Wrap", value: "wrap" },
   { label: "Row", value: "row" },
   { label: "Stack", value: "stack" },
+  { label: "Profiles", value: "profiles" },
 ];
 
 const providerLogoStates = [
@@ -195,13 +211,13 @@ const providerLogoStates = [
 ];
 
 const providerLogoProviders = [
-  { id: "openai", name: "OpenAI" },
-  { id: "anthropic", name: "Anthropic" },
-  { id: "gemini", name: "Gemini" },
-  { id: "xai", name: "xAI" },
-  { id: "groq", name: "Groq" },
-  { id: "mistral", name: "Mistral" },
-  { id: "openrouter", name: "OpenRouter" },
+  { id: "openai", name: "OpenAI", color: "#10a37f" },
+  { id: "anthropic", name: "Anthropic", color: "#d97757" },
+  { id: "gemini", name: "Gemini", color: "#4285f4" },
+  { id: "xai", name: "xAI", color: "#8a8a8a" },
+  { id: "groq", name: "Groq", color: "#f55036" },
+  { id: "mistral", name: "Mistral", color: "#ff7000" },
+  { id: "openrouter", name: "OpenRouter", color: "#6b7cff" },
 ];
 
 const spiralLoaderSizes = [
@@ -951,28 +967,73 @@ export function toolWorkbenchMarkup({
   state = "complete",
   open = true,
   taskTitle = "Accessibility audit",
+  agentName = "Atlas",
+  variant = "terminal",
 } = {}) {
   const complete = state === "complete";
 
-  if (kind === "bash") {
+  if (kind === "interactive") {
     const failed = state === "failed";
-    const output = complete
+    const terminalOutput = complete
       ? `<pre class="oc-agent-bash-output" role="region" aria-label="Command output" tabindex="0"><code>29 pass · 0 fail\nFinished in 312ms</code></pre>`
       : failed
         ? `<pre class="oc-agent-bash-output" role="region" aria-label="Command error" tabindex="0"><code>Error: expected application pane to fit viewport\nProcess exited with code 1</code></pre>`
         : `<p class="oc-agent-bash-progress"><span class="oc-agent-text-shimmer">Waiting for test output</span></p>`;
-    const panel = `<div class="oc-agent-tool-card oc-agent-bash-tool" data-state="${state}">
+    const terminal = `<div class="oc-agent-tool-card oc-agent-interactive-tool oc-agent-bash-tool" data-variant="terminal" data-state="${state}">
   <dl class="oc-agent-bash-meta"><div><dt>cwd</dt><dd>openclaw/carapace</dd></div><div><dt>timeout</dt><dd>30s</dd></div><div><dt>env</dt><dd>CI=1</dd></div></dl>
-  <div class="oc-agent-tool-card-body oc-agent-bash-terminal"><div class="oc-agent-bash-command"><span aria-hidden="true">$ </span><code>bun run check</code></div>${output}</div>
+  <div class="oc-agent-tool-card-body oc-agent-bash-terminal"><div class="oc-agent-bash-command"><span aria-hidden="true">$ </span><code>bun run check</code></div>${terminalOutput}</div>
 </div>`;
-    return `<div class="oc-agent-bash-tool-row">${agentToolRow({
-      icon: agentIcon("terminal"),
-      label: complete ? "Ran command" : failed ? "Command failed" : "Running command",
+    const browserAction = complete
+      ? `<button type="button" aria-label="Open preview">${agentIcon("external-link")}</button>`
+      : "";
+    const browserContent = complete
+      ? `<div class="oc-agent-interactive-preview" role="img" aria-label="Compact application preview"><span class="oc-agent-interactive-preview-sidebar"></span><span class="oc-agent-interactive-preview-content"><i></i><i></i><i></i></span></div>`
+      : failed
+        ? `<p class="oc-agent-interactive-state" role="alert"><strong>Preview unavailable</strong><span>The local preview did not respond.</span></p>`
+        : `<p class="oc-agent-interactive-state" role="status"><span class="oc-agent-text-shimmer">Connecting to preview</span><span>Waiting for the application surface.</span></p>`;
+    const browser = `<div class="oc-agent-tool-card oc-agent-interactive-tool" data-variant="browser" data-state="${state}">
+  <header class="oc-agent-interactive-header"><span>${agentIcon("globe")} Preview</span><code>127.0.0.1:4173</code>${browserAction}</header>
+  ${browserContent}
+</div>`;
+    const artifactAction = complete
+      ? `<button type="button" aria-label="Download artifact">${agentIcon("download")}</button>`
+      : "";
+    const artifactContent = complete
+      ? `<figure class="oc-agent-interactive-artifact"><span class="oc-agent-interactive-artifact-thumb">${agentIcon("image")}</span><figcaption><strong>application-surface.png</strong><span>Ready to inspect</span></figcaption></figure>`
+      : failed
+        ? `<p class="oc-agent-interactive-state" role="alert"><strong>Artifact failed</strong><span>The image renderer exited before producing a file.</span></p>`
+        : `<p class="oc-agent-interactive-state" role="status"><span class="oc-agent-text-shimmer">Rendering artifact</span><span>Preparing the image preview.</span></p>`;
+    const artifactTitle = complete
+      ? "Generated artifact"
+      : failed
+        ? "Artifact generation failed"
+        : "Generating artifact";
+    const artifactMeta = complete ? "<span>PNG · 1440 × 900</span>" : "";
+    const artifact = `<div class="oc-agent-tool-card oc-agent-interactive-tool" data-variant="artifact" data-state="${state}">
+  <header class="oc-agent-interactive-header"><span>${agentIcon("image")} ${artifactTitle}</span>${artifactMeta}${artifactAction}</header>
+  ${artifactContent}
+</div>`;
+    const variants = { terminal, browser, artifact };
+    const selectedVariant = variants[variant] ? variant : "terminal";
+    const detail = {
+      terminal: "bun run check",
+      browser: "127.0.0.1:4173",
+      artifact: "application-surface.png",
+    }[selectedVariant];
+    const label = {
+      terminal: complete ? "Ran command" : failed ? "Command failed" : "Running command",
+      browser: complete ? "Preview ready" : failed ? "Preview failed" : "Opening preview",
+      artifact: complete ? "Artifact ready" : failed ? "Artifact failed" : "Generating artifact",
+    }[selectedVariant];
+    const iconName = { terminal: "terminal", browser: "globe", artifact: "image" }[selectedVariant];
+    return `<div class="oc-agent-interactive-tool-row">${agentToolRow({
+      icon: agentIcon(iconName),
+      label,
       shimmer: !complete && !failed,
-      detail: "bun run check",
+      detail,
       meta: complete ? "312 ms" : failed ? "exit 1" : "",
       open,
-      panel,
+      panel: variants[selectedVariant],
     })}</div>`;
   }
 
@@ -1026,10 +1087,10 @@ export function toolWorkbenchMarkup({
   <div class="oc-agent-tool-row-list">${agentToolRow({ icon: agentIcon("file"), label: "Last tool", detail: "Read styles/components.css" })}${agentToolRow({ icon: agentIcon(failed || timedOut ? "x" : "search"), label: complete ? "Transcript ready" : failed ? "Stopped after error" : timedOut ? "Stopped at timeout" : "Reviewing selectors", shimmer: !complete && !failed && !timedOut, detail: "application surfaces" })}</div>
 </div>`;
     return `<div class="oc-agent-subagent-tool">${agentToolRow({
-      icon: agentIcon("sparkles"),
+      icon: `<span class="oc-avatar oc-avatar-xs oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl(agentName)}" alt="" /></span>`,
       label: statusLabel,
       shimmer: !complete && !failed && !timedOut,
-      detail: `<span class="oc-agent-subagent-name">${escapeHtml(taskTitle)}</span>`,
+      detail: `<span class="oc-agent-subagent-name"><strong>${escapeHtml(agentName)}</strong><small>${escapeHtml(taskTitle)}</small></span>`,
       meta: complete ? "6s" : failed ? "error" : timedOut ? "30s" : "58%",
       open,
       panel: nested,
@@ -1207,8 +1268,8 @@ export function messageListWorkbenchMarkup({
   if (mode === "attributed") {
     return `<div class="oc-agent-message-list" role="log" aria-label="Conversation history">
   <div class="oc-agent-message-list-content">
-    <div class="oc-agent-attributed-message" data-author="user"><span class="oc-avatar oc-avatar-sm" role="img" aria-label="Mina"><span class="oc-avatar-fallback" aria-hidden="true">MI</span></span><div><span class="oc-agent-message-author">Mina</span><div class="oc-agent-user-message"><p>Can we make the application panes feel closer to the mac app?</p></div>${media ? mediaGalleryMarkup(status) : ""}</div></div>
-    <div class="oc-agent-attributed-message" data-author="agent"><span class="oc-avatar oc-avatar-sm" role="img" aria-label="OpenClaw"><span class="oc-avatar-fallback" aria-hidden="true">OC</span></span><div><span class="oc-agent-message-author">OpenClaw</span>${chatResponseMarkup(status, copyToolbar)}${media ? mediaStatusMarkup(status) : ""}</div></div>
+    <div class="oc-agent-attributed-message" data-author="user"><div><span class="oc-agent-message-author"><span class="oc-avatar oc-avatar-sm" role="img" aria-label="Mina"><span class="oc-avatar-fallback" aria-hidden="true">MI</span></span>Mina</span><div class="oc-agent-user-message"><p>Can we make the application panes feel closer to the mac app?</p></div>${media ? mediaGalleryMarkup(status) : ""}</div></div>
+    <div class="oc-agent-attributed-message" data-author="agent"><div><span class="oc-agent-message-author"><span class="oc-avatar oc-avatar-sm" role="img" aria-label="OpenClaw"><span class="oc-avatar-fallback" aria-hidden="true">OC</span></span>OpenClaw</span>${chatResponseMarkup(status, copyToolbar)}${media ? mediaStatusMarkup(status) : ""}</div></div>
   </div>
 </div>`;
   }
@@ -1235,15 +1296,37 @@ export function markdownWorkbenchMarkup({ example = "release" } = {}) {
     return `<article class="oc-agent-markdown">
   <h3>Working plan</h3>
   <ul><li>Parse input context</li><li>Extract constraints</li><li>Draft the response</li></ul>
-  <pre><code>const steps = ["parse", "outline", "draft"];</code></pre>
+  <div class="oc-code-highlighted"><div class="oc-code-highlighted-header"><span>TypeScript</span><span>plan.ts</span></div><pre tabindex="0" aria-label="TypeScript example"><code><span class="code-keyword">const</span> steps = [<span class="code-string">"parse"</span>, <span class="code-string">"outline"</span>, <span class="code-string">"draft"</span>];</code></pre></div>
   <p>Final answer coming next…</p>
 </article>`;
   }
 
+  if (example === "long-form") {
+    return `<article class="oc-agent-markdown">
+  <h2>Application surface audit</h2>
+  <p><strong>Recommendation:</strong> keep the product chrome quiet and let the active work own the visual hierarchy. The current shell is <em>too spacious</em> for repeated operator use.</p>
+  <h3>What changes</h3>
+  <p>Navigation moves to a compact rail, panes use stable minimum tracks, and the composer stays attached to the transcript instead of floating inside a decorative card.</p>
+  <hr />
+  <h3>Keyboard path</h3>
+  <ol><li>Open the model picker with <kbd>⌘</kbd> <kbd>K</kbd>.</li><li>Choose provider, model, reasoning, and speed in one menu.</li><li>Return focus to the composer after selection.</li></ol>
+  <blockquote><p>Animation confirms state. It never compensates for unclear structure.</p></blockquote>
+</article>`;
+  }
+
+  if (example === "tasks") {
+    return `<article class="oc-agent-markdown">
+  <h3>Parity checklist</h3>
+  <ul class="oc-agent-markdown-tasks"><li><label><input type="checkbox" checked disabled /> Compact the application chrome</label></li><li><label><input type="checkbox" checked disabled /> Bring reasoning into the model picker</label></li><li><label><input type="checkbox" disabled /> Validate the microphone permission state</label></li></ul>
+  <p><del>Separate speed control</del> is retired in favor of one model-settings menu.</p>
+</article>`;
+  }
+
   return `<article class="oc-agent-markdown">
-  <h3>Release notes</h3>
+  <h2>Release notes</h2>
   <p>The component workbench now keeps examples, usage, and code in one focused view.</p>
-  <ul><li>Responsive canvas previews</li><li>Interactive component states</li><li>Isolated light and dark themes</li></ul>
+  <h3>Included</h3>
+  <ul><li><strong>Responsive previews</strong> for application surfaces</li><li>Interactive component states with reduced-motion fallbacks</li><li>Isolated light and dark themes</li></ul>
   <blockquote><p>Review both themes before adoption.</p></blockquote>
 </article>`;
 }
@@ -1313,14 +1396,37 @@ export function providerLogoWorkbenchMarkup({
   const disabledAttribute = selectedState === "muted" ? " disabled" : "";
 
   const items = providerLogoProviders
-    .map(({ id, name }, index) => {
+    .map(({ id, name, color }, index) => {
       const selected = selectedState === "selected" && index === 0;
       const selectedAttribute = selected ? ' data-selected="true"' : "";
       const labelMarkup = label ? `<span>${name}</span>` : "";
       const nameAttribute = label ? "" : ` aria-label="${name}"`;
-      return `<button class="oc-provider-logo${sizeClass}${mutedClass}${framedClass}" type="button" aria-pressed="${selected}"${nameAttribute}${selectedAttribute}${disabledAttribute}><span class="oc-provider-logo-mark" data-provider="${id}" aria-hidden="true">${providerLogoMark(id)}</span>${labelMarkup}</button>`;
+      return `<button class="oc-provider-logo${sizeClass}${mutedClass}${framedClass}" type="button" aria-pressed="${selected}" style="--provider-brand-color:${color}" data-brand-color${nameAttribute}${selectedAttribute}${disabledAttribute}><span class="oc-provider-logo-mark" data-provider="${id}" aria-hidden="true">${providerLogoMark(id)}</span>${labelMarkup}</button>`;
     })
     .join("");
+
+  if (selectedLayout === "profiles") {
+    const people = [
+      { name: "Mina", role: "Design systems", provider: providerLogoProviders[0] },
+      { name: "Atlas", role: "Agent runtime", provider: providerLogoProviders[1] },
+      { name: "Sora", role: "Interface review", provider: providerLogoProviders[2] },
+    ];
+    const profiles = people
+      .map(({ name, role, provider }, index) => {
+        const selected = selectedState === "selected" && index === 0;
+        const selectedAttribute = selected ? ' data-selected="true"' : "";
+        const labelMarkup = label
+          ? provider.name
+          : `<span class="sr-only">${provider.name}</span>`;
+        return `<button class="provider-profile-row${mutedClass}" type="button" aria-pressed="${selected}" style="--provider-brand-color:${provider.color}"${selectedAttribute}${disabledAttribute}>
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl(name)}" alt="" /></span>
+  <span class="provider-profile-copy"><strong>${name}</strong><small>${role}</small></span>
+  <span class="provider-profile-affiliation oc-provider-logo${sizeClass}${mutedClass}${framedClass}" data-brand-color${selectedAttribute}><span class="oc-provider-logo-mark" data-provider="${provider.id}" aria-hidden="true">${providerLogoMark(provider.id)}</span>${labelMarkup}</span>
+</button>`;
+      })
+      .join("");
+    return `<div class="provider-logo-gallery" data-layout="profiles" aria-label="Provider affiliated profiles">${profiles}</div>`;
+  }
 
   return `<div class="provider-logo-gallery" data-layout="${selectedLayout}" aria-label="Provider logo examples">${items}</div>`;
 }
@@ -1372,6 +1478,10 @@ export function agentChatWorkbenchMarkup({
   example = "basic",
   status = "ready",
   copyToolbar = false,
+  model = "gpt-5.6-sol",
+  picker = false,
+  thinking = "high",
+  fast = true,
 } = {}) {
   const isEmpty = status !== "error" && (example === "empty" || example === "suggestions");
   const messages = isEmpty
@@ -1402,7 +1512,13 @@ export function agentChatWorkbenchMarkup({
       ${attachments}<label class="sr-only" for="workbench-chat-message">Message</label>
       <textarea id="workbench-chat-message" class="oc-agent-input" rows="1" placeholder="Send a message..."></textarea>
       <div class="oc-agent-input-toolbar">
-        <div class="oc-agent-input-tools"><button class="oc-agent-attachment-button" type="button" aria-label="Attach">${agentIcon("plus")}</button></div>
+        <div class="oc-agent-input-tools">
+          <button class="oc-agent-attachment-button" type="button" aria-label="Attach">${agentIcon("plus")}</button>
+          <button class="oc-agent-attachment-button" type="button" aria-label="Capture screenshot">${agentIcon("camera")}</button>
+          <button class="oc-agent-attachment-button" type="button" aria-label="Dictate">${agentIcon("mic")}</button>
+          <button class="oc-agent-attachment-button" type="button" aria-label="Talk mode">${agentIcon("audio-lines")}</button>
+          ${applicationModelControlsMarkup({ model, thinking, fast, open: picker })}
+        </div>
         <div class="oc-agent-input-actions">${action}</div>
       </div>
     </div>
@@ -1426,13 +1542,15 @@ export function agentChatWorkbenchMarkup({
 function createToolWorkbenchDefinition(kind) {
   const expandable = !["edit", "generic"].includes(kind);
   const stateOptions =
-    kind === "bash"
+    kind === "interactive"
       ? bashLifecycleStates
       : kind === "subagent"
         ? subagentLifecycleStates
         : toolLifecycleStates;
   const defaults = expandable ? { state: "complete", open: true } : { state: "complete" };
+  if (kind === "interactive") defaults.variant = "terminal";
   if (kind === "subagent") defaults.taskTitle = "Accessibility audit";
+  if (kind === "subagent") defaults.agentName = "Atlas";
   const controls = [
     {
       id: "state",
@@ -1443,10 +1561,24 @@ function createToolWorkbenchDefinition(kind) {
   ];
   if (kind === "subagent") {
     controls.push({
+      id: "agentName",
+      label: "Agent",
+      type: "choice",
+      options: subagentNames,
+    });
+    controls.push({
       id: "taskTitle",
       label: "Task",
       type: "choice",
       options: subagentTaskTitles,
+    });
+  }
+  if (kind === "interactive") {
+    controls.unshift({
+      id: "variant",
+      label: "Surface",
+      type: "choice",
+      options: interactiveToolVariants,
     });
   }
   if (expandable) {
@@ -1751,7 +1883,15 @@ const definitions = {
     },
   },
   "agent-chat": {
-    defaults: { example: "multi-user", status: "ready", copyToolbar: false },
+    defaults: {
+      example: "multi-user",
+      status: "ready",
+      copyToolbar: false,
+      model: "gpt-5.6-sol",
+      picker: false,
+      thinking: "high",
+      fast: true,
+    },
     controls: [
       {
         id: "example",
@@ -1770,6 +1910,28 @@ const definitions = {
         label: "Copy toolbar",
         type: "toggle",
       },
+      {
+        id: "model",
+        type: "choice",
+        options: applicationModels,
+        hidden: true,
+      },
+      {
+        id: "picker",
+        type: "toggle",
+        hidden: true,
+      },
+      {
+        id: "thinking",
+        type: "choice",
+        options: applicationThinkingLevels,
+        hidden: true,
+      },
+      {
+        id: "fast",
+        type: "toggle",
+        hidden: true,
+      },
     ],
     markup(state) {
       return compactIconMarkup(agentChatWorkbenchMarkup(state));
@@ -1778,6 +1940,7 @@ const definitions = {
       specimen.innerHTML = agentChatWorkbenchMarkup(state);
     },
     bind(specimen, state, update) {
+      bindApplicationModelControls(specimen, update);
       const input = specimen.querySelector(".oc-agent-input");
       const status = specimen.querySelector("[data-workbench-chat-status]");
       specimen.querySelectorAll("[data-agent-suggestion-value]").forEach((button) => {
@@ -1891,7 +2054,7 @@ const definitions = {
       specimen.innerHTML = userMessageWorkbenchMarkup(state);
     },
   },
-  "bash-tool": createToolWorkbenchDefinition("bash"),
+  "interactive-tool": createToolWorkbenchDefinition("interactive"),
   "edit-tool": createToolWorkbenchDefinition("edit"),
   "generic-tool": createToolWorkbenchDefinition("generic"),
   "mcp-tool": createToolWorkbenchDefinition("mcp"),
@@ -2308,13 +2471,17 @@ ${appSurfaceWorkbenchMarkup(state)}
       specimen.innerHTML = providerLogoWorkbenchMarkup(state);
     },
     bind(specimen) {
-      const buttons = Array.from(specimen.querySelectorAll(".oc-provider-logo"));
+      const buttons = Array.from(
+        specimen.querySelectorAll("button.oc-provider-logo, button.provider-profile-row"),
+      );
       for (const button of buttons) {
         button.addEventListener("click", () => {
           for (const candidate of buttons) {
             const selected = candidate === button;
+            const logo = candidate.querySelector?.(".oc-provider-logo") || candidate;
             candidate.setAttribute("aria-pressed", String(selected));
             candidate.toggleAttribute("data-selected", selected);
+            logo?.toggleAttribute("data-selected", selected);
           }
         });
       }

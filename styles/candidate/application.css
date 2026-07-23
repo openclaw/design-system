@@ -6,6 +6,107 @@
  * persistence, framework state, and native window behavior.
  */
 
+.oc-avatar {
+  position: relative;
+  display: inline-grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: var(--oc-radius-round);
+  color: var(--oc-text-secondary);
+  font-family: var(--oc-font-display);
+  font-size: var(--oc-font-size-sm);
+  font-weight: 700;
+  line-height: 1;
+  isolation: isolate;
+  vertical-align: middle;
+}
+
+.oc-avatar-xs {
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 0.55rem;
+}
+
+.oc-avatar-sm {
+  width: var(--oc-space-6);
+  height: var(--oc-space-6);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-avatar-lg {
+  width: var(--oc-space-7);
+  height: var(--oc-space-7);
+  font-size: var(--oc-font-size-base);
+}
+
+.oc-avatar-image,
+.oc-avatar-fallback {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  grid-area: 1 / 1;
+  overflow: hidden;
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: inherit;
+  background: var(--oc-surface-secondary-soft);
+}
+
+.oc-avatar-image {
+  display: block;
+  object-fit: cover;
+}
+
+.oc-avatar-pixel .oc-avatar-image {
+  image-rendering: pixelated;
+}
+
+.oc-avatar-fallback {
+  display: grid;
+  place-items: center;
+  text-transform: uppercase;
+}
+
+.oc-avatar-stack {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  padding-left: 0.25rem;
+}
+
+.oc-avatar-stack > .oc-avatar {
+  box-shadow: 0 0 0 2px var(--oc-bg-page);
+}
+
+.oc-avatar-stack > .oc-avatar + .oc-avatar {
+  margin-left: -0.45rem;
+}
+
+.oc-avatar-stack[data-state="thinking"] > .oc-avatar {
+  animation: oc-avatar-thinking 1.35s var(--oc-ease-out) infinite;
+}
+
+.oc-avatar-stack[data-state="thinking"] > .oc-avatar:nth-child(2) {
+  animation-delay: 90ms;
+}
+
+.oc-avatar-stack[data-state="thinking"] > .oc-avatar:nth-child(3) {
+  animation-delay: 180ms;
+}
+
+@keyframes oc-avatar-thinking {
+  50% {
+    transform: translateY(-2px) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-avatar-stack[data-state="thinking"] > .oc-avatar {
+    animation: none;
+  }
+}
+
 .oc-app-frame {
   display: grid;
   box-sizing: border-box;
@@ -2518,6 +2619,21 @@
   font-size: var(--oc-font-size-xs);
 }
 
+.oc-model-menu-settings {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--oc-space-1);
+}
+
+.oc-model-menu-settings .oc-model-control,
+.oc-model-menu-settings .oc-fast-mode > span {
+  min-height: 1.75rem;
+  padding-inline: var(--oc-space-2);
+  background: var(--oc-surface-interactive);
+}
+
 .oc-model-menu-footer button {
   padding: 0;
   border: 0;
@@ -2526,6 +2642,159 @@
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+}
+
+/* Interactive tool surfaces */
+
+.oc-agent-interactive-tool-row {
+  width: min(100%, 42rem);
+}
+
+.oc-agent-interactive-tool {
+  overflow: hidden;
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-control);
+  background: var(--oc-bg-elevated);
+}
+
+.oc-agent-interactive-header {
+  display: grid;
+  min-height: 2.5rem;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--oc-space-2);
+  padding: var(--oc-space-2) var(--oc-space-3);
+  border-bottom: 1px solid var(--oc-border-subtle);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-agent-interactive-header > span:first-child {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-primary);
+  font-weight: 600;
+}
+
+.oc-agent-interactive-header code {
+  overflow: hidden;
+  font-family: var(--oc-font-mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-agent-interactive-header button {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--oc-radius-control);
+  background: transparent;
+  color: var(--oc-text-muted);
+}
+
+.oc-agent-interactive-header button:hover {
+  background: var(--oc-surface-interactive-hover);
+  color: var(--oc-text-primary);
+}
+
+.oc-agent-interactive-header svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.oc-agent-interactive-preview {
+  display: grid;
+  min-height: 11rem;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  background: var(--oc-bg-page);
+}
+
+.oc-agent-interactive-preview-sidebar {
+  border-right: 1px solid var(--oc-border-subtle);
+  background:
+    linear-gradient(var(--oc-surface-interactive) 0 0) 0.75rem 1rem / 2rem 0.375rem no-repeat,
+    linear-gradient(var(--oc-surface-interactive) 0 0) 0.75rem 2rem / 1.5rem 0.25rem no-repeat,
+    var(--oc-bg-surface);
+}
+
+.oc-agent-interactive-preview-content {
+  display: grid;
+  align-content: center;
+  gap: var(--oc-space-2);
+  padding: var(--oc-space-5);
+}
+
+.oc-agent-interactive-preview-content i {
+  display: block;
+  height: 0.5rem;
+  border-radius: var(--oc-radius-full);
+  background: var(--oc-surface-interactive);
+}
+
+.oc-agent-interactive-preview-content i:nth-child(2) {
+  width: 74%;
+}
+
+.oc-agent-interactive-preview-content i:nth-child(3) {
+  width: 48%;
+}
+
+.oc-agent-interactive-state {
+  display: grid;
+  min-height: 8rem;
+  align-content: center;
+  gap: var(--oc-space-1);
+  margin: 0;
+  padding: var(--oc-space-5);
+  background: var(--oc-bg-page);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-agent-interactive-state strong {
+  color: var(--oc-text-primary);
+  font-size: var(--oc-font-size-sm);
+}
+
+.oc-agent-interactive-tool[data-state="failed"] .oc-agent-interactive-state strong {
+  color: var(--oc-status-error-fg);
+}
+
+.oc-agent-interactive-artifact {
+  display: grid;
+  min-height: 8rem;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--oc-space-4);
+  margin: 0;
+  padding: var(--oc-space-4);
+}
+
+.oc-agent-interactive-artifact-thumb {
+  display: grid;
+  aspect-ratio: 4 / 3;
+  place-items: center;
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-control);
+  background: var(--oc-bg-recessed);
+  color: var(--oc-text-muted);
+}
+
+.oc-agent-interactive-artifact figcaption {
+  display: grid;
+  gap: var(--oc-space-1);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-agent-interactive-artifact strong {
+  color: var(--oc-text-primary);
+  font-size: var(--oc-font-size-sm);
 }
 
 .oc-model-menu-footer button:hover {
@@ -2874,6 +3143,202 @@
 
 .oc-quick-chat-footer kbd {
   font-family: var(--oc-font-mono);
+}
+
+/* Multi-agent collaboration */
+
+.oc-agent-collaboration {
+  display: grid;
+  width: min(100%, 40rem);
+  overflow: hidden;
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-surface);
+  background: var(--oc-surface-card);
+  color: var(--oc-text-primary);
+}
+
+.oc-agent-collaboration-header {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--oc-space-3);
+  padding: var(--oc-space-3) var(--oc-space-4);
+  border-bottom: 1px solid var(--oc-border-subtle);
+}
+
+.oc-agent-collaboration-facepile {
+  padding-left: 0;
+}
+
+.oc-agent-collaboration-facepile > .oc-avatar {
+  width: 1.25rem;
+  height: 1.25rem;
+  box-shadow: 0 0 0 2px var(--oc-surface-card);
+}
+
+.oc-agent-collaboration-facepile > .oc-avatar + .oc-avatar {
+  margin-left: -0.375rem;
+}
+
+.oc-agent-collaboration-facepile[data-state="thinking"] > .oc-avatar:nth-child(4) {
+  animation-delay: 270ms;
+}
+
+.oc-agent-collaboration-heading {
+  display: grid;
+  min-width: 0;
+  gap: 0.125rem;
+}
+
+.oc-agent-collaboration-heading strong {
+  overflow: hidden;
+  font-size: var(--oc-font-size-sm);
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-agent-collaboration-kicker {
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+  line-height: 1.2;
+}
+
+.oc-agent-collaboration-status {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--oc-space-1);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.oc-agent-collaboration-status::before {
+  width: 0.375rem;
+  height: 0.375rem;
+  flex: 0 0 auto;
+  border-radius: var(--oc-radius-round);
+  background: currentcolor;
+  content: "";
+}
+
+.oc-agent-collaboration-status[data-state="active"] {
+  color: var(--oc-status-info-fg);
+}
+
+.oc-agent-collaboration-status[data-state="complete"] {
+  color: var(--oc-status-success-fg);
+}
+
+.oc-agent-collaboration-lead {
+  display: grid;
+  gap: var(--oc-space-2);
+  padding: var(--oc-space-3) var(--oc-space-4);
+  border-bottom: 1px solid var(--oc-border-subtle);
+  background: var(--oc-bg-recessed);
+}
+
+.oc-agent-collaboration-update {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--oc-space-2);
+}
+
+.oc-agent-collaboration-author {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 1.5rem;
+  align-items: center;
+  gap: var(--oc-space-2);
+  padding: 0.125rem var(--oc-space-2) 0.125rem 0.125rem;
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-round);
+  background: var(--oc-surface-interactive);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-agent-collaboration-author strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-agent-collaboration-role {
+  overflow: hidden;
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-agent-collaboration-update > .oc-agent-collaboration-status {
+  margin-left: auto;
+}
+
+.oc-agent-collaboration-lead p,
+.oc-agent-collaboration-tasks p {
+  margin: 0;
+  color: var(--oc-text-secondary);
+  font-size: var(--oc-font-size-sm);
+  line-height: 1.45;
+}
+
+.oc-agent-collaboration-tasks {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.oc-agent-collaboration-tasks li {
+  display: grid;
+  min-width: 0;
+  gap: var(--oc-space-2);
+  padding: var(--oc-space-3) var(--oc-space-4);
+}
+
+.oc-agent-collaboration-tasks li + li {
+  border-top: 1px solid var(--oc-border-subtle);
+}
+
+.oc-agent-collaboration-footer {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--oc-space-3);
+  padding: var(--oc-space-2) var(--oc-space-4);
+  border-top: 1px solid var(--oc-border-subtle);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+@media (max-width: 42rem) {
+  .oc-agent-collaboration-header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .oc-agent-collaboration-header > .oc-agent-collaboration-status {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .oc-agent-collaboration-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--oc-space-1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-agent-collaboration-facepile[data-state="thinking"] > .oc-avatar {
+    animation: none;
+    transform: none;
+  }
 }
 
 .oc-workspace-progress li[data-state="active"] svg,

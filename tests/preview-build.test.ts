@@ -96,6 +96,7 @@ describe("preview route build", () => {
     for (const [id, title] of [
       ["foundations", "Introduction · Carapace"],
       ["interface", "Components · Carapace"],
+      ["effects", "Effects · Carapace"],
       ["compositions", "Compositions · Carapace"],
       ["resources", "Resources · Carapace"],
     ]) {
@@ -124,7 +125,7 @@ describe("preview route build", () => {
           type: "asset",
           fileName: "index.html",
           source:
-            '<title>Carapace</title><script src="./assets/app.js"></script><body data-preview-route="overview" data-preview-page="overview" data-preview-root="./"></body>',
+            '<title>Carapace</title><link rel="canonical" href="https://carapace.design/"><script src="./assets/app.js"></script><body data-preview-route="overview" data-preview-page="overview" data-preview-root="./"></body>',
         },
       },
     );
@@ -139,6 +140,15 @@ describe("preview route build", () => {
       "interface/primitives/button/index.html",
     );
     expect(emitted.map(({ fileName }) => fileName)).toContain("introduction/index.html");
+    expect(emitted.map(({ fileName }) => fileName)).toContain(
+      "agent-components/bash-tool/index.html",
+    );
+    const bashAlias = emitted.find(
+      ({ fileName }) => fileName === "agent-components/bash-tool/index.html",
+    );
+    expect(bashAlias?.source).toContain(
+      'rel="canonical" href="https://carapace.design/agent-components/interactive-tool/"',
+    );
   });
 
   test(

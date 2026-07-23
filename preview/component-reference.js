@@ -1,39 +1,6 @@
-const avatarPalettes = [
-  ["#1b1b20", "#ff5c46", "#ffd166", "#8be28b"],
-  ["#15161a", "#6d7cff", "#ff7ac6", "#a8f0e0"],
-  ["#1a1715", "#ff8f3d", "#f9dc5c", "#5ed0c7"],
-  ["#17151d", "#a978ff", "#ff6b8a", "#7ee787"],
-];
+import { avatarFixtureUrl } from "./avatar-fixtures.js";
 
-function hashAvatarSeed(seed) {
-  let hash = 2166136261;
-  for (const character of seed) {
-    hash = Math.imul(hash ^ character.charCodeAt(0), 16777619);
-  }
-  return hash >>> 0;
-}
-
-function avatarPreviewUrl(seed) {
-  const hash = hashAvatarSeed(seed);
-  const palette = avatarPalettes[hash % avatarPalettes.length];
-  const pixels = [];
-
-  for (let row = 0; row < 5; row += 1) {
-    for (let column = 0; column < 3; column += 1) {
-      const bit = (hash >>> ((row * 3 + column) % 24)) & 1;
-      if (!bit && row !== 2) continue;
-      const color = palette[1 + ((hash >>> ((row + column) % 16)) % 3)];
-      for (const mirroredColumn of new Set([column, 4 - column])) {
-        pixels.push(
-          `<rect x="${mirroredColumn * 8}" y="${row * 8}" width="8" height="8" fill="${color}"/>`,
-        );
-      }
-    }
-  }
-
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" shape-rendering="crispEdges"><rect width="40" height="40" fill="${palette[0]}"/>${pixels.join("")}</svg>`;
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
-}
+export { avatarFixtureUrl } from "./avatar-fixtures.js";
 
 function avatarExample(id, label, purpose, markup) {
   return {
@@ -41,7 +8,7 @@ function avatarExample(id, label, purpose, markup) {
     label,
     purpose,
     markup,
-    previewMarkup: markup.replaceAll('src="avatar.jpg"', `src="${avatarPreviewUrl(label)}"`),
+    previewMarkup: markup.replaceAll('src="avatar.jpg"', `src="${avatarFixtureUrl(label)}"`),
   };
 }
 
@@ -50,6 +17,14 @@ function componentExample(id, label, purpose, markup) {
 }
 
 export const avatarWorkbenchExamples = [
+  avatarExample(
+    "inline",
+    "Inline",
+    "Tiny identity marker attached to an author or participant label.",
+    `<span class="oc-avatar oc-avatar-xs oc-avatar-pixel">
+  <img class="oc-avatar-image" src="avatar.jpg" alt="" width="20" height="20" />
+</span>`,
+  ),
   avatarExample(
     "small",
     "Small",
@@ -98,6 +73,32 @@ export const avatarWorkbenchExamples = [
   <span>OpenClaw · Online</span>
 </span>`,
   ),
+  {
+    id: "stack",
+    label: "Stack",
+    purpose: "Overlapping participant identity for compact collaborative activity.",
+    markup: `<span class="oc-avatar-stack" aria-label="Mina, Atlas, and Review">
+  <span class="oc-avatar oc-avatar-sm"><img class="oc-avatar-image" src="mina.jpg" alt="Mina" /></span>
+  <span class="oc-avatar oc-avatar-sm"><img class="oc-avatar-image" src="atlas.jpg" alt="Atlas" /></span>
+  <span class="oc-avatar oc-avatar-sm"><img class="oc-avatar-image" src="review.jpg" alt="Review" /></span>
+</span>`,
+    previewMarkup: `<span class="oc-avatar-stack" aria-label="Mina, Atlas, and Review">
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Mina")}" alt="Mina" /></span>
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Atlas")}" alt="Atlas" /></span>
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Review")}" alt="Review" /></span>
+</span>`,
+  },
+  {
+    id: "thinking",
+    label: "Thinking",
+    purpose: "Animated participant stack for active multi-agent collaboration.",
+    markup: `<span class="oc-avatar-stack" data-state="thinking" aria-hidden="true">…</span>`,
+    previewMarkup: `<span class="oc-avatar-stack" data-state="thinking" aria-hidden="true">
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Planner")}" alt="" /></span>
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Builder")}" alt="" /></span>
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Reviewer")}" alt="" /></span>
+</span>`,
+  },
 ];
 
 export const buttonWorkbenchExamples = [

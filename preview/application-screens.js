@@ -107,6 +107,12 @@ export function applicationModelControlsMarkup({
 </button>`,
     )
     .join("");
+  const settings = `<div class="oc-model-menu-settings"${locked ? "" : ' role="group" aria-label="Model settings"'}>
+    <button class="oc-model-control" type="button" aria-label="Reasoning level: ${thinking}" data-workbench-model-thinking="${thinking}"${locked ? " disabled" : ""}>
+      ${agentIcon("brain")}<span>Thinking</span><strong>${thinking}</strong>${agentIcon("chevron")}
+    </button>
+    <label class="oc-fast-mode"><input type="checkbox" data-workbench-model-fast${fast ? " checked" : ""}${locked ? " disabled" : ""} /><span>${agentIcon("zap")} Fast</span></label>
+  </div>`;
   return `<div class="oc-model-controls" data-locked="${locked}">
   ${
     locked
@@ -128,14 +134,11 @@ export function applicationModelControlsMarkup({
         </nav>
         <div class="oc-model-options" role="group" aria-label="Models">${options}</div>
       </div>
-      <footer class="oc-model-menu-footer"><span>Session override</span><button type="button" data-workbench-model-reset${locked ? " disabled" : ""}>Reset to GPT-5.6 Sol</button></footer>
+      <footer class="oc-model-menu-footer">${settings}<button type="button" data-workbench-model-reset${locked ? " disabled" : ""}>Reset to GPT-5.6 Sol</button></footer>
     </div>
   </details>`
   }
-  <button class="oc-model-control" type="button" aria-label="Reasoning level: ${thinking}" data-workbench-model-thinking="${thinking}"${locked ? " disabled" : ""}>
-    ${agentIcon("brain")}<span>Thinking</span><strong>${thinking}</strong>${agentIcon("chevron")}
-  </button>
-  <label class="oc-fast-mode"><input type="checkbox" data-workbench-model-fast${fast ? " checked" : ""}${locked ? " disabled" : ""} /><span>${agentIcon("zap")} Fast</span></label>
+  ${locked ? settings : ""}
 </div>`;
 }
 
@@ -614,6 +617,9 @@ function workspaceConversation(
       <div class="oc-workspace-compose-toolbar">
         <div>
           <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Attach file">${agentIcon("paperclip")}</button>
+          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Capture screenshot">${agentIcon("camera")}</button>
+          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Dictate">${agentIcon("mic")}</button>
+          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Talk mode">${agentIcon("audio-lines")}</button>
           ${applicationModelControlsMarkup({ model, thinking, fast, open: picker })}
         </div>
         <div class="oc-workspace-compose-actions">
@@ -825,7 +831,9 @@ export function quickChatApplicationMarkup({
       <div class="oc-quick-chat-toolbar">
         <div class="oc-quick-chat-tools">
           <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Attach">${agentIcon("paperclip")}</button>
+          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Capture screenshot">${agentIcon("camera")}</button>
           <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Dictate">${agentIcon("mic")}</button>
+          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Talk mode">${agentIcon("audio-lines")}</button>
           ${applicationModelControlsMarkup({ model, thinking, fast, open: picker })}
         </div>
         <button class="oc-action oc-action-icon ${failed ? "oc-action-secondary" : "oc-action-primary"}" type="button" aria-label="${actionLabel}">${agentIcon(failed ? "refresh-cw" : running ? "square" : "arrow-up")}</button>

@@ -1,6 +1,20 @@
 import { introductionPage, referencePages } from "./navigation.js";
 
-export const previewRoutes = Object.freeze([introductionPage, ...referencePages]);
+const previewRouteAliases = [
+  {
+    id: "interactive-tool",
+    label: "Interactive Tool",
+    path: "agent-components/bash-tool/",
+    canonicalPath: "agent-components/interactive-tool/",
+    areaId: "agent-components",
+  },
+];
+
+export const previewRoutes = Object.freeze([
+  introductionPage,
+  ...referencePages,
+  ...previewRouteAliases,
+]);
 
 function pathSegments(path) {
   return path.split("/").filter(Boolean);
@@ -20,7 +34,10 @@ export async function createRouteHtml(indexHtml, route) {
   const routeId = route.areaId || route.id;
   const label = getRouteLabel(route);
   const title = label === "Home" ? "Carapace" : `${label} · Carapace`;
-  const canonicalUrl = new URL(route.path, "https://carapace.design/").href;
+  const canonicalUrl = new URL(
+    route.canonicalPath || route.path,
+    "https://carapace.design/",
+  ).href;
 
   const bodyPattern = /<body\b([^>]*)>[\s\S]*?<\/body>/i;
   if (!bodyPattern.test(indexHtml)) {

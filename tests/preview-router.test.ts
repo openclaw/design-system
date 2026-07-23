@@ -70,6 +70,11 @@ describe("preview router", () => {
       path: "foundations/colors/",
       hash: "",
     });
+    expect(resolvePreviewRoute(`${siteRoot}agent-components/bash-tool/`, siteRoot)).toMatchObject({
+      pageId: "interactive-tool",
+      path: "agent-components/interactive-tool/",
+      href: `${siteRoot}agent-components/interactive-tool/`,
+    });
     expect(
       resolvePreviewRoute(`${siteRoot}interface/primitives/action/index.html#usage`, siteRoot),
     ).toMatchObject({

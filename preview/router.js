@@ -5,8 +5,13 @@ export const previewHistoryKey = "carapacePreview";
 const previewPages = [introductionPage, ...referencePages];
 const previewPagesById = new Map(previewPages.map((page) => [page.id, page]));
 const previewPagesByPath = new Map(previewPages.map((page) => [page.path, page]));
-const previewPathsByLength = previewPages
-  .map((page) => page.path)
+const previewAliasesByPath = new Map([
+  ["agent-components/bash-tool/", "interactive-tool"],
+]);
+const previewPathsByLength = [
+  ...previewPages.map((page) => page.path),
+  ...previewAliasesByPath.keys(),
+]
   .filter(Boolean)
   .sort((left, right) => right.length - left.length);
 
@@ -73,16 +78,18 @@ export function resolvePreviewRoute(targetHref, siteRoot) {
   if (!root || !target || target.origin !== root.origin) return null;
 
   const path = relativePreviewPath(target.pathname, directoryPath(root.pathname));
-  const page = path === null ? undefined : previewPagesByPath.get(path);
+  const aliasId = path === null ? undefined : previewAliasesByPath.get(path);
+  const page = aliasId ? previewPagesById.get(aliasId) : previewPagesByPath.get(path);
   if (!page) return null;
 
-  const canonicalUrl = new URL(page.path, root);
+  const canonicalPath = page.path;
+  const canonicalUrl = new URL(canonicalPath, root);
   canonicalUrl.search = target.search;
   canonicalUrl.hash = target.hash;
 
   return Object.freeze({
     pageId: page.id,
-    path: page.path,
+    path: canonicalPath,
     hash: target.hash,
     search: target.search,
     href: canonicalUrl.href,

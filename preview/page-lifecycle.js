@@ -9,7 +9,6 @@ import { getReferenceMaturity, referencePages } from "./navigation.js";
 import { bindSensitiveInputs } from "./sensitive-input.js";
 import { bindSidebars } from "./sidebar.js";
 import { bindTabs } from "./tabs.js";
-import { bindTablesOfContents } from "./table-of-contents.js";
 import {
   groupTokenDefinitions,
   resolveTokenHash,
@@ -500,10 +499,24 @@ function bindPageInteractions(root) {
   bindSensitiveInputs(root);
   bindSidebars(root);
   bindTabs(root);
-  bindTablesOfContents(root);
+  let active = true;
+  const hasTableOfContents = Boolean(
+    root.querySelector(".oc-table-of-contents, .introduction-toc"),
+  );
+  const tableOfContents = import("./table-of-contents.js");
+  void tableOfContents.then(({ bindTablesOfContents, disconnectTablesOfContents }) => {
+    disconnectTablesOfContents(root);
+    if (active && hasTableOfContents && root.isConnected) bindTablesOfContents(root);
+  });
   bindToolbars(root);
   bindToasts(root);
   bindTooltips(root);
+  return () => {
+    active = false;
+    void tableOfContents.then(({ disconnectTablesOfContents }) => {
+      disconnectTablesOfContents(root);
+    });
+  };
 }
 
 export function mountPage(
@@ -527,7 +540,7 @@ export function mountPage(
     input.indeterminate = true;
   });
   bindHomeSegmentedControls(root);
-  bindPageInteractions(root);
+  const stopPageInteractions = bindPageInteractions(root);
   view.lucide?.createIcons({
     root,
     attrs: {
@@ -548,6 +561,7 @@ export function mountPage(
       if (!active) return;
       active = false;
       tokenCatalog.cleanup();
+      stopPageInteractions();
       stopObservingSections();
       stopCopy();
       feedback.cleanup();

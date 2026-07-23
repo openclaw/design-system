@@ -406,6 +406,7 @@ function mountWorkbenchDefinition(workbench, pageId) {
 
   if (controls) {
     for (const control of definition.controls) {
+      if (control.hidden) continue;
       if (control.type === "choice") {
         controls.append(createChoiceControl(pageId, control, state, update));
       } else if (control.type === "toggle") {
@@ -603,7 +604,7 @@ export function renderComponentWorkbench(mount, pageId) {
   const badge = intro.querySelector(".maturity-badge");
   const previewTitle = previewSection.querySelector(".section-heading h2")?.textContent;
   const definition = getWorkbenchDefinition(pageId);
-  const hasControls = Boolean(definition?.controls?.length);
+  const hasControls = Boolean(definition?.controls?.some((control) => !control.hidden));
   const shellProfile = getWorkbenchShellProfile(pageId);
   const canvasTheme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
 
