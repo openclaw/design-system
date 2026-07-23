@@ -739,7 +739,7 @@ describe("preview behavior", () => {
       size: "sm",
       label: false,
       state: "selected",
-      layout: "row",
+      layout: "marks",
     });
     const muted = providerLogoWorkbenchMarkup({
       size: "lg",
@@ -759,6 +759,9 @@ describe("preview behavior", () => {
     expect(defaults).toContain('data-provider="openai"');
     expect(defaults).toContain('data-provider="gemini"');
     expect(defaults).toContain('data-provider="xai"');
+    expect(defaults).toContain('data-provider="deepseek"');
+    expect(defaults).toContain('data-provider="kimi"');
+    expect(defaults).toContain('data-provider="perplexity"');
     expect(defaults).toContain("<svg");
     expect(defaults).toContain("<span>OpenAI</span>");
     expect(defaults).toContain("<span>Gemini</span>");
@@ -768,15 +771,15 @@ describe("preview behavior", () => {
     expect(defaults).not.toContain(">X</span>");
 
     expect(markOnly).toContain("oc-provider-logo-sm");
-    expect(markOnly).toContain('data-layout="row"');
-    expect(markOnly).toContain('data-selected="true"');
-    expect(markOnly).toContain('aria-label="OpenAI"');
+    expect(markOnly).toContain('data-layout="marks"');
+    expect(markOnly).toContain("oc-provider-logo-passive");
+    expect(markOnly).toContain('title="OpenAI"');
     expect(markOnly).not.toContain("<span>OpenAI</span>");
     expect(markOnly).not.toContain("oc-provider-logo-muted");
 
     expect(muted).toContain("oc-provider-logo-lg");
     expect(muted).toContain("oc-provider-logo-muted");
-    expect(muted).toContain(" disabled");
+    expect(muted).not.toContain(" disabled");
     expect(muted).toContain('data-layout="stack"');
     expect(muted).not.toContain("data-selected");
     expect(profiles).toContain('data-layout="profiles"');
@@ -784,7 +787,7 @@ describe("preview behavior", () => {
     expect(profiles).toContain("oc-provider-logo-framed");
     expect(profiles).toContain("oc-provider-logo-muted");
     expect(profiles).toContain('<span class="sr-only">OpenAI</span>');
-    expect(profiles).toContain(" disabled");
+    expect(profiles).not.toContain(" disabled");
     expect(profiles).not.toContain("</svg>OpenAI</span>");
 
     const reference = getReferenceContent("primitive-provider-logo");

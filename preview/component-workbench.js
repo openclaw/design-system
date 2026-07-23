@@ -97,16 +97,20 @@ const compactWorkbenchPages = new Set([
   "primitive-link",
   "primitive-loader",
   "primitive-meter",
-  "primitive-provider-logo",
   "spiral-loader",
   "text-shimmer",
 ]);
 
-const conversationWorkbenchPages = new Set([
+const wideWorkbenchPages = new Set([
+  "primitive-provider-logo",
   "agent-chat",
   "input-bar",
   "message-list",
   "user-message",
+]);
+
+const conversationWorkbenchPages = new Set([
+  "agent-collaboration",
 ]);
 
 const viewportWorkbenchPages = new Set([
@@ -131,6 +135,9 @@ export function getWorkbenchShellProfile(pageId) {
   }
   if (compactWorkbenchPages.has(pageId)) {
     return { canvasPreset: "compact", supportsViewport: false };
+  }
+  if (wideWorkbenchPages.has(pageId)) {
+    return { canvasPreset: "wide", supportsViewport: false };
   }
   if (conversationWorkbenchPages.has(pageId)) {
     return { canvasPreset: "conversation", supportsViewport: true };
@@ -619,15 +626,10 @@ export function renderComponentWorkbench(mount, pageId) {
   if (badge) titleGroup.append(badge);
   const navigation = createWorkbenchNavigation(pageId);
   const canvasTools = createCanvasTools(canvasTheme, pageId);
-  header.append(titleGroup);
-  if (shellProfile.canvasPreset === "viewport") {
-    const headerActions = createElement("div", "component-workbench-header-actions");
-    headerActions.append(...canvasTools);
-    if (navigation) headerActions.append(navigation);
-    header.append(headerActions);
-  } else if (navigation) {
-    header.append(navigation);
-  }
+  const headerActions = createElement("div", "component-workbench-header-actions");
+  headerActions.append(...canvasTools);
+  if (navigation) headerActions.append(navigation);
+  header.append(titleGroup, headerActions);
 
   const stage = createElement("section", "component-workbench-stage");
   const stageTitle = createElement("h2", "sr-only");
@@ -642,11 +644,7 @@ export function renderComponentWorkbench(mount, pageId) {
   const frame = createElement("div", "component-workbench-frame");
   frame.append(specimen);
   canvas.append(frame);
-  stage.append(
-    stageTitle,
-    canvas,
-    ...(shellProfile.canvasPreset === "viewport" ? [] : canvasTools),
-  );
+  stage.append(stageTitle, canvas);
 
   workbench.append(header, stage);
   if (hasControls) {

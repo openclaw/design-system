@@ -168,11 +168,11 @@ describe("preview contracts", () => {
       supportsViewport: true,
     });
     expect(getWorkbenchShellProfile("agent-chat")).toEqual({
-      canvasPreset: "conversation",
-      supportsViewport: true,
+      canvasPreset: "wide",
+      supportsViewport: false,
     });
     expect(getWorkbenchShellProfile("primitive-provider-logo")).toEqual({
-      canvasPreset: "compact",
+      canvasPreset: "wide",
       supportsViewport: false,
     });
   });
@@ -1458,14 +1458,16 @@ describe("preview contracts", () => {
           { label: "Default", value: "default" },
           { label: "Selected", value: "selected" },
           { label: "Muted", value: "muted" },
+          { label: "Disabled", value: "disabled" },
         ],
       },
       {
         id: "layout",
         type: "choice",
         options: [
-          { label: "Wrap", value: "wrap" },
-          { label: "Row", value: "row" },
+          { label: "Lockups", value: "wrap" },
+          { label: "Marks", value: "marks" },
+          { label: "Picker", value: "picker" },
           { label: "Stack", value: "stack" },
           { label: "Profiles", value: "profiles" },
         ],
@@ -1523,7 +1525,7 @@ describe("preview contracts", () => {
         label: false,
         framed: true,
         state: "selected",
-        layout: "row",
+        layout: "picker",
       }),
     ).toContain('data-selected="true"');
     expect(
@@ -1532,7 +1534,7 @@ describe("preview contracts", () => {
         label: false,
         framed: true,
         state: "selected",
-        layout: "row",
+        layout: "picker",
       }),
     ).toContain('aria-pressed="true"');
     expect(
@@ -1541,7 +1543,7 @@ describe("preview contracts", () => {
         label: false,
         framed: true,
         state: "selected",
-        layout: "row",
+        layout: "picker",
       }),
     ).toContain("oc-provider-logo-framed");
     expect(
@@ -1559,6 +1561,15 @@ describe("preview contracts", () => {
         label: true,
         framed: false,
         state: "muted",
+        layout: "stack",
+      }),
+    ).not.toContain(" disabled");
+    expect(
+      definition?.markup({
+        size: "lg",
+        label: true,
+        framed: false,
+        state: "disabled",
         layout: "stack",
       }),
     ).toContain(" disabled");
@@ -2012,6 +2023,10 @@ describe("preview contracts", () => {
     expect(home).toContain('href="./interface/primitives/provider-logo/"');
     expect(home).toContain('aria-label="Anthropic"');
     expect(home).toContain('aria-label="Mistral"');
+    expect(home).toContain('data-provider="openai"');
+    expect(home).toContain('data-provider="gemini"');
+    expect(home).toContain('data-avatar-seed="Mina"');
+    expect(home).toContain('data-avatar-seed="Quinn"');
     expect(home).not.toContain('aria-label="OpenAI"><span class="oc-provider-logo-mark" aria-hidden="true">OA');
     expect(home).toContain('href="./agent-components/question-tool/"');
     expect(home).toContain('href="./agent-components/agent-chat/"');
@@ -2039,6 +2054,7 @@ describe("preview contracts", () => {
     );
     expect(home).toContain('id="home-autocomplete-options" role="listbox" hidden');
     expect(pageLifecycle).toContain(".home-component-grid .oc-segmented");
+    expect(pageLifecycle).toContain("hydrateAvatarFixtures(root)");
     expect(componentLabels.slice(0, 8)).toEqual([
       "Button",
       "Composer",

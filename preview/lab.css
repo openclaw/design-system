@@ -2005,6 +2005,11 @@ a.oc-layer-card-primary:hover {
   background: var(--oc-surface-card);
 }
 
+.oc-provider-logo-passive {
+  min-height: 0;
+  gap: 0;
+}
+
 :is(button, a).oc-provider-logo {
   padding: var(--oc-space-2);
   border: 1px solid transparent;
@@ -3506,8 +3511,8 @@ a.oc-layer-card-primary:hover {
 
 .oc-agent-attributed-message {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--oc-space-1);
+  grid-template-columns: 1.25rem minmax(0, 1fr);
+  gap: var(--oc-space-2);
   align-items: start;
 }
 
@@ -3525,10 +3530,16 @@ a.oc-layer-card-primary:hover {
   font-weight: 600;
 }
 
-.oc-agent-message-author .oc-avatar {
+.oc-agent-message-content {
+  display: grid;
+  min-width: 0;
+  gap: var(--oc-space-1);
+}
+
+.oc-agent-attributed-message > .oc-avatar {
   width: 1.25rem;
   height: 1.25rem;
-  font-size: 0.55rem;
+  margin-top: 0.125rem;
 }
 
 .oc-agent-attributed-message .oc-agent-user-message {
@@ -6103,10 +6114,6 @@ details.oc-agent-tool-row[open] > .oc-agent-tool-row-summary .oc-agent-tool-row-
 }
 
 @media (max-width: 42rem) {
-  .oc-agent-chat {
-    min-height: 24rem;
-  }
-
   .oc-agent-collaboration-header {
     grid-template-columns: auto minmax(0, 1fr);
   }

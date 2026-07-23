@@ -198,8 +198,9 @@ const providerLogoSizes = [
 ];
 
 const providerLogoLayouts = [
-  { label: "Wrap", value: "wrap" },
-  { label: "Row", value: "row" },
+  { label: "Lockups", value: "wrap" },
+  { label: "Marks", value: "marks" },
+  { label: "Picker", value: "picker" },
   { label: "Stack", value: "stack" },
   { label: "Profiles", value: "profiles" },
 ];
@@ -208,6 +209,7 @@ const providerLogoStates = [
   { label: "Default", value: "default" },
   { label: "Selected", value: "selected" },
   { label: "Muted", value: "muted" },
+  { label: "Disabled", value: "disabled" },
 ];
 
 const providerLogoProviders = [
@@ -218,6 +220,9 @@ const providerLogoProviders = [
   { id: "groq", name: "Groq", color: "#f55036" },
   { id: "mistral", name: "Mistral", color: "#ff7000" },
   { id: "openrouter", name: "OpenRouter", color: "#6b7cff" },
+  { id: "deepseek", name: "DeepSeek", color: "#4d6bfe" },
+  { id: "kimi", name: "Kimi", color: "#8b5cf6" },
+  { id: "perplexity", name: "Perplexity", color: "#20b8a6" },
 ];
 
 const spiralLoaderSizes = [
@@ -1268,8 +1273,8 @@ export function messageListWorkbenchMarkup({
   if (mode === "attributed") {
     return `<div class="oc-agent-message-list" role="log" aria-label="Conversation history">
   <div class="oc-agent-message-list-content">
-    <div class="oc-agent-attributed-message" data-author="user"><div><span class="oc-agent-message-author"><span class="oc-avatar oc-avatar-sm" role="img" aria-label="Mina"><span class="oc-avatar-fallback" aria-hidden="true">MI</span></span>Mina</span><div class="oc-agent-user-message"><p>Can we make the application panes feel closer to the mac app?</p></div>${media ? mediaGalleryMarkup(status) : ""}</div></div>
-    <div class="oc-agent-attributed-message" data-author="agent"><div><span class="oc-agent-message-author"><span class="oc-avatar oc-avatar-sm" role="img" aria-label="OpenClaw"><span class="oc-avatar-fallback" aria-hidden="true">OC</span></span>OpenClaw</span>${chatResponseMarkup(status, copyToolbar)}${media ? mediaStatusMarkup(status) : ""}</div></div>
+    <div class="oc-agent-attributed-message" data-author="user"><span class="oc-avatar oc-avatar-xs oc-avatar-pixel" role="img" aria-label="Mina"><img class="oc-avatar-image" src="${avatarFixtureUrl("Mina")}" alt="" /></span><div class="oc-agent-message-content"><span class="oc-agent-message-author">Mina</span><div class="oc-agent-user-message"><p>Can we make the application panes feel closer to the mac app?</p></div>${media ? mediaGalleryMarkup(status) : ""}</div></div>
+    <div class="oc-agent-attributed-message" data-author="agent"><span class="oc-avatar oc-avatar-xs oc-avatar-pixel" role="img" aria-label="OpenClaw"><img class="oc-avatar-image" src="${avatarFixtureUrl("OpenClaw")}" alt="" /></span><div class="oc-agent-message-content"><span class="oc-agent-message-author">OpenClaw</span>${chatResponseMarkup(status, copyToolbar)}${media ? mediaStatusMarkup(status) : ""}</div></div>
   </div>
 </div>`;
   }
@@ -1369,6 +1374,9 @@ function providerLogoMark(provider) {
     groq: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.04 2C8.18 1.97 5.04 5 5 8.78c-.04 3.79 3.06 6.88 6.91 6.91h2.42v-2.57h-2.29a4.33 4.33 0 0 1-4.41-4.23 4.33 4.33 0 0 1 4.31-4.32h.1a4.32 4.32 0 0 1 4.36 4.28v6.3a4.32 4.32 0 0 1-4.28 4.28 4.38 4.38 0 0 1-3.07-1.25l-1.85 1.82A7 7 0 0 0 12.03 22h.09A6.93 6.93 0 0 0 19 15.18v-6.5C18.91 4.96 15.82 2 12.04 2Z"/></svg>`,
     mistral: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M3.428 3.4h3.429v3.428h3.429v3.429h3.429V6.828h3.427V3.4h3.43v13.714H24v3.429H13.714v-3.428h-3.428v-3.429h-3.43v3.428h3.43v3.429H0v-3.429h3.428V3.4zm10.286 13.715h3.428v-3.429h-3.427v3.429z" clip-rule="evenodd"/></svg>`,
     openrouter: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="4" d="M0 11.7c.7 0 3.4-.6 4.8-1.4 1.4-.8 1.4-.8 4.3-2.9 3.7-2.6 6.3-1.7 10.6-1.7M0 11.7c.7 0 3.4.6 4.8 1.4 1.4.8 1.4.8 4.3 2.9 3.7 2.6 6.3 1.7 10.6 1.7"/><path fill="currentColor" d="m24 5.7-7.2 4.2V1.5L24 5.7Zm0 12-7.2-4.2v8.4l7.2-4.2Z"/></svg>`,
+    deepseek: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M3.2 13.4c1.9-3.8 5.8-5.8 10.2-5.2 2.4.3 4.4 1.4 5.9 3.2.9-.2 1.8-.7 2.5-1.5-.1 2.2-1.1 3.8-3.1 4.8-.7 4-3.8 6.6-8.1 6.6-4.6 0-8-3-8.5-7.1-.1-.4.3-.7 1.1-.8Zm5 1.1a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm7.2 2.2c-1.4 1.1-3.5 1.2-5.5.2-.7-.4-1.3.5-.7 1 2.4 1.7 5.4 1.5 7.3-.1.7-.6-.4-1.6-1.1-1.1Z"/></svg>`,
+    kimi: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M21.72.94a2.23 2.23 0 1 1 0 4.46h-1.97a.26.26 0 0 1-.26-.26V3.17A2.23 2.23 0 0 1 21.72.94ZM9.39 13.95l8.43-8.36c.16-.16.07-.47-.14-.47h-4.54a.22.22 0 0 0-.14.06l-9.08 9.01c-.14.14-.35.02-.35-.21V5.39c0-.15-.1-.27-.22-.27H.22c-.12 0-.22.12-.22.27v18.53c0 .15.1.27.22.27h3.13c.12 0 .22-.12.22-.27v-3.78c0-.08.03-.16.08-.21l2.82-2.79c.07-.07.16-.08.24-.03l7.53 5.54a8.6 8.6 0 0 0 4.01 1.49c.12.01.23-.11.23-.27v-3.56c0-.14-.08-.25-.19-.26a6.1 6.1 0 0 1-2.35-.94l-6.52-4.72c-.14-.09-.15-.32-.03-.44Z"/></svg>`,
+    perplexity: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M22.4 7.09h-2.31V.07l-7.51 6.35V.16h-1.16v6.2L4.49 0v7.09H1.6v10.4h2.89V24l6.93-6.36v6.2h1.16v-6.05l6.93 6.18v-6.48h2.89V7.09Zm-3.47-4.53v4.53h-5.35l5.35-4.53ZM5.65 2.63l4.87 4.46H5.65V2.63ZM2.76 16.33V8.25h7.85l-6.12 6.11v1.97H2.76Zm2.89 5.04v-6.53l5.77-5.78v7.01l-5.77 5.3Zm12.7.03-5.77-5.15V9.06l5.77 5.78v6.56Zm2.89-5.07h-1.73v-1.97l-6.12-6.11h7.85v8.08Z"/></svg>`,
   };
   return marks[provider] ?? "";
 }
@@ -1393,15 +1401,40 @@ export function providerLogoWorkbenchMarkup({
         : "";
   const mutedClass = selectedState === "muted" ? " oc-provider-logo-muted" : "";
   const framedClass = framed ? " oc-provider-logo-framed" : "";
-  const disabledAttribute = selectedState === "muted" ? " disabled" : "";
+  const disabledAttribute = selectedState === "disabled" ? " disabled" : "";
 
   const items = providerLogoProviders
     .map(({ id, name, color }, index) => {
       const selected = selectedState === "selected" && index === 0;
       const selectedAttribute = selected ? ' data-selected="true"' : "";
       const labelMarkup = label ? `<span>${name}</span>` : "";
-      const nameAttribute = label ? "" : ` aria-label="${name}"`;
-      return `<button class="oc-provider-logo${sizeClass}${mutedClass}${framedClass}" type="button" aria-pressed="${selected}" style="--provider-brand-color:${color}" data-brand-color${nameAttribute}${selectedAttribute}${disabledAttribute}><span class="oc-provider-logo-mark" data-provider="${id}" aria-hidden="true">${providerLogoMark(id)}</span>${labelMarkup}</button>`;
+      if (selectedLayout === "marks") {
+        return `<span class="oc-provider-logo oc-provider-logo-passive${sizeClass}${mutedClass}${framedClass}" title="${name}" style="--provider-brand-color:${color}" data-brand-color><span class="oc-provider-logo-mark" data-provider="${id}" aria-hidden="true">${providerLogoMark(id)}</span><span class="sr-only">${name}</span></span>`;
+      }
+      const model =
+        {
+          openai: "GPT-5.6 Sol",
+          anthropic: "Claude Opus 4.6",
+          gemini: "Gemini 3 Pro",
+          xai: "Grok 4",
+          groq: "Llama 4 Scout",
+          mistral: "Mistral Large",
+          openrouter: "Auto router",
+          deepseek: "DeepSeek R2",
+          kimi: "Kimi K2",
+          perplexity: "Sonar Pro",
+        }[id] ?? name;
+      const content =
+        selectedLayout === "picker"
+          ? `<span class="provider-picker-copy"><strong>${model}</strong><small>${name}</small></span>`
+          : labelMarkup;
+      const nameAttribute =
+        selectedLayout === "picker"
+          ? ""
+          : label
+            ? ""
+            : ` aria-label="${name}"`;
+      return `<button class="oc-provider-logo${selectedLayout === "picker" ? " oc-provider-logo-picker" : ""}${sizeClass}${mutedClass}${framedClass}" type="button" aria-pressed="${selected}" style="--provider-brand-color:${color}" data-brand-color${nameAttribute}${selectedAttribute}${disabledAttribute}><span class="oc-provider-logo-mark" data-provider="${id}" aria-hidden="true">${providerLogoMark(id)}</span>${content}</button>`;
     })
     .join("");
 

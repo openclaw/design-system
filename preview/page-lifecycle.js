@@ -1,4 +1,5 @@
 import { bindAgentComponentDemos } from "./agent-components-interactions.js";
+import { avatarFixtureUrl } from "./avatar-fixtures.js";
 import { bindCombobox } from "./combobox.js";
 import { bindCommandPalettes } from "./command-palette.js";
 import { bindDialogs } from "./dialog.js";
@@ -331,6 +332,12 @@ function bindHomeSegmentedControls(root) {
   }
 }
 
+function hydrateAvatarFixtures(root) {
+  for (const image of root.querySelectorAll("img[data-avatar-seed]")) {
+    image.src = avatarFixtureUrl(image.dataset.avatarSeed || "OpenClaw");
+  }
+}
+
 function observePreviewSections(root) {
   const document = root.ownerDocument;
   const view = document.defaultView;
@@ -563,6 +570,7 @@ export function mountPage(
   delete document.body.dataset.referenceLayout;
   delete document.body.dataset.shellMode;
   addHomeMaturityBadges(root);
+  hydrateAvatarFixtures(root);
   root.querySelectorAll("[data-preview-indeterminate]").forEach((input) => {
     input.indeterminate = true;
   });
