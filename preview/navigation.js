@@ -586,6 +586,12 @@ export const referenceAreas = [
         path: "effects/attention/",
         keywords: "pulse meter presence agent activity status attention",
       },
+      {
+        id: "effect-transition",
+        label: "Transition",
+        path: "effects/transition/",
+        keywords: "reveal collapse enter exit replace spatial continuity transition",
+      },
     ],
   },
   {

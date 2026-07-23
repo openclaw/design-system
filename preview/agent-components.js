@@ -419,7 +419,7 @@ const components = {
     previewTitle: "Structured response content",
     preview: `<article class="oc-agent-markdown">
   <h3>Validation complete</h3>
-  <p>The component contract is ready for review. Inspect the <a href="../../foundations/tokens/" data-workbench-inert-link>token reference</a> before adoption.</p>
+  <p>The component contract is ready for review. Inspect the <a class="oc-link" href="../../foundations/tokens/" data-workbench-inert-link>token reference</a> before adoption.</p>
   <ul><li>Keyboard behavior is preserved.</li><li>Colors resolve from <code>--oc-*</code> semantic tokens.</li></ul>
   <blockquote><p>Review the rendered state in both themes before adoption.</p></blockquote>
   <div class="oc-agent-markdown-table" tabindex="0" role="region" aria-label="Validation results"><table><thead><tr><th scope="col">Check</th><th scope="col">Result</th></tr></thead><tbody><tr><td>CSS contract</td><td>Passed</td></tr><tr><td>Preview build</td><td>Passed</td></tr></tbody></table></div>
@@ -427,7 +427,7 @@ const components = {
 </article>`,
     markup: `<article class="oc-agent-markdown">
   <h3>Validation complete</h3>
-  <p>The component contract is ready for review. Inspect the <a href="../../foundations/tokens/">token reference</a>.</p>
+  <p>The component contract is ready for review. Inspect the <a class="oc-link" href="../../foundations/tokens/">token reference</a>.</p>
   <ul><li>Keyboard behavior is preserved.</li></ul>
   <blockquote><p>Review the rendered state before adoption.</p></blockquote>
   <div class="oc-agent-markdown-table" tabindex="0"><table>…</table></div>

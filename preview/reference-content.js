@@ -15,6 +15,9 @@ import {
 } from "./component-reference.js";
 import {
   appSurfaceWorkbenchMarkup,
+  collapsibleWorkbenchMarkup,
+  flowWorkbenchMarkup,
+  meterWorkbenchMarkup,
   providerLogoWorkbenchMarkup,
   sidebarWorkbenchMarkup,
 } from "./component-workbench-config.js";
@@ -94,6 +97,7 @@ const contents = {
       <a class="reference-card" href="./interaction/"><span>Hover · focus · press</span><strong>Interaction</strong><p>Small emphasis changes that confirm input without adding noise.</p></a>
       <a class="reference-card" href="./loading/"><span>Pending · streaming</span><strong>Loading</strong><p>Spinners, shimmer, skeletons, and progress matched to the work.</p></a>
       <a class="reference-card" href="./attention/"><span>Presence · activity</span><strong>Attention</strong><p>Pulse and sheen for active agents, live meters, and meaningful state changes.</p></a>
+      <a class="reference-card" href="./transition/"><span>Reveal · replace · move</span><strong>Transition</strong><p>State changes that preserve spatial context without shifting the surrounding interface.</p></a>
     </section>`,
 
   "foundation-tokens": () =>
@@ -352,10 +356,18 @@ const contents = {
   "effect-attention": () =>
     `${pageIntro("Effect", "Attention", "Subtle continuous motion for active work, presence, and live measurements that stops when the state settles.")}
     <section data-section-kind="preview" aria-labelledby="effect-attention-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="effect-attention-preview">Active, not alarming</h2></div><span class="oc-pill">State driven</span></div>
-      <div class="specimen-frame"><div class="effect-attention-demo"><div class="oc-meter" data-effect="sheen"><label class="oc-meter-header" for="effect-context-meter"><strong>Context ready</strong><span>82%</span></label><meter class="oc-meter-value" id="effect-context-meter" min="0" max="100" value="82">82%</meter><p class="oc-meter-caption">The sheen moves; the value does not.</p></div><span class="effect-presence" role="status"><span aria-hidden="true"></span>Agent actively responding</span></div></div>
+      <div class="specimen-frame"><div class="effect-attention-demo">${meterWorkbenchMarkup({ value: "82", active: true })}<span class="effect-presence" role="status"><span aria-hidden="true"></span>Agent actively responding</span></div></div>
     </section>
-    <section data-section-kind="markup" aria-labelledby="effect-attention-markup"><div class="section-heading"><div><p class="eyebrow">Contract</p><h2 id="effect-attention-markup">Bind motion to state</h2></div></div>${codeBlock(`<div class="oc-meter" data-effect="sheen">\n  <meter class="oc-meter-value" value="82" max="100">82%</meter>\n</div>`, "html")}</section>
+    <section data-section-kind="markup" aria-labelledby="effect-attention-markup"><div class="section-heading"><div><p class="eyebrow">Contract</p><h2 id="effect-attention-markup">Bind motion to state</h2></div></div>${codeBlock(`<div class="oc-meter" data-state="active" data-effect="sheen">\n  <span class="oc-meter-track">\n    <meter class="oc-meter-value" value="82" max="100">82%</meter>\n  </span>\n</div>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="effect-attention-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="effect-attention-guidance">Continuous motion earns its place</h2></div></div>${guidanceList(["Stop the effect when work completes or fails.", "Keep elapsed timers outside live regions.", "Reduced motion renders the final visible state without pulsing or sweeping."])}</section>`,
+
+  "effect-transition": () =>
+    `${pageIntro("Effect", "Transition", "Short reveal and replacement motion that preserves spatial context while interface state changes.")}
+    <section data-section-kind="preview" aria-labelledby="effect-transition-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="effect-transition-preview">Stable position, changing state</h2></div><span class="oc-pill">No layout drift</span></div>
+      <div class="specimen-frame"><div class="effect-transition-demo">${collapsibleWorkbenchMarkup({ open: true })}<div class="effect-transition-track" role="group" aria-label="Task state transition"><span class="effect-transition-state" data-state="previous">Queued</span>${icon("arrow-right")}<span class="effect-transition-state" data-state="current">Running</span></div></div></div>
+    </section>
+    <section data-section-kind="markup" aria-labelledby="effect-transition-markup"><div class="section-heading"><div><p class="eyebrow">Semantics</p><h2 id="effect-transition-markup">Announce the final state</h2></div></div>${codeBlock(`<div role="status" aria-live="polite">\n  Running\n</div>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="effect-transition-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="effect-transition-guidance">Motion connects before and after</h2></div></div>${guidanceList(["Animate opacity and a small transform without changing the element's allocated space.", "Keep disclosure summaries and composer controls pinned while content changes.", "Reduced motion switches directly to the final state."])}</section>`,
 
   "primitive-app-surface": () =>
     `${pageIntro("Interface primitive", "App surface", "Establishes the canonical background, foreground, typography, and component surface aliases for an application subtree.")}
@@ -433,9 +445,9 @@ const contents = {
   "primitive-collapsible": () =>
     `${pageIntro("Component", "Collapsible", "A native disclosure for optional supporting content that keeps its summary visible at all times.")}
     <section data-section-kind="preview" aria-labelledby="collapsible-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="collapsible-preview">Optional detail</h2></div><span class="oc-pill">.oc-collapsible</span></div>
-      <div class="specimen-frame"><details class="oc-collapsible" open><summary class="oc-collapsible-summary">Package requirements</summary><div class="oc-collapsible-content"><p>Import tokens before components and set the theme on the application root.</p></div></details></div>
+      <div class="specimen-frame">${collapsibleWorkbenchMarkup()}</div>
     </section>
-    <section data-section-kind="markup" aria-labelledby="collapsible-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="collapsible-markup">Use details and summary</h2></div></div>${codeBlock(`<details class="oc-collapsible">\n  <summary class="oc-collapsible-summary">Package requirements</summary>\n  <div class="oc-collapsible-content">Supporting content</div>\n</details>`, "html")}</section>
+    <section data-section-kind="markup" aria-labelledby="collapsible-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="collapsible-markup">Use details and summary</h2></div></div>${codeBlock(collapsibleWorkbenchMarkup({ open: false }), "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="collapsible-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="collapsible-guidance">Hide supporting detail, not essential decisions</h2></div></div>${guidanceList(["Write a summary that remains meaningful while collapsed.", "Do not place required form fields or critical errors inside a closed disclosure.", "Use multiple independent disclosures instead of recreating exclusive tabs."])}</section>`,
 
   "primitive-combobox": () =>
@@ -489,9 +501,9 @@ const contents = {
   "primitive-flow": () =>
     `${pageIntro("Component", "Flow", "An ordered sequence that can run horizontally across a compact workflow or vertically through a longer process.")}
     <section data-section-kind="preview" aria-labelledby="flow-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="flow-preview">Horizontal and vertical steps</h2></div><span class="oc-pill">.oc-flow</span></div>
-      <div class="specimen-frame"><div class="flow-demo-grid"><div><p class="specimen-label">Horizontal</p><div class="oc-flow-viewport" data-orientation="horizontal"><ol class="oc-flow oc-flow-list" data-orientation="horizontal" aria-label="Horizontal release path" tabindex="0"><li class="oc-flow-step" data-state="complete"><span class="oc-flow-marker"><i data-lucide="check"></i></span><span><strong>Draft</strong><small>Changes prepared</small></span></li><li class="oc-flow-step" aria-current="step"><span class="oc-flow-marker">2</span><span><strong>Review</strong><small>Validate the contract</small></span></li><li class="oc-flow-step"><span class="oc-flow-marker">3</span><span><strong>Publish</strong><small>Tag the release</small></span></li></ol></div></div><div><p class="specimen-label">Vertical</p><ol class="oc-flow oc-flow-list" data-orientation="vertical" aria-label="Vertical release path" tabindex="0"><li class="oc-flow-step" data-state="complete"><span class="oc-flow-marker"><i data-lucide="check"></i></span><span><strong>Draft</strong><small>Changes prepared</small></span></li><li class="oc-flow-step" aria-current="step"><span class="oc-flow-marker">2</span><span><strong>Review</strong><small>Validate the contract</small></span></li><li class="oc-flow-step"><span class="oc-flow-marker">3</span><span><strong>Publish</strong><small>Tag the release</small></span></li></ol></div></div></div>
+      <div class="specimen-frame"><div class="flow-demo-grid"><div><p class="specimen-label">Horizontal</p>${flowWorkbenchMarkup({ orientation: "horizontal" })}</div><div><p class="specimen-label">Vertical</p>${flowWorkbenchMarkup({ orientation: "vertical" })}</div></div></div>
     </section>
-    <section data-section-kind="markup" aria-labelledby="flow-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="flow-markup">Set the axis and current step</h2></div></div>${codeBlock(`<ol class="oc-flow oc-flow-list" data-orientation="horizontal" aria-label="Release path" tabindex="0">\n  <li class="oc-flow-step">Draft</li>\n  <li class="oc-flow-step" aria-current="step">Review</li>\n</ol>`, "html")}</section>
+    <section data-section-kind="markup" aria-labelledby="flow-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="flow-markup">Set the axis and current step</h2></div></div>${codeBlock(flowWorkbenchMarkup({ orientation: "horizontal" }), "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="flow-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="flow-guidance">Keep the sequence finite and legible</h2></div></div>${guidanceList(["Use horizontal steps for a short status path and vertical steps when supporting copy needs more room.", "Name each step with a concrete state or action.", "Use an end fade only when horizontal content can continue beyond the visible viewport."])}</section>`,
 
   "primitive-grid": () =>
@@ -513,9 +525,9 @@ const contents = {
   "primitive-link": () =>
     `${pageIntro("Component", "Link", "A navigation primitive for inline references, muted secondary destinations, and standalone directional links.")}
     <section data-section-kind="preview" aria-labelledby="link-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="link-preview">Navigation roles</h2></div><span class="oc-pill">.oc-link</span></div>
-      <div class="specimen-frame"><div class="primitive-variant-list"><a class="oc-link" href="../../../introduction/" data-workbench-inert-link>Inline link</a><a class="oc-link oc-link-muted" href="../../../resources/" data-workbench-inert-link>Muted link</a><a class="oc-link oc-link-standalone" href="../" data-workbench-inert-link>Browse components <i data-lucide="arrow-right" aria-hidden="true"></i></a></div></div>
+      <div class="specimen-frame"><div class="link-context-grid"><p>Import the shared tokens before following the <a class="oc-link" href="../../../introduction/" data-workbench-inert-link>adoption guide</a>.</p><div class="link-context-meta"><span>Updated today</span><a class="oc-link oc-link-muted" href="../../../resources/" data-workbench-inert-link>View source</a></div><a class="oc-link oc-link-standalone" href="../../" data-workbench-inert-link><span><strong>Interface library</strong><small>Browse primitives and patterns</small></span><i data-lucide="arrow-right" aria-hidden="true"></i></a></div></div>
     </section>
-    <section data-section-kind="markup" aria-labelledby="link-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="link-markup">Use anchors for destinations</h2></div></div>${codeBlock(`<a class="oc-link" href="/introduction/">Introduction</a>\n<a class="oc-link oc-link-standalone" href="/components/">Browse components <svg aria-hidden="true">…</svg></a>`, "html")}</section>
+    <section data-section-kind="markup" aria-labelledby="link-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="link-markup">Use anchors for destinations</h2></div></div>${codeBlock(`<a class="oc-link" href="/introduction/">Introduction</a>\n<a class="oc-link oc-link-standalone" href="/interface/">Browse components <svg aria-hidden="true">…</svg></a>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="link-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="link-guidance">Navigation remains recognizable</h2></div></div>${guidanceList(["Use Button for actions that do not navigate.", "Keep inline links underlined in prose.", "When an unavailable destination must remain visible, remove href, retain role=link, set aria-disabled, and remove it from the tab order."])}</section>`,
 
   "primitive-loader": () =>
@@ -537,9 +549,9 @@ const contents = {
   "primitive-meter": () =>
     `${pageIntro("Component", "Meter", "A native measurement within a known range, suitable for capacity, quality, or score.")}
     <section data-section-kind="preview" aria-labelledby="meter-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="meter-preview">Storage used</h2></div><span class="oc-pill">.oc-meter</span></div>
-      <div class="specimen-frame"><div class="meter-demo-grid"><div class="oc-meter"><label class="oc-meter-header" for="storage-meter"><strong>Storage used</strong><span aria-hidden="true">64%</span></label><meter class="oc-meter-value" id="storage-meter" min="0" max="100" low="50" high="80" optimum="0" value="64">64%</meter><p class="oc-meter-caption">6.4 GB of 10 GB</p></div><div class="oc-meter" data-effect="sheen"><label class="oc-meter-header" for="context-meter"><strong>Context ready</strong><span aria-hidden="true">82%</span></label><meter class="oc-meter-value" id="context-meter" min="0" max="100" low="40" high="75" optimum="100" value="82">82%</meter><p class="oc-meter-caption">Animated attention, static value</p></div></div></div>
+      <div class="specimen-frame"><div class="meter-demo-grid">${meterWorkbenchMarkup({ value: "64", active: false })}${meterWorkbenchMarkup({ value: "82", active: true })}</div></div>
     </section>
-    <section data-section-kind="markup" aria-labelledby="meter-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="meter-markup">Expose the numeric range</h2></div></div>${codeBlock(`<div class="oc-meter">\n  <label class="oc-meter-header" for="storage"><strong>Storage used</strong><span aria-hidden="true">64%</span></label>\n  <meter class="oc-meter-value" id="storage" min="0" max="100" low="50" high="80" optimum="0" value="64">64%</meter>\n</div>`, "html")}</section>
+    <section data-section-kind="markup" aria-labelledby="meter-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="meter-markup">Expose the numeric range</h2></div></div>${codeBlock(meterWorkbenchMarkup({ value: "64", active: false }), "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="meter-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="meter-guidance">Measure state, not task completion</h2></div></div>${guidanceList(["Use progress for an operation moving toward completion.", "Keep the numeric value visible when exactness matters.", "Set low, high, and optimum when the range has qualitative thresholds."])}</section>`,
 
   "primitive-pagination": () =>

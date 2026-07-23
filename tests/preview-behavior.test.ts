@@ -56,8 +56,10 @@ import {
   autocompleteWorkbenchMarkup,
   bannerWorkbenchMarkup,
   composerWorkbenchMarkup,
+  collapsibleWorkbenchMarkup,
   errorMessageWorkbenchMarkup,
   fileAttachmentWorkbenchMarkup,
+  flowWorkbenchMarkup,
   appSurfaceWorkbenchMarkup,
   heroWorkbenchMarkup,
   sectionWorkbenchMarkup,
@@ -65,6 +67,7 @@ import {
   inputGroupWorkbenchMarkup,
   linkWorkbenchMarkup,
   loaderWorkbenchMarkup,
+  meterWorkbenchMarkup,
   skeletonLineWorkbenchMarkup,
   messageListWorkbenchMarkup,
   providerLogoWorkbenchMarkup,
@@ -226,7 +229,7 @@ describe("preview behavior", () => {
       '<a class="oc-link oc-link-muted" href="/resources/" data-workbench-inert-link>Muted link</a>',
     );
     expect(linkWorkbenchMarkup({ variant: "standalone" })).toBe(
-      '<a class="oc-link oc-link-standalone" href="/components/" data-workbench-inert-link>Browse components <i data-lucide="arrow-right" aria-hidden="true"></i></a>',
+      '<a class="oc-link oc-link-standalone" href="/interface/" data-workbench-inert-link>Browse components <i data-lucide="arrow-right" aria-hidden="true"></i></a>',
     );
     expect(linkWorkbenchMarkup({ variant: "standalone" })).toContain(
       'data-lucide="arrow-right"',
@@ -239,7 +242,33 @@ describe("preview behavior", () => {
     const reference = getReferenceContent("primitive-link");
     expect(reference).toContain('class="oc-link oc-link-standalone"');
     expect(reference).toMatch(
-      /oc-link-standalone[^>]*>Browse components[\s\S]*?data-lucide="arrow-right"/,
+      /oc-link-standalone[^>]*>[\s\S]*?Interface library[\s\S]*?data-lucide="arrow-right"/,
+    );
+  });
+
+  test("renders anchored Collapsible, two-axis Flow, and active Meter states", () => {
+    expect(collapsibleWorkbenchMarkup({ open: true })).toContain(
+      '<details class="oc-collapsible" open>',
+    );
+    expect(collapsibleWorkbenchMarkup({ open: false })).toContain(
+      '<details class="oc-collapsible">',
+    );
+
+    const horizontal = flowWorkbenchMarkup({ orientation: "horizontal" });
+    const vertical = flowWorkbenchMarkup({ orientation: "vertical" });
+    expect(horizontal).toContain('class="oc-flow-viewport"');
+    expect(horizontal).toContain('data-orientation="horizontal"');
+    expect(vertical).not.toContain("oc-flow-viewport");
+    expect(vertical).toContain('data-orientation="vertical"');
+
+    const active = meterWorkbenchMarkup({ value: "82", active: true });
+    const settled = meterWorkbenchMarkup({ value: "64", active: false });
+    expect(active).toContain('data-state="active" data-effect="sheen"');
+    expect(active).toContain('class="oc-meter-track"');
+    expect(settled).not.toContain("data-effect");
+    expect(settled).toContain('value="64"');
+    expect(meterWorkbenchMarkup({ value: "82", active: false })).toContain(
+      "Measurement settled at its current value",
     );
   });
 
@@ -682,8 +711,17 @@ describe("preview behavior", () => {
 
   test("renders distinct Markdown content examples", () => {
     expect(markdownWorkbenchMarkup({ example: "release" })).toContain("Release notes");
-    expect(markdownWorkbenchMarkup({ example: "table" })).toContain("Validation results");
-    expect(markdownWorkbenchMarkup({ example: "streaming" })).toContain("Final answer coming next");
+    expect(markdownWorkbenchMarkup({ example: "table" })).toContain(
+      'class="oc-link" href="../../foundations/tokens/"',
+    );
+    expect(markdownWorkbenchMarkup({ example: "long-form" })).toContain(
+      'data-density="article"',
+    );
+    const streaming = markdownWorkbenchMarkup({ example: "streaming" });
+    expect(streaming).toContain("Final answer coming next");
+    expect(streaming).toContain('class="oc-code-token-keyword"');
+    expect(streaming).toContain('class="oc-code-token-string"');
+    expect(streaming).not.toContain('class="code-keyword"');
   });
 
   test("renders Loader sizes with visible or assistive labels only", () => {

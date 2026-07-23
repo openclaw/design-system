@@ -355,6 +355,17 @@ const linkVariants = [
   { label: "Standalone", value: "standalone" },
 ];
 
+const flowOrientations = [
+  { label: "Horizontal", value: "horizontal" },
+  { label: "Vertical", value: "vertical" },
+];
+
+const meterValues = [
+  { label: "Low", value: "24" },
+  { label: "Balanced", value: "64" },
+  { label: "Ready", value: "82" },
+];
+
 const applicationNavigationModes = [
   { label: "Expanded", value: "expanded" },
   { label: "Compact", value: "compact" },
@@ -544,6 +555,28 @@ export function gridWorkbenchMarkup({ columns = "3", items = "3" } = {}) {
   return `<div class="oc-grid oc-grid-${column}">\n${children}\n</div>`;
 }
 
+export function collapsibleWorkbenchMarkup({ open = true } = {}) {
+  return `<details class="oc-collapsible"${open ? " open" : ""}>
+  <summary class="oc-collapsible-summary">Package requirements</summary>
+  <div class="oc-collapsible-content"><p>Import tokens before components and set the theme on the application root.</p></div>
+</details>`;
+}
+
+export function flowWorkbenchMarkup({ orientation = "horizontal" } = {}) {
+  const axis = flowOrientations.some(({ value }) => value === orientation)
+    ? orientation
+    : "horizontal";
+  const flow = `<ol class="oc-flow oc-flow-list" data-orientation="${axis}" aria-label="${axis === "horizontal" ? "Horizontal" : "Vertical"} release path" tabindex="0">
+  <li class="oc-flow-step" data-state="complete"><span class="oc-flow-marker"><i data-lucide="check" aria-hidden="true"></i></span><span><strong>Draft</strong><small>Changes prepared</small></span></li>
+  <li class="oc-flow-step" aria-current="step"><span class="oc-flow-marker">2</span><span><strong>Review</strong><small>Validate the contract</small></span></li>
+  <li class="oc-flow-step"><span class="oc-flow-marker">3</span><span><strong>Publish</strong><small>Tag the release</small></span></li>
+</ol>`;
+
+  return axis === "horizontal"
+    ? `<div class="oc-flow-viewport" data-orientation="horizontal">${flow}</div>`
+    : flow;
+}
+
 export function linkWorkbenchMarkup({ variant = "inline", disabled = false } = {}) {
   const examples = {
     inline: {
@@ -558,7 +591,7 @@ export function linkWorkbenchMarkup({ variant = "inline", disabled = false } = {
     },
     standalone: {
       label: "Browse components",
-      href: "/components/",
+      href: "/interface/",
       className: "oc-link oc-link-standalone",
     },
   };
@@ -570,6 +603,25 @@ export function linkWorkbenchMarkup({ variant = "inline", disabled = false } = {
   }
 
   return `<a class="${selected.className}" href="${selected.href}" data-workbench-inert-link>${selected.label}${icon}</a>`;
+}
+
+export function meterWorkbenchMarkup({ value = "64", active = true } = {}) {
+  const selected = meterValues.some((option) => option.value === value) ? value : "64";
+  const numericValue = Number(selected);
+  const label = numericValue >= 80 ? "Context ready" : "Storage used";
+  const caption =
+    numericValue >= 80
+      ? active
+        ? "Active measurement with a static numeric value"
+        : "Measurement settled at its current value"
+      : `${(numericValue / 10).toFixed(1)} GB of 10 GB`;
+  const effectAttributes = active ? ' data-state="active" data-effect="sheen"' : "";
+
+  return `<div class="oc-meter"${effectAttributes}>
+  <div class="oc-meter-header"><strong>${label}</strong><span aria-hidden="true">${numericValue}%</span></div>
+  <span class="oc-meter-track"><meter class="oc-meter-value" aria-label="${label}" min="0" max="100" low="50" high="80" optimum="${numericValue >= 80 ? "100" : "0"}" value="${numericValue}">${numericValue}%</meter></span>
+  <p class="oc-meter-caption">${caption}</p>
+</div>`;
 }
 
 export function appSurfaceWorkbenchMarkup({ toolbar = true, card = true } = {}) {
@@ -1475,7 +1527,7 @@ export function markdownWorkbenchMarkup({ example = "release" } = {}) {
   if (example === "table") {
     return `<article class="oc-agent-markdown">
   <h3>Validation results</h3>
-  <p>Review the <a href="../../foundations/tokens/" data-workbench-inert-link>token reference</a> before adoption.</p>
+  <p>Review the <a class="oc-link" href="../../foundations/tokens/" data-workbench-inert-link>token reference</a> before adoption.</p>
   <div class="oc-agent-markdown-table" tabindex="0" role="region" aria-label="Validation results"><table><thead><tr><th scope="col">Check</th><th scope="col">Result</th></tr></thead><tbody><tr><td>CSS contract</td><td>Passed</td></tr><tr><td>Preview build</td><td>Passed</td></tr></tbody></table></div>
 </article>`;
   }
@@ -1484,13 +1536,13 @@ export function markdownWorkbenchMarkup({ example = "release" } = {}) {
     return `<article class="oc-agent-markdown">
   <h3>Working plan</h3>
   <ul><li>Parse input context</li><li>Extract constraints</li><li>Draft the response</li></ul>
-  <div class="oc-code-highlighted"><div class="oc-code-highlighted-header"><span>TypeScript</span><span>plan.ts</span></div><pre tabindex="0" aria-label="TypeScript example"><code><span class="code-keyword">const</span> steps = [<span class="code-string">"parse"</span>, <span class="code-string">"outline"</span>, <span class="code-string">"draft"</span>];</code></pre></div>
+  <div class="oc-code-highlighted"><div class="oc-code-highlighted-header"><span>TypeScript</span><span>plan.ts</span></div><pre tabindex="0" aria-label="TypeScript example"><code><span class="oc-code-token-keyword">const</span> steps = [<span class="oc-code-token-string">"parse"</span>, <span class="oc-code-token-string">"outline"</span>, <span class="oc-code-token-string">"draft"</span>];</code></pre></div>
   <p>Final answer coming next…</p>
 </article>`;
   }
 
   if (example === "long-form") {
-    return `<article class="oc-agent-markdown">
+    return `<article class="oc-agent-markdown" data-density="article">
   <h2>Application surface audit</h2>
   <p><strong>Recommendation:</strong> keep the product chrome quiet and let the active work own the visual hierarchy. The current shell is <em>too spacious</em> for repeated operator use.</p>
   <h3>What changes</h3>
@@ -2524,6 +2576,36 @@ ${appSurfaceWorkbenchMarkup(state)}
       specimen.innerHTML = bannerWorkbenchMarkup(state);
     },
   },
+  "primitive-collapsible": {
+    defaults: { open: true },
+    controls: [
+      {
+        id: "open",
+        label: "Expanded",
+        type: "toggle",
+      },
+    ],
+    markup: collapsibleWorkbenchMarkup,
+    render(specimen, state) {
+      specimen.innerHTML = collapsibleWorkbenchMarkup(state);
+    },
+  },
+  "primitive-flow": {
+    defaults: { orientation: WORKBENCH_ALL_VALUE },
+    controls: [
+      {
+        id: "orientation",
+        label: "Orientation",
+        type: "choice",
+        compare: "stack",
+        options: flowOrientations,
+      },
+    ],
+    markup: flowWorkbenchMarkup,
+    render(specimen, state) {
+      specimen.innerHTML = flowWorkbenchMarkup(state);
+    },
+  },
   "primitive-table": {
     defaults: { interactive: false },
     controls: [
@@ -2652,6 +2734,26 @@ ${appSurfaceWorkbenchMarkup(state)}
     markup: loaderWorkbenchMarkup,
     render(specimen, state) {
       specimen.innerHTML = loaderWorkbenchMarkup(state);
+    },
+  },
+  "primitive-meter": {
+    defaults: { value: "64", active: true },
+    controls: [
+      {
+        id: "value",
+        label: "Value",
+        type: "choice",
+        options: meterValues,
+      },
+      {
+        id: "active",
+        label: "Active effect",
+        type: "toggle",
+      },
+    ],
+    markup: meterWorkbenchMarkup,
+    render(specimen, state) {
+      specimen.innerHTML = meterWorkbenchMarkup(state);
     },
   },
   "primitive-skeleton-line": {

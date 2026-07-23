@@ -109,6 +109,7 @@ describe("preview contracts", () => {
     expect(isComponentWorkbenchPage("effect-interaction")).toBe(false);
     expect(isComponentWorkbenchPage("effect-loading")).toBe(false);
     expect(isComponentWorkbenchPage("effect-attention")).toBe(false);
+    expect(isComponentWorkbenchPage("effect-transition")).toBe(false);
     expect(isComponentWorkbenchPage("foundation-colors")).toBe(false);
     expect(isComponentWorkbenchPage("chart-base")).toBe(false);
     expect(isComponentWorkbenchPage("interface")).toBe(false);
@@ -510,36 +511,77 @@ describe("preview contracts", () => {
     );
   });
 
-  test("keeps workbench Flow connectors between markers instead of through titles", async () => {
+  test("keeps Flow geometry canonical across horizontal and vertical specimens", async () => {
     const css = await readFile("preview/preview.css", "utf8");
     const labCss = await readFile("preview/lab.css", "utf8");
 
-    // Lab list steps reserve space with margin-right for card connectors.
+    expect(labCss).toContain("--oc-flow-connector-gap: 2.5rem;");
+    expect(labCss).toContain("grid-template-columns: repeat(3, minmax(8rem, 1fr));");
+    expect(labCss).toContain("background-attachment: local, local, scroll, scroll;");
+    expect(labCss).toContain("background-size:\n    2rem 100%,");
+    expect(labCss).toContain('.oc-flow[data-orientation="vertical"]');
+    expect(labCss).toContain("left: calc(var(--oc-flow-marker-size) / 2);");
+    expect(labCss).toContain(".oc-flow-step[aria-current=\"step\"] .oc-flow-marker::after");
+    expect(css).not.toContain(".component-workbench-frame .oc-flow-list {");
+    expect(css).not.toContain(".component-workbench-frame .oc-flow-step:not(:last-child)::after");
+  });
+
+  test("anchors disclosure motion and scopes Meter sheen to its track", async () => {
+    const css = await readFile("preview/preview.css", "utf8");
+    const labCss = await readFile("preview/lab.css", "utf8");
+
+    expect(css).toContain(
+      'body[data-preview-page="primitive-collapsible"] .component-workbench-canvas',
+    );
+    expect(css).toContain("place-items: start center;");
+    expect(labCss).toContain("transition-behavior: allow-discrete;");
     expect(labCss).toContain(
-      ".oc-flow-list .oc-flow-step:not(:last-child) {\n  margin-right: 3rem;\n}",
+      '.oc-meter[data-state="active"][data-effect="sheen"] .oc-meter-track::after',
     );
+    expect(labCss).not.toContain("bottom: 1.6rem;");
+  });
 
-    // Workbench must clear that margin and draw marker-to-marker rules in the gap.
-    expect(css).toContain(
-      ".component-workbench-frame .oc-flow-step:not(:last-child) {\n  margin-right: 0;\n}",
-    );
-    expect(css).toContain("left: var(--oc-flow-marker-size);");
-    expect(css).toContain("right: calc(-1 * var(--oc-flow-connector-gap));");
-    expect(css).toContain("top: calc(var(--oc-flow-marker-size) / 2);");
-    expect(css).not.toMatch(
-      /\.component-workbench-frame \.oc-flow-step:not\(:last-child\)::after\s*\{[^}]*\bleft:\s*38px;/,
-    );
-    expect(css).not.toMatch(
-      /\.component-workbench-frame \.oc-flow-step:not\(:last-child\)::after\s*\{[^}]*\btop:\s*26px;/,
-    );
+  test("models Collapsible, Flow, and Meter workbench states", () => {
+    expect(getWorkbenchDefinition("primitive-collapsible")?.controls).toMatchObject([
+      { id: "open", type: "toggle" },
+    ]);
+    expect(getWorkbenchDefinition("primitive-flow")?.controls).toMatchObject([
+      {
+        id: "orientation",
+        type: "choice",
+        options: [
+          { label: "Horizontal", value: "horizontal" },
+          { label: "Vertical", value: "vertical" },
+        ],
+      },
+    ]);
+    expect(getWorkbenchDefinition("primitive-meter")?.controls).toMatchObject([
+      {
+        id: "value",
+        type: "choice",
+        options: [
+          { label: "Low", value: "24" },
+          { label: "Balanced", value: "64" },
+          { label: "Ready", value: "82" },
+        ],
+      },
+      { id: "active", type: "toggle" },
+    ]);
+  });
 
-    // Mobile workbench frame stacks vertically along the marker axis.
-    expect(css).toContain(
-      '.component-workbench-canvas[data-viewport="mobile"] .component-workbench-frame .oc-flow-list {\n  grid-template-columns: minmax(0, 1fr);\n  column-gap: 0;\n  row-gap: var(--oc-flow-connector-gap);\n}',
-    );
-    expect(css).toContain(
-      "left: calc(var(--oc-flow-marker-size) / 2);\n  width: 1px;\n  height: auto;",
-    );
+  test("publishes transition effects with a static reduced-motion outcome", async () => {
+    const css = await readFile("preview/preview.css", "utf8");
+    const effects = getReferenceContent("effects");
+    const transition = getReferenceContent("effect-transition");
+
+    expect(effects).toContain('href="./transition/"');
+    expect(transition).toContain('class="effect-transition-demo"');
+    expect(transition).toContain('role="group" aria-label="Task state transition"');
+    expect(transition).toContain('data-state="current"');
+    expect(transition).toContain('<p class="eyebrow">Semantics</p>');
+    expect(transition).toContain('&lt;div role="status" aria-live="polite"&gt;');
+    expect(css).toContain("@keyframes effect-transition-enter");
+    expect(css).toContain('.effect-transition-state[data-state="current"] {\n    animation: none;');
   });
 
   test("adapts the Grid specimen to workbench viewport controls", async () => {
