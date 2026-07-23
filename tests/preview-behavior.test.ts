@@ -1782,6 +1782,17 @@ describe("preview behavior", () => {
     };
     view.document = root;
 
+    let emptyViewListeners = 0;
+    expect(bindTooltips({
+      defaultView: {
+        addEventListener() {
+          emptyViewListeners += 1;
+        },
+      },
+      querySelectorAll: () => [],
+    })).toBe(0);
+    expect(emptyViewListeners).toBe(0);
+
     expect(bindTooltips(root)).toBe(1);
     expect(bindTooltips(root)).toBe(1);
     expect(viewHandlers.resize).toHaveLength(1);

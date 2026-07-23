@@ -47,7 +47,6 @@
     "release:check": "bun scripts/check-release-version.ts"
   },
   "devDependencies": {
-    "glimm": "0.3.0",
     "lightningcss": "1.32.0",
     "lucide": "1.25.0",
     "react": "19.2.7",

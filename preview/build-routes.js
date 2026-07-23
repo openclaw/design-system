@@ -72,8 +72,16 @@ export async function createRouteHtml(indexHtml, route) {
 export function createPreviewRouteStubsPlugin(routes = previewRoutes) {
   return {
     name: "carapace-preview-route-stubs",
-    apply: "build",
     enforce: "post",
+    async transformIndexHtml(indexHtml, context) {
+      if (!context.server) return indexHtml;
+      const requestPath = (context.originalUrl || context.path)
+        .split("?")[0]
+        .replace(/^\/+/, "")
+        .replace(/index\.html$/, "");
+      const route = routes.find((candidate) => candidate.path === requestPath);
+      return route ? createRouteHtml(indexHtml, route) : indexHtml;
+    },
     async generateBundle(_options, bundle) {
       const entry = bundle["index.html"];
       if (!entry || entry.type !== "asset" || typeof entry.source !== "string") {

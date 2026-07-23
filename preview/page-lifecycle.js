@@ -519,6 +519,33 @@ function bindPageInteractions(root) {
   };
 }
 
+function renderPageIcons(root, view) {
+  let active = true;
+  const frame = view.requestAnimationFrame(() => {
+    void import("./lucide.js")
+      .then(({ lucide }) => {
+        if (!active || root.isConnected === false) return;
+        view.lucide = lucide;
+        lucide.createIcons({
+          root,
+          attrs: {
+            "aria-hidden": "true",
+            "stroke-width": "1.75",
+          },
+        });
+      })
+      .catch(() => {
+        // Icons are progressive enhancement. Keep the route usable if its
+        // deferred chunk fails while navigating or reloading.
+      });
+  });
+
+  return () => {
+    active = false;
+    view.cancelAnimationFrame(frame);
+  };
+}
+
 export function mountPage(
   root,
   {
@@ -541,13 +568,7 @@ export function mountPage(
   });
   bindHomeSegmentedControls(root);
   const stopPageInteractions = bindPageInteractions(root);
-  view.lucide?.createIcons({
-    root,
-    attrs: {
-      "aria-hidden": "true",
-      "stroke-width": "1.75",
-    },
-  });
+  const stopIcons = renderPageIcons(root, view);
 
   const tokenCatalog = createTokenCatalog(root, resolvedTheme);
   const stopObservingSections = observePreviewSections(root);
@@ -562,6 +583,7 @@ export function mountPage(
       active = false;
       tokenCatalog.cleanup();
       stopPageInteractions();
+      stopIcons();
       stopObservingSections();
       stopCopy();
       feedback.cleanup();

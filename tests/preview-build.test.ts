@@ -90,6 +90,20 @@ describe("preview route build", () => {
     expect(html).not.toContain(">Home</main>");
   });
 
+  test("serves deep development routes without parsing the Home grid", async () => {
+    const plugin = createPreviewRouteStubsPlugin();
+    const source = await readFile("preview/index.html", "utf8");
+    const html = await plugin.transformIndexHtml?.(source, {
+      path: "/index.html",
+      originalUrl: "/interface/primitives/button/",
+      server: {},
+    } as never);
+
+    expect(html).toContain('data-preview-page="primitive-button"');
+    expect(html).toContain('<div id="preview-app"></div>');
+    expect(html).not.toContain("home-component-grid");
+  });
+
   test("uses area names for overview document titles", async () => {
     const source = '<title>Carapace</title><script type="module" src="./app.js"></script><body data-preview-route="overview" data-preview-page="overview" data-preview-root="./"></body>';
 

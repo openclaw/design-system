@@ -16,7 +16,6 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes("/node_modules/react")) return "preview-vendor";
-          if (id.includes("/node_modules/glimm")) return "preview-motion";
           if (id.includes("/node_modules/lucide/")) return "preview-icons";
           return undefined;
         },

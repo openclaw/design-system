@@ -137,8 +137,7 @@ a {
   min-height: var(--preview-topbar-height);
   padding: 6px 14px;
   border-bottom: 1px solid var(--oc-border-subtle);
-  background: color-mix(in srgb, var(--preview-shell-bg) 94%, transparent);
-  backdrop-filter: blur(16px);
+  background: var(--preview-shell-bg);
 }
 
 .topbar::after {
@@ -739,6 +738,9 @@ body[data-page-kind="home"] .preview-stage {
   grid-template-rows: auto minmax(0, 1fr);
   overflow: hidden;
   background: var(--preview-shell-bg);
+  contain: layout paint style;
+  contain-intrinsic-size: auto var(--home-grid-row-height);
+  content-visibility: auto;
 }
 
 .home-brand-cell {
@@ -1332,11 +1334,7 @@ body[data-page-kind="home"] .preview-stage {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .home-component-cell:has(.home-component-link:hover) {
-    background: color-mix(in srgb, var(--preview-shell-bg) 94%, var(--oc-text-primary));
-  }
-
-  .home-component-cell:hover .home-component-maturity {
+  .home-component-link:hover .home-component-maturity {
     opacity: 1;
     visibility: visible;
   }

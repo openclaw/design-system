@@ -117,16 +117,37 @@ describe("preview contracts", () => {
   test("retries a failed lazy reference runtime instead of caching a blank route", async () => {
     const app = await readFile("preview/app.jsx", "utf8");
     const vite = await readFile("preview/vite.config.ts", "utf8");
+    const packageJson = await readFile("package.json", "utf8");
 
     expect(app).toContain("referenceRuntimePromise = undefined");
     expect(app).toContain('className="reference-runtime-error" role="alert"');
     expect(app).toContain("setReferenceLoadAttempt((attempt) => attempt + 1)");
     expect(app).toContain("mountReferenceRuntime(root, route.pageId);");
     expect(app).toContain("finishMount();\n        scrollToHash(route.hash);");
-    expect(vite).toContain('return "preview-motion"');
-    expect(vite).not.toContain(
-      'id.includes("/node_modules/react") || id.includes("/node_modules/glimm")',
-    );
+    expect(vite).not.toContain("glimm");
+    expect(packageJson).not.toContain('"glimm"');
+  });
+
+  test("keeps preview scrolling off synchronous per-frame work", async () => {
+    const app = await readFile("preview/app.jsx", "utf8");
+    const bootstrap = await readFile("preview/preview.js", "utf8");
+    const lifecycle = await readFile("preview/page-lifecycle.js", "utf8");
+    const styles = await readFile("preview/preview.css", "utf8");
+    const topbar = styles.match(/(?:^|\n)\.topbar\s*\{([^}]*)\}/)?.[1] ?? "";
+
+    expect(app).not.toContain("GlimmProvider");
+    expect(app).not.toContain("scrollFrame");
+    expect(app).not.toContain('addEventListener("scroll"');
+    expect(app).not.toContain("scrollSaveTimeoutRef");
+    expect(app).toContain("existing.scrollY === window.scrollY");
+    expect(app).toContain("scrollPositionsRef.current.set(outgoingHistoryEntryId");
+    expect(app).toContain("persistScrollPosition(outgoingHistoryEntryId, outgoingPosition)");
+    expect(app).toContain("readPersistedScrollPosition(historyEntryId)");
+    expect(app).toContain("clearPersistedScrollPosition(currentHistoryEntryRef.current)");
+    expect(bootstrap).not.toContain("lucide");
+    expect(lifecycle).toContain('import("./lucide.js")');
+    expect(lifecycle).toContain("view.requestAnimationFrame");
+    expect(topbar).not.toContain("backdrop-filter");
   });
 
   test("adapts shared workbench chrome to the kind of component being demonstrated", () => {
@@ -2001,6 +2022,12 @@ describe("preview contracts", () => {
     expect(home.match(/oc-app-surface/g)).toHaveLength(1);
     expect(previewStyles).toContain("--home-grid-row-height: clamp(12rem, 24vw, 17rem)");
     expect(previewStyles).toContain("grid-auto-rows: var(--home-grid-row-height)");
+    expect(previewStyles).toContain("content-visibility: auto");
+    expect(previewStyles).toContain(
+      "contain-intrinsic-size: auto var(--home-grid-row-height)",
+    );
+    expect(previewStyles).not.toContain(".home-component-cell:has(");
+    expect(previewStyles).not.toContain(".home-component-cell:hover");
     expect(previewStyles).toContain(".home-agent-input-bar");
     expect(previewStyles).toContain(".home-agent-tool-group");
     expect(previewStyles).toContain("margin: auto 0 8px");
