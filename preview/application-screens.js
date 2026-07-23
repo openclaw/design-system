@@ -626,7 +626,7 @@ function workspaceConversation(status, { dock = "right", inspector = true } = {}
     </div>
     <div class="oc-pane-actions">
       <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Open terminal">${agentIcon("terminal")}</button>
-      <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="${dockAction}" data-workbench-application-dock>${agentIcon("panels-top-left")}</button>
+      <button class="oc-action oc-action-icon oc-action-ghost oc-workspace-inspector-action" type="button" aria-label="${dockAction}" data-workbench-application-dock>${agentIcon("panels-top-left")}</button>
       <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="More actions">${agentIcon("ellipsis")}</button>
     </div>
   </header>

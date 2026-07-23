@@ -354,6 +354,7 @@ describe("CSS contract", () => {
       ".oc-workspace-composer",
       ".oc-workspace-grid",
       ".oc-workspace-inspector",
+      ".oc-workspace-inspector-action",
       ".oc-workspace-mode",
       ".oc-workspace-sessions",
       ".oc-workspace-sessions-footer",
@@ -444,6 +445,9 @@ describe("CSS contract", () => {
     );
     expect(application).toMatch(
       /@media \(max-width: 48rem\)[\s\S]*?\.oc-app-frame\[data-dock="bottom"\]\[data-inspector="true"\] \.oc-workspace-sessions \{[\s\S]*?grid-row: auto/,
+    );
+    expect(application).toMatch(
+      /@media \(max-width: 64rem\)[\s\S]*?\.oc-workspace-inspector-action \{[\s\S]*?display: none/,
     );
     expect(application).toMatch(/@media \(forced-colors: active\)[\s\S]*?Highlight/);
 

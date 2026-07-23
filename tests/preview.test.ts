@@ -477,6 +477,9 @@ describe("preview contracts", () => {
       '.component-workbench-canvas[data-viewport="tablet"] .oc-summary-strip {\n  grid-template-columns: repeat(2, minmax(0, 1fr));',
     );
     expect(css).toContain(
+      '.component-workbench-canvas[data-viewport="tablet"] .oc-workspace-inspector-action {\n  display: none;',
+    );
+    expect(css).toContain(
       '.component-workbench-canvas[data-viewport="mobile"] .oc-settings-navigation-list {\n  display: flex;\n  overflow-x: auto;',
     );
     expect(css).toContain(
@@ -493,6 +496,9 @@ describe("preview contracts", () => {
     );
     expect(css).toContain(
       '.component-workbench-canvas[data-viewport="mobile"]\n  .oc-app-frame[data-dock="bottom"][data-inspector="true"]\n  .oc-workspace-sessions {\n  grid-row: auto;',
+    );
+    expect(css).toContain(
+      '.component-workbench-canvas[data-viewport="mobile"] .oc-workspace-inspector-action {\n  display: none;',
     );
   });
 

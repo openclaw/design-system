@@ -2009,6 +2009,10 @@
     display: none;
   }
 
+  .oc-workspace-inspector-action {
+    display: none;
+  }
+
   .oc-app-frame[data-dock="bottom"][data-inspector="true"] .oc-workspace-grid {
     grid-template-columns: minmax(11rem, 13rem) minmax(22rem, 1fr);
     grid-template-rows: minmax(0, 1fr);

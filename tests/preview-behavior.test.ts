@@ -356,6 +356,7 @@ describe("preview behavior", () => {
     expect(right).toContain('class="oc-workspace-grid"');
     expect(right).toContain('data-inspector="true"');
     expect(right).toContain("data-workbench-application-dock");
+    expect(right).toContain("oc-workspace-inspector-action");
     expect(right).toContain("data-workbench-application-inspector-hide");
     expect(right).not.toContain("application-workspace");
     expect(right).toContain('aria-label="Sessions"');
