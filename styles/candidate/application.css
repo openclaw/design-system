@@ -150,6 +150,11 @@
   box-shadow: 0 0 0 1px color-mix(in oklch, var(--oc-status-success-fg) 45%, transparent);
 }
 
+.oc-app-navigation-presence[data-state="offline"] {
+  background: var(--oc-status-error-fg);
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--oc-status-error-fg) 45%, transparent);
+}
+
 .oc-app-navigation-mark {
   display: grid;
   width: 2rem;
@@ -2176,6 +2181,10 @@
     max-height: 15rem;
     border-right: 0;
     border-bottom: 1px solid var(--oc-border-subtle);
+  }
+
+  .oc-app-frame[data-dock="bottom"][data-inspector="true"] .oc-workspace-sessions {
+    grid-row: auto;
   }
 
   .oc-workspace-inspector {

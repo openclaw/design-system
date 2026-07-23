@@ -430,6 +430,9 @@ describe("CSS contract", () => {
     expect(application).toMatch(
       /@media \(max-width: 48rem\)[\s\S]*?\.oc-settings-navigation-list \{[\s\S]*?overflow-x: auto/,
     );
+    expect(application).toMatch(
+      /@media \(max-width: 48rem\)[\s\S]*?\.oc-app-frame\[data-dock="bottom"\]\[data-inspector="true"\] \.oc-workspace-sessions \{[\s\S]*?grid-row: auto/,
+    );
     expect(application).toMatch(/@media \(forced-colors: active\)[\s\S]*?Highlight/);
 
     for (const selector of [

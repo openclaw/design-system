@@ -4632,6 +4632,12 @@ details.oc-agent-tool-row[open] > .oc-agent-tool-row-summary .oc-agent-tool-row-
   border-bottom: 1px solid var(--oc-border-subtle);
 }
 
+.component-workbench-canvas[data-viewport="mobile"]
+  .oc-app-frame[data-dock="bottom"][data-inspector="true"]
+  .oc-workspace-sessions {
+  grid-row: auto;
+}
+
 .component-workbench-canvas[data-viewport="mobile"] .oc-workspace-inspector {
   display: none;
 }

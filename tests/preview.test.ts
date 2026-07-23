@@ -399,6 +399,9 @@ describe("preview contracts", () => {
     expect(css).toContain(
       '.component-workbench-canvas[data-viewport="mobile"] .oc-workspace-sessions {\n  grid-row: auto;\n  max-height: 15rem;',
     );
+    expect(css).toContain(
+      '.component-workbench-canvas[data-viewport="mobile"]\n  .oc-app-frame[data-dock="bottom"][data-inspector="true"]\n  .oc-workspace-sessions {\n  grid-row: auto;',
+    );
   });
 
   test("provides a surface role for the Layer Card specimen", () => {

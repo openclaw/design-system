@@ -299,11 +299,14 @@ describe("preview behavior", () => {
     expect(compactOffline).toContain('data-navigation="compact"');
     expect(compactOffline).toContain('data-density="compact"');
     expect(compactOffline).toContain("Gateway unavailable");
+    expect(compactOffline).toContain("Gateway offline");
+    expect(compactOffline).toContain('data-state="offline"');
     expect(compactOffline).toContain("oc-status-error");
   });
 
   test("renders Operations with channel, automation, loading, and error states", () => {
     const channels = operationsApplicationMarkup();
+    const channelError = operationsApplicationMarkup({ state: "error" });
     const loading = operationsApplicationMarkup({ state: "loading" });
     const automationLoading = operationsApplicationMarkup({
       view: "automation",
@@ -320,6 +323,13 @@ describe("preview behavior", () => {
     expect(channels).toContain('class="oc-app-resource-list"');
     expect(channels).toContain("Recent delivery");
     expect(channels).toContain("Discord");
+    expect(channels).toContain("4 / 5");
+    expect(channels).toContain("5 configured");
+    expect(channels).not.toContain("5 / 6");
+    expect(channels).not.toContain("6 configured");
+    expect(channelError).toContain("3 / 5");
+    expect(channelError).toContain("1 paused · 1 issue");
+    expect(channelError).toContain('class="oc-summary-metric" data-tone="warning"');
     expect(channels).toContain('aria-pressed="true"');
     expect(channels).not.toContain("aria-selected");
     expect(loading).toContain("Loading Discord configuration");

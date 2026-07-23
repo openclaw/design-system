@@ -10,7 +10,12 @@ function navigationItem({ icon, label, meta = "", current = false } = {}) {
   </a></li>`;
 }
 
-function applicationNavigation({ current = "Overview", navigation = "expanded" } = {}) {
+function applicationNavigation({
+  current = "Overview",
+  navigation = "expanded",
+  state = "ready",
+} = {}) {
+  const gatewayOffline = state === "offline";
   return `<nav class="oc-app-navigation" aria-label="Application">
   <header class="oc-app-navigation-header">
     <img class="oc-app-navigation-brand" src="${openClawMarkUrl}" alt="" width="32" height="32" />
@@ -28,7 +33,7 @@ function applicationNavigation({ current = "Overview", navigation = "expanded" }
       <ul class="oc-app-navigation-list">
         ${navigationItem({ icon: "layout-dashboard", label: "Overview", current: current === "Overview" })}
         ${navigationItem({ icon: "message-square", label: "Sessions", meta: "4", current: current === "Sessions" })}
-        ${navigationItem({ icon: "radio", label: "Channels", meta: "6", current: current === "Channels" })}
+        ${navigationItem({ icon: "radio", label: "Channels", meta: "5", current: current === "Channels" })}
         ${navigationItem({ icon: "calendar-clock", label: "Automation", meta: "3", current: current === "Automation" })}
       </ul>
     </section>
@@ -41,8 +46,8 @@ function applicationNavigation({ current = "Overview", navigation = "expanded" }
     </section>
   </div>
   <footer class="oc-app-navigation-footer">
-    <span class="oc-app-navigation-presence" aria-hidden="true"></span>
-    <span class="oc-app-navigation-footer-copy"><strong>Gateway online</strong><small>v2026.7.1</small></span>
+    <span class="oc-app-navigation-presence" data-state="${gatewayOffline ? "offline" : "online"}" aria-hidden="true"></span>
+    <span class="oc-app-navigation-footer-copy"><strong>Gateway ${gatewayOffline ? "offline" : "online"}</strong><small>${gatewayOffline ? "Last seen 4m ago" : "v2026.7.1"}</small></span>
     <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Gateway details">${agentIcon("chevron-right")}</button>
   </footer>
 </nav>`;
@@ -178,7 +183,7 @@ export function settingsApplicationMarkup({
 } = {}) {
   const offline = state === "offline";
   return `<div class="oc-app-frame" data-navigation="${navigation}">
-  ${applicationNavigation({ current: "Settings", navigation })}
+  ${applicationNavigation({ current: "Settings", navigation, state })}
   <main class="oc-app-main">
     ${applicationToolbar({ label: "Settings", detail: "Personal workspace", state })}
     <div class="oc-app-content">
@@ -417,9 +422,9 @@ export function operationsApplicationMarkup({
                 summaryMetric({
                   icon: "radio-tower",
                   label: "Connected",
-                  value: "5 / 6",
-                  detail: "1 paused",
-                  tone: "success",
+                  value: state === "error" ? "3 / 5" : "4 / 5",
+                  detail: state === "error" ? "1 paused · 1 issue" : "1 paused",
+                  tone: state === "error" ? "warning" : "success",
                 }),
                 summaryMetric({
                   icon: "messages-square",
@@ -481,7 +486,7 @@ export function operationsApplicationMarkup({
             <header class="oc-pane-header">
               <div class="oc-pane-heading">
                 <h2 class="oc-pane-title">${channels ? "Transports" : "Automations"}</h2>
-                <p class="oc-pane-description">${channels ? "6 configured" : "3 recurring tasks"}</p>
+                <p class="oc-pane-description">${channels ? "5 configured" : "3 recurring tasks"}</p>
               </div>
               <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Filter list">${agentIcon("list-filter")}</button>
             </header>
