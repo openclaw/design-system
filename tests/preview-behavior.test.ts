@@ -2097,6 +2097,10 @@ describe("preview behavior", () => {
   });
 
   test("reveals and conceals a sensitive value through its named control", () => {
+    class Input extends EventTarget {
+      type = "password";
+      value = "secret";
+    }
     class Toggle extends EventTarget {
       attributes = new Map();
       innerHTML = "";
@@ -2108,12 +2112,19 @@ describe("preview behavior", () => {
       }
     }
 
-    const input = { type: "password" };
+    const input = new Input();
+    const maskText = { textContent: "", style: { transform: "" } };
+    const mask = {
+      hidden: false,
+      querySelector: () => maskText,
+    };
     const toggle = new Toggle();
     toggle.setAttribute("data-sensitive-label", "API key");
     const control = {
+      dataset: {},
       querySelector(selector) {
         if (selector === "[data-sensitive-value]") return input;
+        if (selector === "[data-sensitive-mask]") return mask;
         if (selector === "[data-toggle-sensitive]") return toggle;
         return null;
       },
@@ -2121,15 +2132,28 @@ describe("preview behavior", () => {
     const root = { querySelectorAll: () => [control] };
 
     expect(bindSensitiveInputs(root)).toBe(1);
+    expect(control.dataset.revealed).toBe("false");
+    expect(control.dataset.sensitiveMaskReady).toBe("true");
+    expect(maskText.textContent).toBe("******");
     expect(toggle.innerHTML).toContain('data-lucide="eye"');
+    input.value = "longer-key";
+    input.dispatchEvent(new Event("input"));
+    expect(maskText.textContent).toBe("**********");
+    expect(maskText.textContent).not.toContain(input.value);
     toggle.dispatchEvent(new Event("click"));
     expect(input.type).toBe("text");
+    expect(control.dataset.revealed).toBe("true");
+    expect(mask.hidden).toBe(true);
+    expect(maskText.textContent).toBe("");
     expect(toggle.innerHTML).toContain('data-lucide="eye-off"');
     expect(toggle.getAttribute("aria-pressed")).toBe("true");
     expect(toggle.getAttribute("aria-label")).toBe("Hide API key");
 
     toggle.dispatchEvent(new Event("click"));
     expect(input.type).toBe("password");
+    expect(control.dataset.revealed).toBe("false");
+    expect(mask.hidden).toBe(false);
+    expect(maskText.textContent).toBe("**********");
     expect(toggle.innerHTML).toContain('data-lucide="eye"');
     expect(toggle.getAttribute("aria-pressed")).toBe("false");
     expect(toggle.getAttribute("aria-label")).toBe("Show API key");

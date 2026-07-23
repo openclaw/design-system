@@ -68,6 +68,7 @@
 }
 
 .oc-sensitive-input {
+  position: relative;
   display: flex;
   min-height: 2.75rem;
   align-items: stretch;
@@ -77,6 +78,47 @@
   transition:
     border-color var(--oc-duration-fast) var(--oc-ease-out),
     box-shadow var(--oc-duration-fast) var(--oc-ease-out);
+}
+
+.oc-sensitive-mask {
+  position: absolute;
+  z-index: 1;
+  inset: 0 2.75rem 0 0;
+  display: flex;
+  overflow: hidden;
+  align-items: center;
+  padding: 0 var(--oc-space-3);
+  color: var(--oc-text-primary);
+  font-family: var(--oc-font-mono);
+  font-size: var(--oc-font-size-sm);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.oc-sensitive-mask > span {
+  display: block;
+  will-change: transform;
+}
+
+.oc-sensitive-input[data-sensitive-mask-ready="true"][data-revealed="false"] .oc-input {
+  color: transparent;
+  caret-color: var(--oc-text-primary);
+}
+
+.oc-sensitive-input[data-sensitive-mask-ready="true"][data-revealed="false"] .oc-input::selection {
+  color: transparent;
+}
+
+@media (forced-colors: active) {
+  .oc-sensitive-mask {
+    display: none;
+  }
+
+  .oc-sensitive-input[data-sensitive-mask-ready="true"][data-revealed="false"] .oc-input {
+    color: CanvasText;
+  }
 }
 
 .oc-sensitive-input:hover {
@@ -102,6 +144,8 @@
 }
 
 .oc-sensitive-toggle {
+  position: relative;
+  z-index: 2;
   display: inline-grid;
   width: 2.75rem;
   min-width: 2.75rem;

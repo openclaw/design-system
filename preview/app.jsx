@@ -15,6 +15,16 @@ import {
 } from "./router.js";
 import { getStaticRouteContent } from "./static-route-content.js";
 
+let referenceRuntimePromise;
+
+function loadReferenceRuntime() {
+  referenceRuntimePromise ??= import("./reference-runtime.js").catch((error) => {
+    referenceRuntimePromise = undefined;
+    throw error;
+  });
+  return referenceRuntimePromise;
+}
+
 function routeLabel(pageId) {
   if (pageId === introductionPage.id) return "Carapace";
   const page = getReferencePage(pageId);
@@ -49,6 +59,8 @@ function scrollToHash(hash) {
 
 function RouteView({ route, siteRoot, navigation }) {
   const routeRootRef = useRef(null);
+  const [referenceLoadError, setReferenceLoadError] = useState(null);
+  const [referenceLoadAttempt, setReferenceLoadAttempt] = useState(0);
   const staticContent = useMemo(
     () => getStaticRouteContent(route.pageId, siteRoot),
     [route.pageId, siteRoot],
@@ -58,14 +70,34 @@ function RouteView({ route, siteRoot, navigation }) {
     updateDocumentMetadata(route.pageId, route.path);
     const root = routeRootRef.current;
     if (!root) return undefined;
-    const lifecycle = mountPage(root, { pageId: route.pageId });
-    const refreshTheme = (event) => lifecycle.refreshTheme(event.detail?.theme);
+    let lifecycle;
+    let disposed = false;
+    const refreshTheme = (event) => lifecycle?.refreshTheme(event.detail?.theme);
     window.addEventListener("previewthemechange", refreshTheme);
-    return () => {
-      window.removeEventListener("previewthemechange", refreshTheme);
-      lifecycle.cleanup();
+    setReferenceLoadError(null);
+    const finishMount = () => {
+      if (disposed) return;
+      lifecycle = mountPage(root, { pageId: route.pageId });
     };
-  }, [route.pageId, route.path, siteRoot, staticContent]);
+    if (staticContent === null) {
+      void loadReferenceRuntime().then(({ mountReferenceRuntime }) => {
+        if (disposed) return;
+        mountReferenceRuntime(root, route.pageId);
+        finishMount();
+        scrollToHash(route.hash);
+      }).catch((error) => {
+        if (disposed) return;
+        setReferenceLoadError(error);
+      });
+    } else {
+      finishMount();
+    }
+    return () => {
+      disposed = true;
+      window.removeEventListener("previewthemechange", refreshTheme);
+      lifecycle?.cleanup();
+    };
+  }, [referenceLoadAttempt, route.pageId, route.path, staticContent]);
 
   useLayoutEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -83,9 +115,19 @@ function RouteView({ route, siteRoot, navigation }) {
 
   return staticContent === null ? (
     <div className="preview-route-content" ref={routeRootRef}>
-      <div className="page-layout">
-        <article className="preview-stage reference-page" data-reference-content />
-      </div>
+      {referenceLoadError ? (
+        <section className="reference-runtime-error" role="alert">
+          <strong>Reference preview failed to load.</strong>
+          <span>The component runtime may be temporarily unavailable.</span>
+          <button type="button" onClick={() => setReferenceLoadAttempt((attempt) => attempt + 1)}>
+            Retry
+          </button>
+        </section>
+      ) : (
+        <div className="page-layout">
+          <article className="preview-stage reference-page" data-reference-content />
+        </div>
+      )}
     </div>
   ) : (
     <div

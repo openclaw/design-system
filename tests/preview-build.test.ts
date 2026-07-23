@@ -177,7 +177,17 @@ describe("preview route build", () => {
         expect(deepRouteHtml).toContain("<title>Button · Carapace</title>");
         expect(deepRouteHtml).toContain('<div id="preview-app"></div>');
         expect(deepRouteHtml).not.toContain("home-component-grid");
-        expect(deepRouteHtml.length).toBeLessThan(2_500);
+        expect(deepRouteHtml.length).toBeLessThan(3_000);
+
+        const scripts = [...deepRouteHtml.matchAll(/<script[^>]+src="([^"]+)"/g)].map(
+          ([, value]) => value,
+        );
+        const entryScript = scripts.find((value) => value.includes("/assets/index-"));
+        expect(entryScript).toBeDefined();
+        const entryStats = await stat(resolve(dirname(deepRoutePath), entryScript));
+        expect(entryStats.size).toBeLessThan(150_000);
+        expect(deepRouteHtml).not.toContain("preview-reference");
+        expect(deepRouteHtml).not.toContain("preview-components");
 
         const assetUrls = [...deepRouteHtml.matchAll(/(?:href|src)="([^"]+)"/g)]
           .map(([, value]) => value)

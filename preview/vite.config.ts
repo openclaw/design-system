@@ -11,6 +11,16 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     outDir: resolve(previewRoot, "../dist/preview"),
-    rollupOptions: { input: resolve(previewRoot, "index.html") },
+    rollupOptions: {
+      input: resolve(previewRoot, "index.html"),
+      output: {
+        manualChunks(id) {
+          if (id.includes("/node_modules/react")) return "preview-vendor";
+          if (id.includes("/node_modules/glimm")) return "preview-motion";
+          if (id.includes("/node_modules/lucide/")) return "preview-icons";
+          return undefined;
+        },
+      },
+    },
   },
 });

@@ -16,18 +16,33 @@ export function bindSensitiveInputs(root = document) {
 
   for (const control of controls) {
     const input = control.querySelector("[data-sensitive-value]");
+    const mask = control.querySelector("[data-sensitive-mask]");
+    const maskText = mask?.querySelector("[data-sensitive-mask-text]");
     const toggle = control.querySelector("[data-toggle-sensitive]");
     if (!input || !toggle) continue;
 
     const label = toggle.getAttribute("data-sensitive-label") || "value";
     const sync = () => {
       const revealed = input.type === "text";
+      control.dataset.revealed = String(revealed);
+      if (mask) {
+        mask.hidden = revealed;
+        if (maskText) {
+          maskText.textContent = revealed ? "" : "*".repeat([...input.value].length);
+          maskText.style.transform = `translateX(${-input.scrollLeft}px)`;
+        }
+      }
+      control.dataset.sensitiveMaskReady = String(Boolean(mask && maskText));
       setSensitiveToggleIcon(toggle, revealed);
       toggle.setAttribute("aria-pressed", String(revealed));
       toggle.setAttribute("aria-label", `${revealed ? "Hide" : "Show"} ${label}`);
     };
 
     sync();
+    input.addEventListener("input", sync);
+    input.addEventListener("change", sync);
+    input.addEventListener("focus", sync);
+    input.addEventListener("scroll", sync);
     toggle.addEventListener("click", () => {
       input.type = input.type === "password" ? "text" : "password";
       sync();

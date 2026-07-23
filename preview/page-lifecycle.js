@@ -1,13 +1,11 @@
 import { bindAgentComponentDemos } from "./agent-components-interactions.js";
 import { bindCombobox } from "./combobox.js";
 import { bindCommandPalettes } from "./command-palette.js";
-import { bindComponentWorkbenches } from "./component-workbench.js";
 import { bindDialogs } from "./dialog.js";
 import { bindDropdowns } from "./dropdown.js";
 import { bindExampleDialog } from "./interaction.js";
 import { bindMenuBars } from "./menu-bar.js";
 import { getReferenceMaturity, referencePages } from "./navigation.js";
-import { renderReferenceContent } from "./reference-content.js";
 import { bindSensitiveInputs } from "./sensitive-input.js";
 import { bindSidebars } from "./sidebar.js";
 import { bindTabs } from "./tabs.js";
@@ -492,7 +490,6 @@ export function bindCopyActions(root, reportFeedback) {
 }
 
 function bindPageInteractions(root) {
-  bindComponentWorkbenches(root);
   bindAgentComponentDemos(root);
   bindCombobox(root);
   bindCommandPalettes(root);
@@ -525,7 +522,6 @@ export function mountPage(
   const view = document.defaultView;
   delete document.body.dataset.referenceLayout;
   delete document.body.dataset.shellMode;
-  renderReferenceContent(root, pageId);
   addHomeMaturityBadges(root);
   root.querySelectorAll("[data-preview-indeterminate]").forEach((input) => {
     input.indeterminate = true;

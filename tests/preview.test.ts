@@ -111,6 +111,21 @@ describe("preview contracts", () => {
     expect(isComponentWorkbenchPage("interface")).toBe(false);
   });
 
+  test("retries a failed lazy reference runtime instead of caching a blank route", async () => {
+    const app = await readFile("preview/app.jsx", "utf8");
+    const vite = await readFile("preview/vite.config.ts", "utf8");
+
+    expect(app).toContain("referenceRuntimePromise = undefined");
+    expect(app).toContain('className="reference-runtime-error" role="alert"');
+    expect(app).toContain("setReferenceLoadAttempt((attempt) => attempt + 1)");
+    expect(app).toContain("mountReferenceRuntime(root, route.pageId);");
+    expect(app).toContain("finishMount();\n        scrollToHash(route.hash);");
+    expect(vite).toContain('return "preview-motion"');
+    expect(vite).not.toContain(
+      'id.includes("/node_modules/react") || id.includes("/node_modules/glimm")',
+    );
+  });
+
   test("adapts shared workbench chrome to the kind of component being demonstrated", () => {
     expect(getWorkbenchShellProfile("primitive-badge")).toEqual({
       canvasPreset: "inline",
@@ -1872,6 +1887,7 @@ describe("preview contracts", () => {
     expect(home).not.toContain('class="home-hero"');
     expect(home).toContain('class="oc-clipboard-action oc-clipboard-action-icon"');
     expect(home).toContain('data-lucide="copy"');
+    expect(home).toContain('class="oc-sensitive-mask"');
     expect(home.match(/home-component-cell/g)).toHaveLength(44);
     expect(home.match(/class="home-component-cell"/g)).toHaveLength(43);
     expect(new Set(componentLabels).size).toBe(43);

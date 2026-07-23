@@ -2887,6 +2887,28 @@ body[data-reference-layout="workbench"][data-page-kind="reference"] .reference-p
   gap: 10px;
 }
 
+.reference-runtime-error {
+  display: grid;
+  width: min(100%, 32rem);
+  gap: var(--oc-space-2);
+  margin: clamp(3rem, 12vh, 8rem) auto;
+  padding: var(--oc-space-5);
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-surface);
+  background: var(--oc-surface-elevated);
+  box-shadow: var(--oc-shadow-sm);
+  color: var(--oc-text-secondary);
+}
+
+.reference-runtime-error strong {
+  color: var(--oc-text-primary);
+}
+
+.reference-runtime-error button {
+  width: fit-content;
+  margin-top: var(--oc-space-2);
+}
+
 .component-workbench-title h1 {
   overflow: hidden;
   margin: 0;
