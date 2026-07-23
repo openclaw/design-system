@@ -316,6 +316,8 @@ describe("preview contracts", () => {
       "picker",
       "thinking",
       "fast",
+      "voice",
+      "camera",
     ]);
     expect(workspace?.markup({ ...workspace.defaults, dock: "bottom" })).toContain(
       'data-dock="bottom"',
@@ -326,9 +328,13 @@ describe("preview contracts", () => {
     expect(workspace?.markup({ ...workspace.defaults, dock: "hidden" })).toContain(
       'data-inspector="false"',
     );
-    expect(workspace?.markup({ ...workspace.defaults, model: "claude-opus", picker: true })).toContain(
-      'class="oc-model-picker" data-workbench-model-picker open',
-    );
+    expect(
+      workspace?.markup({
+        ...workspace.defaults,
+        model: "anthropic/claude-opus-4-8",
+        picker: true,
+      }),
+    ).toContain('class="oc-model-picker" data-workbench-model-picker open');
 
     expect(sessions?.controls.map(({ id }) => id)).toEqual(["state", "navigation"]);
     expect(sessions?.markup({ ...sessions.defaults, state: "loading" })).toContain(
@@ -352,7 +358,14 @@ describe("preview contracts", () => {
       'data-state="active"',
     );
 
-    const createButton = (dataset = {}) => Object.assign(new EventTarget(), { dataset });
+    const createButton = (dataset = {}, attributes = {}) =>
+      Object.assign(new EventTarget(), {
+        dataset,
+        getAttribute: (name) => attributes[name] ?? null,
+        setAttribute: (name, value) => {
+          attributes[name] = value;
+        },
+      });
 
     const operationsNavigation = createButton();
     const automationView = createButton({ workbenchApplicationView: "automation" });
@@ -376,44 +389,90 @@ describe("preview contracts", () => {
 
     const workspaceDock = createButton();
     const workspaceInspectorHide = createButton();
-    const workspaceModel = createButton({ workbenchApplicationModel: "claude-opus" });
+    const workspaceModel = createButton({
+      workbenchApplicationModel: "anthropic/claude-opus-4-8",
+      modelSearch: "claude opus 4.8 anthropic 200k",
+    });
+    workspaceModel.textContent = "Claude Opus 4.8 Anthropic";
+    const grokModel = createButton({
+      workbenchApplicationModel: "xai/grok-4",
+      modelSearch: "grok 4 xai 256k",
+    });
+    grokModel.textContent = "Grok 4 xAI";
+    const recentProvider = createButton(
+      { workbenchModelProvider: "recent" },
+      { "aria-pressed": "true" },
+    );
+    const anthropicProvider = createButton(
+      { workbenchModelProvider: "anthropic" },
+      { "aria-pressed": "false" },
+    );
+    const workspaceSearch = Object.assign(new EventTarget(), { value: "" });
     const workspacePicker = Object.assign(new EventTarget(), { open: false });
-    const workspaceThinking = createButton({ workbenchModelThinking: "high" });
-    const workspaceFast = Object.assign(new EventTarget(), { checked: true });
+    const workspaceThinking = Object.assign(
+      createButton({ thinkingValues: "auto,low,medium,high,xhigh" }),
+      {
+        value: "2",
+        style: { setProperty() {} },
+      },
+    );
+    const workspaceFast = createButton({}, { "aria-checked": "true" });
     const workspaceUpdates = [];
+    const workspaceState = { ...workspace.defaults };
     workspace?.bind?.(
       {
         querySelector: (selector) =>
           ({
             "[data-workbench-application-dock]": workspaceDock,
             "[data-workbench-application-inspector-hide]": workspaceInspectorHide,
+            "[data-workbench-model-search]": workspaceSearch,
             "[data-workbench-model-picker]": workspacePicker,
             "[data-workbench-model-thinking]": workspaceThinking,
             "[data-workbench-model-fast]": workspaceFast,
           })[selector] ?? null,
-        querySelectorAll: (selector) =>
-          selector === "[data-workbench-application-model]" ? [workspaceModel] : [],
+        querySelectorAll: (selector) => {
+          if (selector === "[data-workbench-application-model]") {
+            return [workspaceModel, grokModel];
+          }
+          if (selector === "[data-workbench-model-provider]") {
+            return [recentProvider, anthropicProvider];
+          }
+          return [];
+        },
       },
-      workspace.defaults,
-      (id, value) => workspaceUpdates.push([id, value]),
+      workspaceState,
+      (id, value) => {
+        workspaceState[id] = value;
+        workspaceUpdates.push([id, value]);
+      },
     );
+    expect(workspaceModel.hidden).toBe(false);
+    expect(grokModel.hidden).toBe(true);
     workspaceDock.dispatchEvent(new Event("click"));
     workspaceInspectorHide.dispatchEvent(new Event("click"));
+    anthropicProvider.dispatchEvent(new Event("click"));
+    workspaceSearch.value = "claude";
+    workspaceSearch.dispatchEvent(new Event("input"));
     workspaceModel.dispatchEvent(new Event("click"));
     workspacePicker.open = true;
     workspacePicker.dispatchEvent(new Event("toggle"));
-    workspaceThinking.dispatchEvent(new Event("click"));
-    workspaceFast.checked = false;
-    workspaceFast.dispatchEvent(new Event("change"));
+    workspaceThinking.dispatchEvent(new Event("change"));
+    workspaceFast.dispatchEvent(new Event("click"));
     expect(workspaceUpdates).toEqual([
       ["dock", "bottom"],
       ["dock", "hidden"],
-      ["picker", false],
-      ["model", "claude-opus"],
+      ["modelProvider", "anthropic"],
+      ["modelQuery", "claude"],
+      ["model", "anthropic/claude-opus-4-8"],
       ["picker", true],
       ["thinking", "medium"],
       ["fast", false],
     ]);
+    const rerenderedWorkspace = workspace?.markup(workspaceState) ?? "";
+    expect(rerenderedWorkspace).toContain(
+      'aria-pressed="true" data-workbench-model-provider="anthropic"',
+    );
+    expect(rerenderedWorkspace).toContain('value="claude" data-workbench-model-search');
 
     const hiddenWorkspaceDock = createButton();
     const hiddenWorkspaceUpdates = [];
@@ -1893,6 +1952,18 @@ describe("preview contracts", () => {
         ],
       },
       { id: "copyToolbar", type: "toggle" },
+      {
+        id: "voice",
+        type: "choice",
+        options: [
+          { label: "Idle", value: "idle" },
+          { label: "Connecting", value: "connecting" },
+          { label: "Listening", value: "listening" },
+          { label: "Thinking", value: "thinking" },
+          { label: "Error", value: "error" },
+        ],
+      },
+      { id: "camera", type: "toggle" },
     ]);
   });
 
@@ -1912,13 +1983,13 @@ describe("preview contracts", () => {
 
     expect(
       normalizeWorkbenchState(definition, {
-        model: "claude-opus",
+        model: "anthropic/claude-opus-4-8",
         picker: true,
         thinking: "medium",
         fast: false,
       }),
     ).toMatchObject({
-      model: "claude-opus",
+      model: "anthropic/claude-opus-4-8",
       picker: true,
       thinking: "medium",
       fast: false,

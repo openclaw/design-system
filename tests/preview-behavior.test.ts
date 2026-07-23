@@ -7,6 +7,8 @@ import {
 } from "../preview/agent-components-interactions.js";
 import { getAgentReferenceContent } from "../preview/agent-components.js";
 import {
+  applicationCameraPreviewMarkup,
+  applicationComposerPrimaryMarkup,
   applicationScreenMarkup,
   applicationModelControlsMarkup,
   operationsApplicationMarkup,
@@ -54,6 +56,8 @@ import {
 } from "../preview/component-workbench.js";
 import {
   actionWorkbenchMarkup,
+  bindApplicationComposer,
+  bindInteractiveToolActions,
   clipboardTextWorkbenchMarkup,
   agentChatWorkbenchMarkup,
   attachmentButtonWorkbenchMarkup,
@@ -409,9 +413,11 @@ describe("preview behavior", () => {
     expect(right).toContain('aria-label="Sessions"');
     expect(right).toContain('aria-label="Inspector"');
     expect(right).toContain('class="oc-model-controls"');
-    expect(right).toContain("GPT-5.6 Sol");
-    expect(right).toContain("Thinking");
+    expect(right).toContain("GPT-5.5");
+    expect(right).toContain("Reasoning");
     expect(right).toContain("Fast");
+    expect(right).toContain("data-workbench-composer-talk");
+    expect(right).toContain("data-workbench-composer-dictation");
     expect(bottom).toContain('data-dock="bottom"');
     expect(bottom).toContain('data-inspector="true"');
     expect(bottom).toContain("Agent idle");
@@ -425,7 +431,7 @@ describe("preview behavior", () => {
 
   test("renders application model controls with picker, reasoning, and locked states", () => {
     const controls = applicationModelControlsMarkup({
-      model: "claude-opus",
+      model: "anthropic/claude-opus-4-8",
       thinking: "medium",
       fast: false,
       open: true,
@@ -435,29 +441,29 @@ describe("preview behavior", () => {
     expect(controls).toContain('class="oc-model-picker" data-workbench-model-picker open');
     expect(controls).toContain('role="group" aria-label="Models"');
     expect(controls).toContain(
-      'aria-pressed="true" data-workbench-application-model="claude-opus"',
+      'aria-pressed="true" data-workbench-application-model="anthropic/claude-opus-4-8"',
     );
     expect(controls).toContain('data-workbench-model-search');
-    expect(controls).toContain('data-workbench-model-provider="Anthropic"');
-    expect(controls).toContain("Reset to GPT-5.6 Sol");
+    expect(controls).toContain('data-workbench-model-provider="anthropic"');
     expect(controls).toContain("data-workbench-model-reset");
     expect(controls).toContain("data-workbench-model-picker");
-    expect(controls).toContain('data-workbench-model-thinking="medium"');
+    expect(controls).toContain("data-workbench-model-thinking");
+    expect(controls).toContain('data-thinking-values="auto,low,medium,high,xhigh"');
+    expect(controls).toContain('aria-valuetext="Medium"');
     expect(controls).toContain("data-workbench-model-fast");
-    expect(controls).toContain("Claude Opus");
+    expect(controls).toContain('role="switch"');
+    expect(controls).toContain("Claude Opus 4.8");
     expect(controls).toContain("Anthropic");
-    expect(controls).toContain("Selected model: Claude Opus by Anthropic");
-    expect(controls).toContain("Reasoning level: medium");
-    expect(controls).toContain("<strong>medium</strong>");
-    expect(controls).not.toContain('type="checkbox" checked');
+    expect(controls).toContain("Selected model: Claude Opus 4.8 by Anthropic");
+    expect(controls).toContain('aria-label="Reasoning level"');
+    expect(controls).toContain("Unavailable for this model");
+    expect(controls).not.toContain('type="checkbox"');
     expect(locked).toContain('data-locked="true"');
     expect(locked).toContain(" disabled");
     expect(locked).not.toContain("data-workbench-model-reset");
     expect(locked).not.toContain("<details");
-    expect(locked).not.toContain('role="group"');
-    expect(locked).toContain(
-      'class="oc-model-control" type="button" aria-label="Reasoning level: high" data-workbench-model-thinking="high" disabled',
-    );
+    expect(locked).not.toContain("oc-model-menu-settings");
+    expect(locked).toContain("reasoning High");
   });
 
   test("renders Sessions as a compact collection with ready, loading, and empty states", () => {
@@ -470,7 +476,7 @@ describe("preview behavior", () => {
     expect(ready).toContain('class="oc-session-toolbar"');
     expect(ready).toContain('class="oc-table oc-session-table"');
     expect(ready).toContain("Carapace parity");
-    expect(ready).toContain("GPT-5.6 Sol");
+    expect(ready).toContain("GPT-5.5");
     expect(ready).toContain('aria-label="Select Carapace parity" checked');
     expect(ready).toContain('aria-label="Actions for Carapace parity"');
     expect(loading).toContain('aria-busy="true"');
@@ -485,23 +491,25 @@ describe("preview behavior", () => {
 
   test("renders Quick Chat with captured context and shared model controls", () => {
     const idle = quickChatApplicationMarkup({ picker: true });
-    const active = quickChatApplicationMarkup({ status: "active", model: "gemini-pro" });
+    const active = quickChatApplicationMarkup({
+      status: "active",
+      model: "google/gemini-2.5-pro",
+    });
     const error = quickChatApplicationMarkup({ status: "error" });
 
     expect(idle).toContain('class="oc-quick-chat" data-state="idle"');
-    expect(idle).toContain(
-      'class="oc-quick-chat-composer" role="group" aria-label="Message composer"',
-    );
-    expect(idle).not.toContain('<form class="oc-quick-chat-composer"');
-    expect(idle).toContain("Screenshot attached");
+    expect(idle).toContain('<form class="oc-quick-chat-input-row"');
+    expect(idle).toContain('aria-label="Select agent"');
+    expect(idle).toContain("Safari — OpenClaw docs");
     expect(idle).toContain('class="oc-model-picker" data-workbench-model-picker open');
-    expect(idle).toContain("Screen context stays local until sent");
+    expect(idle).not.toContain('class="oc-quick-chat-reply"');
     expect(active).toContain('data-state="active"');
-    expect(active).toContain("Gemini Pro");
-    expect(active).toContain('type="button" aria-label="Stop response"');
-    expect(idle).toContain('type="button" aria-label="Send message"');
+    expect(active).toContain("Gemini 2.5 Pro");
+    expect(active).toContain('aria-label="Stop response"');
+    expect(idle).toContain('aria-label="Send message"');
     expect(error).toContain('data-state="error"');
     expect(error).toContain("could not reach the gateway");
+    expect(error).toContain('class="oc-quick-chat-reply"');
     expect(error).toContain('aria-label="Retry connection"');
     expect(error).not.toContain('aria-label="Send message"');
   });
@@ -894,19 +902,61 @@ describe("preview behavior", () => {
       'data-lucide="paperclip"',
     );
     expect(suggestionsWorkbenchMarkup({ disabled: true })).toContain(" disabled");
-    expect(modelPickerWorkbenchMarkup({ model: "claude-opus" })).toContain(
-      'data-workbench-application-model="claude-opus"',
+    expect(modelPickerWorkbenchMarkup({ model: "anthropic/claude-opus-4-8" })).toContain(
+      'data-workbench-application-model="anthropic/claude-opus-4-8"',
     );
-    expect(modelPickerWorkbenchMarkup({ model: "claude-opus" })).toContain(
-      "<strong>Claude Opus</strong>",
+    expect(modelPickerWorkbenchMarkup({ model: "anthropic/claude-opus-4-8" })).toContain(
+      "<strong>Claude Opus 4.8</strong>",
     );
-    expect(modelPickerWorkbenchMarkup({ model: "claude-opus" })).toContain(
+    expect(modelPickerWorkbenchMarkup({ model: "anthropic/claude-opus-4-8" })).toContain(
       "<small>Anthropic</small>",
     );
-    expect(modelPickerWorkbenchMarkup({ model: "claude-opus" })).toContain(
-      'data-workbench-model-provider="Anthropic"',
+    expect(modelPickerWorkbenchMarkup({ model: "anthropic/claude-opus-4-8" })).toContain(
+      'data-workbench-model-provider="anthropic"',
+    );
+    expect(modelPickerWorkbenchMarkup()).toContain(
+      'data-workbench-application-model="xai/grok-4" data-model-provider="xAI" data-model-search="grok 4 xai 256k" hidden',
+    );
+    expect(
+      modelPickerWorkbenchMarkup({ model: "google/gemini-2.5-pro" }),
+    ).not.toContain(
+      'data-workbench-application-model="google/gemini-2.5-pro" data-model-provider="Google" data-model-search="gemini 2.5 pro google 1m" hidden',
+    );
+    const filteredModelPicker = modelPickerWorkbenchMarkup({
+      modelProvider: "google",
+      modelQuery: "gem",
+    });
+    expect(filteredModelPicker).toContain(
+      'aria-pressed="true" data-workbench-model-provider="google"',
+    );
+    expect(filteredModelPicker).toContain(
+      'data-workbench-application-model="google/gemini-2.5-pro" data-model-provider="Google"',
+    );
+    expect(filteredModelPicker).toContain('value="gem" data-workbench-model-search');
+    const metadataFilteredModelPicker = modelPickerWorkbenchMarkup({
+      modelProvider: "xai",
+      modelQuery: "256k",
+    });
+    expect(metadataFilteredModelPicker).toContain(
+      'data-workbench-application-model="xai/grok-4" data-model-provider="xAI" data-model-search="grok 4 xai 256k"',
+    );
+    expect(metadataFilteredModelPicker).not.toContain(
+      'data-model-search="grok 4 xai 256k" hidden',
+    );
+    expect(modelPickerWorkbenchMarkup()).toContain("data-workbench-model-reset disabled");
+    expect(modelPickerWorkbenchMarkup({ fast: false })).not.toContain(
+      "data-workbench-model-reset disabled",
     );
     expect(modelPickerWorkbenchMarkup({ locked: true })).toContain(" disabled");
+    expect(workspaceApplicationMarkup({ draft: "Keep this draft" })).toContain(
+      "data-workbench-composer-input>Keep this draft</textarea>",
+    );
+    expect(quickChatApplicationMarkup({ draft: "Quick draft" })).toContain(
+      "data-workbench-composer-input>Quick draft</textarea>",
+    );
+    expect(agentChatWorkbenchMarkup({ draft: "Agent draft" })).toContain(
+      "data-workbench-composer-input>Agent draft</textarea>",
+    );
     expect(modeSelectorWorkbenchMarkup({ value: "plan" })).toContain(
       "<span data-agent-mode-label>Plan</span>",
     );
@@ -950,6 +1000,26 @@ describe("preview behavior", () => {
         open: true,
       }),
     ).toContain('data-variant="browser"');
+    const browser = toolWorkbenchMarkup({
+      kind: "interactive",
+      variant: "browser",
+      state: "complete",
+      open: true,
+    });
+    expect(browser).toContain('aria-label="Compact OpenClaw application preview"');
+    expect(browser).toContain('aria-label="Open preview in a new tab"');
+    expect(browser).toContain("Carapace parity");
+    const artifact = toolWorkbenchMarkup({
+      kind: "interactive",
+      variant: "artifact",
+      state: "complete",
+      open: true,
+    });
+    expect(artifact).toContain("Carapace application artwork preview");
+    expect(artifact).toContain('download="application-surface.avif"');
+    expect(toolWorkbenchMarkup({ kind: "interactive", state: "complete" })).toContain(
+      "data-workbench-tool-copy",
+    );
     const openingBrowser = toolWorkbenchMarkup({
       kind: "interactive",
       variant: "browser",
@@ -973,6 +1043,158 @@ describe("preview behavior", () => {
       " open",
     );
     expect(toolWorkbenchMarkup({ kind: "thinking", state: "animating" })).toContain("Thinking");
+  });
+
+  test("copies interactive terminal output through its live action", async () => {
+    const attributes = new Map();
+    const copy = Object.assign(new EventTarget(), {
+      setAttribute(name, value) {
+        attributes.set(name, value);
+      },
+    });
+    const status = { textContent: "" };
+    const output = { textContent: "29 pass · 0 fail" };
+    const writes = [];
+    const specimen = {
+      querySelector(selector) {
+        if (selector === "[data-workbench-tool-status]") return status;
+        if (selector === "[data-workbench-tool-copy]") return copy;
+        if (selector === ".oc-agent-bash-output code") return output;
+        return null;
+      },
+    };
+
+    expect(bindInteractiveToolActions(specimen, { writeText: (value) => writes.push(value) })).toBe(
+      1,
+    );
+    copy.dispatchEvent(new Event("click"));
+    await Promise.resolve();
+
+    expect(writes).toEqual(["29 pass · 0 fail"]);
+    expect(attributes.get("data-state")).toBe("copied");
+    expect(status.textContent).toBe("Command output copied");
+
+    const failedAttributes = new Map();
+    const failedCopy = Object.assign(new EventTarget(), {
+      setAttribute(name, value) {
+        failedAttributes.set(name, value);
+      },
+    });
+    const failedStatus = { textContent: "" };
+    bindInteractiveToolActions(
+      {
+        querySelector(selector) {
+          if (selector === "[data-workbench-tool-status]") return failedStatus;
+          if (selector === "[data-workbench-tool-copy]") return failedCopy;
+          if (selector === ".oc-agent-bash-output code") return output;
+          return null;
+        },
+      },
+      undefined,
+    );
+    failedCopy.dispatchEvent(new Event("click"));
+    await Promise.resolve();
+    expect(failedAttributes.get("data-state")).toBe("error");
+    expect(failedStatus.textContent).toBe("Command output could not be copied");
+  });
+
+  test("adapts composer primary actions to draft, dictation, talk, and camera state", () => {
+    expect(applicationCameraPreviewMarkup({ camera: true })).toContain(
+      'button type="button" aria-label="Switch camera" data-workbench-camera-switch',
+    );
+    expect(applicationComposerPrimaryMarkup({ busy: true, voice: "listening" })).toContain(
+      'aria-label="Stop response"',
+    );
+    expect(applicationComposerPrimaryMarkup({ busy: true, voice: "listening" })).not.toContain(
+      "oc-composer-voice-live",
+    );
+    const input = Object.assign(new EventTarget(), { value: "" });
+    const send = { hidden: false };
+    const classes = new Set();
+    const attributes = new Map([["aria-pressed", "false"]]);
+    const capturedPointers = [];
+    const dictation = Object.assign(new EventTarget(), {
+      hidden: false,
+      setPointerCapture(pointerId) {
+        capturedPointers.push(pointerId);
+      },
+      classList: {
+        toggle(name, active) {
+          if (active) classes.add(name);
+          else classes.delete(name);
+        },
+      },
+      getAttribute: (name) => attributes.get(name) ?? null,
+      setAttribute: (name, value) => attributes.set(name, value),
+    });
+    const dictationStatus = { hidden: true };
+    const talk = new EventTarget();
+    const updates = [];
+    const specimen = {
+      querySelector(selector) {
+        return (
+          {
+            "[data-workbench-composer-input]": input,
+            "[data-workbench-composer-send]": send,
+            "[data-workbench-composer-dictation]": dictation,
+            "[data-workbench-composer-dictation-status]": dictationStatus,
+          }[selector] ?? null
+        );
+      },
+      querySelectorAll: (selector) =>
+        selector === "[data-workbench-composer-talk]" ? [talk] : [],
+    };
+
+    bindApplicationComposer(specimen, { voice: "idle", camera: false }, (id, value) =>
+      updates.push([id, value]),
+    );
+    expect(send.hidden).toBe(true);
+    expect(dictation.hidden).toBe(false);
+
+    input.value = "Ship the compact composer";
+    input.dispatchEvent(new Event("input"));
+    expect(send.hidden).toBe(false);
+    expect(dictation.hidden).toBe(true);
+
+    input.value = "";
+    input.dispatchEvent(new Event("input"));
+    dictation.dispatchEvent(Object.assign(new Event("pointerdown"), { pointerId: 7 }));
+    expect(attributes.get("aria-pressed")).toBe("true");
+    expect(classes.has("is-active")).toBe(true);
+    expect(dictationStatus.hidden).toBe(false);
+    expect(capturedPointers).toEqual([7]);
+    dictation.dispatchEvent(new Event("pointerup"));
+    expect(attributes.get("aria-pressed")).toBe("false");
+    expect(classes.has("is-active")).toBe(false);
+    expect(dictationStatus.hidden).toBe(true);
+
+    const keydown = Object.assign(new Event("keydown"), { key: "Enter", repeat: false });
+    const keyup = Object.assign(new Event("keyup"), { key: "Enter" });
+    dictation.dispatchEvent(keydown);
+    expect(attributes.get("aria-pressed")).toBe("true");
+    dictation.dispatchEvent(keyup);
+    expect(attributes.get("aria-pressed")).toBe("false");
+
+    talk.dispatchEvent(new Event("click"));
+    expect(updates).toEqual([
+      ["draft", "Ship the compact composer"],
+      ["draft", ""],
+      ["voice", "listening"],
+    ]);
+
+    const camera = new EventTarget();
+    const cameraUpdates = [];
+    bindApplicationComposer(
+      {
+        querySelector: (selector) =>
+          selector === "[data-workbench-composer-camera]" ? camera : null,
+        querySelectorAll: () => [],
+      },
+      { voice: "listening", camera: true },
+      (id, value) => cameraUpdates.push([id, value]),
+    );
+    camera.dispatchEvent(new Event("click"));
+    expect(cameraUpdates).toEqual([["camera", false]]);
   });
 
   test("keeps specialized tool states faithful to their public data", () => {

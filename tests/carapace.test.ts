@@ -250,10 +250,13 @@ describe("CSS contract", () => {
       ".oc-agent-message-role",
       ".oc-agent-interactive-artifact",
       ".oc-agent-interactive-artifact-thumb",
+      ".oc-agent-interactive-facts",
       ".oc-agent-interactive-header",
       ".oc-agent-interactive-preview",
+      ".oc-agent-interactive-preview-brand",
       ".oc-agent-interactive-preview-content",
       ".oc-agent-interactive-preview-sidebar",
+      ".oc-agent-interactive-preview-thread",
       ".oc-agent-interactive-state",
       ".oc-agent-interactive-tool",
       ".oc-agent-interactive-tool-row",
@@ -305,6 +308,15 @@ describe("CSS contract", () => {
       ".oc-avatar-stack",
       ".oc-avatar-xs",
       ".oc-chat-shell",
+      ".oc-composer-camera-person",
+      ".oc-composer-camera-preview",
+      ".oc-composer-camera-toggle",
+      ".oc-composer-dictation-status",
+      ".oc-composer-primary-actions",
+      ".oc-composer-primary-button",
+      ".oc-composer-tool",
+      ".oc-composer-voice-bars",
+      ".oc-composer-voice-live",
       ".oc-context-usage",
       ".oc-detail-grid",
       ".oc-detail-grid-span",
@@ -337,11 +349,22 @@ describe("CSS contract", () => {
       ".oc-model-option",
       ".oc-model-option-copy",
       ".oc-model-option-meta",
+      ".oc-model-option-provider",
       ".oc-model-options",
       ".oc-model-picker",
       ".oc-model-provider-mark",
       ".oc-model-providers",
+      ".oc-model-reasoning-control",
+      ".oc-model-reasoning-dot",
+      ".oc-model-reasoning-dot-default",
+      ".oc-model-reasoning-dots",
+      ".oc-model-reasoning-range",
       ".oc-model-search",
+      ".oc-model-setting-heading",
+      ".oc-model-setting-reset",
+      ".oc-model-setting-row",
+      ".oc-model-speed-row",
+      ".oc-model-speed-toggle",
       ".oc-model-trigger",
       ".oc-page-header",
       ".oc-page-header-actions",
@@ -367,13 +390,16 @@ describe("CSS contract", () => {
       ".oc-pane-title",
       ".oc-pane-title-row",
       ".oc-quick-chat",
+      ".oc-quick-chat-action",
       ".oc-quick-chat-agent",
       ".oc-quick-chat-composer",
       ".oc-quick-chat-context",
       ".oc-quick-chat-footer",
       ".oc-quick-chat-header",
+      ".oc-quick-chat-input-row",
       ".oc-quick-chat-mark",
       ".oc-quick-chat-reply",
+      ".oc-quick-chat-send",
       ".oc-quick-chat-stage",
       ".oc-quick-chat-toolbar",
       ".oc-quick-chat-tools",
@@ -522,6 +548,20 @@ describe("CSS contract", () => {
     expect(application).not.toContain(".application-workspace");
     expect(application).toContain(".oc-workspace-composer");
     expect(lab).not.toContain(".oc-workspace-composer");
+    const viewportContract = application.slice(
+      application.indexOf("/* Viewport-safe application contract */"),
+    );
+    expect(viewportContract).toMatch(
+      /:is\(\.oc-app-frame, \.oc-chat-shell, \.oc-settings-shell, \.oc-quick-chat-stage\)[\s\S]*?min-height: 0/,
+    );
+    expect(ruleDeclarations(viewportContract, ".oc-quick-chat-stage")).toContain("height: auto");
+    expect(ruleDeclarations(viewportContract, ".oc-quick-chat-stage")).toContain("min-height: 0");
+    expect(ruleDeclarations(application, ".oc-quick-chat-input-row .oc-model-menu")).toContain(
+      "top: calc(100% + var(--oc-space-2))",
+    );
+    expect(ruleDeclarations(application, ".oc-quick-chat-input-row .oc-model-menu")).toContain(
+      "bottom: auto",
+    );
     expect(application).toContain("td:not([colspan])");
     expect(ruleDeclarations(application, ".oc-workspace-compose-box")).toContain(
       "overflow: visible",
@@ -554,6 +594,12 @@ describe("CSS contract", () => {
     );
     expect(application).not.toMatch(
       /@media \(max-width: 34rem\)[\s\S]*?\.oc-fast-mode \{[\s\S]*?display: none/,
+    );
+    expect(application).toMatch(
+      /@media \(max-width: 34rem\)[\s\S]*?\.oc-quick-chat-input-row \{[\s\S]*?grid-template-columns: auto auto minmax\(0, 1fr\) auto auto/,
+    );
+    expect(application).toMatch(
+      /@media \(max-width: 34rem\)[\s\S]*?\.oc-quick-chat-input-row \[data-compact-hide\] \{[\s\S]*?display: none/,
     );
     expect(application).toMatch(
       /@media \(max-width: 64rem\)[\s\S]*?\.oc-workspace-inspector-action \{[\s\S]*?display: none/,

@@ -5,7 +5,11 @@ import {
   collaborationTranscriptMarkup,
 } from "./agent-identity.js";
 import {
+  applicationCameraPreviewMarkup,
+  applicationComposerPrimaryMarkup,
+  applicationModels as applicationModelCatalog,
   applicationModelControlsMarkup,
+  applicationTalkToggleMarkup,
   operationsApplicationMarkup,
   quickChatApplicationMarkup,
   sessionsApplicationMarkup,
@@ -18,6 +22,9 @@ import { buttonWorkbenchExamples } from "./component-reference.js";
 import { bindSidebars } from "./sidebar.js";
 
 export const WORKBENCH_ALL_VALUE = "__all__";
+
+const interactiveArtifactUrl = new URL("./assets/carapace-home-artwork.avif", import.meta.url).href;
+const interactiveOpenClawMarkUrl = new URL("./assets/openclaw-mark.png", import.meta.url).href;
 
 const actionVariants = [
   { label: "Primary", value: "primary" },
@@ -200,7 +207,7 @@ const toolLifecycleStates = [
   { label: "Complete", value: "complete" },
 ];
 
-const bashLifecycleStates = [
+const interactiveToolLifecycleStates = [
   ...toolLifecycleStates,
   { label: "Failed", value: "failed" },
 ];
@@ -410,17 +417,22 @@ const applicationSessionStates = [
   { label: "Error", value: "error" },
 ];
 
-const applicationModels = [
-  { label: "GPT-5.6 Sol", value: "gpt-5.6-sol" },
-  { label: "GPT-5.6 Terra", value: "gpt-5.6-terra" },
-  { label: "Claude Opus", value: "claude-opus" },
-  { label: "Gemini Pro", value: "gemini-pro" },
+const applicationVoiceStates = [
+  { label: "Idle", value: "idle" },
+  { label: "Connecting", value: "connecting" },
+  { label: "Listening", value: "listening" },
+  { label: "Thinking", value: "thinking" },
+  { label: "Error", value: "error" },
 ];
 
+const applicationModels = applicationModelCatalog.map(({ label, value }) => ({ label, value }));
+
 const applicationThinkingLevels = [
+  { label: "Auto", value: "auto" },
   { label: "Low", value: "low" },
   { label: "Medium", value: "medium" },
   { label: "High", value: "high" },
+  { label: "Extra high", value: "xhigh" },
 ];
 
 const applicationSessionListStates = [
@@ -1139,11 +1151,13 @@ export function suggestionsWorkbenchMarkup({ disabled = false } = {}) {
 }
 
 export function modelPickerWorkbenchMarkup({
-  model = "gpt-5.6-sol",
+  model = "openai/gpt-5.5",
   thinking = "high",
   fast = true,
   picker = true,
   locked = false,
+  modelProvider = "recent",
+  modelQuery = "",
 } = {}) {
   return applicationModelControlsMarkup({
     model,
@@ -1151,6 +1165,8 @@ export function modelPickerWorkbenchMarkup({
     fast,
     open: picker,
     locked,
+    modelProvider,
+    modelQuery,
   });
 }
 
@@ -1225,15 +1241,27 @@ export function toolWorkbenchMarkup({
       : failed
         ? `<pre class="oc-agent-bash-output" role="region" aria-label="Command error" tabindex="0"><code>Error: expected application pane to fit viewport\nProcess exited with code 1</code></pre>`
         : `<p class="oc-agent-bash-progress"><span class="oc-agent-text-shimmer">Waiting for test output</span></p>`;
-    const terminal = `<div class="oc-agent-tool-card oc-agent-interactive-tool oc-agent-bash-tool" data-variant="terminal" data-state="${state}">
-  <dl class="oc-agent-bash-meta"><div><dt>cwd</dt><dd>openclaw/carapace</dd></div><div><dt>timeout</dt><dd>30s</dd></div><div><dt>env</dt><dd>CI=1</dd></div></dl>
+    const terminalAction = complete
+      ? `<button type="button" aria-label="Copy command output" data-workbench-tool-copy>${agentIcon("copy")}</button>`
+      : "";
+    const terminal = `<div class="oc-agent-tool-card oc-agent-interactive-tool" data-variant="terminal" data-state="${state}">
+  <header class="oc-agent-interactive-header"><span>${agentIcon("terminal")} Terminal</span><code>bun run check</code>${terminalAction}</header>
   <div class="oc-agent-tool-card-body oc-agent-bash-terminal"><div class="oc-agent-bash-command"><span aria-hidden="true">$ </span><code>bun run check</code></div>${terminalOutput}</div>
+  <dl class="oc-agent-interactive-facts"><div><dt>cwd</dt><dd>openclaw/carapace</dd></div><div><dt>timeout</dt><dd>30s</dd></div><div><dt>env</dt><dd>CI=1</dd></div></dl>
+  <span class="sr-only" aria-live="polite" data-workbench-tool-status></span>
 </div>`;
     const browserAction = complete
-      ? `<button type="button" aria-label="Open preview">${agentIcon("external-link")}</button>`
+      ? `<a href="/" target="_blank" rel="noreferrer" aria-label="Open preview in a new tab">${agentIcon("external-link")}</a>`
       : "";
     const browserContent = complete
-      ? `<div class="oc-agent-interactive-preview" role="img" aria-label="Compact application preview"><span class="oc-agent-interactive-preview-sidebar"></span><span class="oc-agent-interactive-preview-content"><i></i><i></i><i></i></span></div>`
+      ? `<div class="oc-agent-interactive-preview" role="img" aria-label="Compact OpenClaw application preview">
+  <aside class="oc-agent-interactive-preview-sidebar"><span class="oc-agent-interactive-preview-brand"><img src="${interactiveOpenClawMarkUrl}" alt="" /></span><span class="is-active">${agentIcon("message-square")}</span><span>${agentIcon("radio")}</span><span>${agentIcon("settings")}</span></aside>
+  <section class="oc-agent-interactive-preview-content">
+    <header><div><strong>Carapace parity</strong><small>Agent workspace</small></div><span>Connected</span></header>
+    <div class="oc-agent-interactive-preview-thread"><p class="is-user">Make the application surfaces quieter.</p><div><span><img src="${interactiveOpenClawMarkUrl}" alt="" /></span><p>Compacted the panes and aligned the composer controls.</p></div></div>
+    <footer><span>Message OpenClaw</span><i>${agentIcon("arrow-up")}</i></footer>
+  </section>
+</div>`
       : failed
         ? `<p class="oc-agent-interactive-state" role="alert"><strong>Preview unavailable</strong><span>The local preview did not respond.</span></p>`
         : `<p class="oc-agent-interactive-state" role="status"><span class="oc-agent-text-shimmer">Connecting to preview</span><span>Waiting for the application surface.</span></p>`;
@@ -1242,10 +1270,10 @@ export function toolWorkbenchMarkup({
   ${browserContent}
 </div>`;
     const artifactAction = complete
-      ? `<button type="button" aria-label="Download artifact">${agentIcon("download")}</button>`
+      ? `<a href="${interactiveArtifactUrl}" download="application-surface.avif" aria-label="Download artifact">${agentIcon("download")}</a>`
       : "";
     const artifactContent = complete
-      ? `<figure class="oc-agent-interactive-artifact"><span class="oc-agent-interactive-artifact-thumb">${agentIcon("image")}</span><figcaption><strong>application-surface.png</strong><span>Ready to inspect</span></figcaption></figure>`
+      ? `<figure class="oc-agent-interactive-artifact"><span class="oc-agent-interactive-artifact-thumb"><img src="${interactiveArtifactUrl}" alt="Carapace application artwork preview" /></span><figcaption><strong>application-surface.avif</strong><span>1440 × 900 · 182 KB</span><small>Generated visual artifact ready to inspect or download.</small></figcaption></figure>`
       : failed
         ? `<p class="oc-agent-interactive-state" role="alert"><strong>Artifact failed</strong><span>The image renderer exited before producing a file.</span></p>`
         : `<p class="oc-agent-interactive-state" role="status"><span class="oc-agent-text-shimmer">Rendering artifact</span><span>Preparing the image preview.</span></p>`;
@@ -1254,7 +1282,7 @@ export function toolWorkbenchMarkup({
       : failed
         ? "Artifact generation failed"
         : "Generating artifact";
-    const artifactMeta = complete ? "<span>PNG · 1440 × 900</span>" : "";
+    const artifactMeta = complete ? "<span>AVIF</span>" : "";
     const artifact = `<div class="oc-agent-tool-card oc-agent-interactive-tool" data-variant="artifact" data-state="${state}">
   <header class="oc-agent-interactive-header"><span>${agentIcon("image")} ${artifactTitle}</span>${artifactMeta}${artifactAction}</header>
   ${artifactContent}
@@ -1771,10 +1799,15 @@ export function agentChatWorkbenchMarkup({
   example = "basic",
   status = "ready",
   copyToolbar = false,
-  model = "gpt-5.6-sol",
+  model = "openai/gpt-5.5",
   picker = false,
   thinking = "high",
   fast = true,
+  voice = "idle",
+  camera = false,
+  modelProvider = "recent",
+  modelQuery = "",
+  draft = "",
 } = {}) {
   const isEmpty = status !== "error" && (example === "empty" || example === "suggestions");
   const transcriptMode =
@@ -1803,20 +1836,26 @@ export function agentChatWorkbenchMarkup({
       ? `<ul class="oc-agent-attachment-list" aria-label="Attached files"><li class="oc-agent-file-attachment" data-kind="file"><span class="oc-agent-file-type" aria-hidden="true">${agentIcon("file")}</span><span class="oc-agent-file-details"><strong>component-spec.md</strong><span>3.1 KB</span></span><button class="oc-agent-file-remove" type="button" aria-label="Remove component-spec.md" data-workbench-attachment-remove>${agentIcon("close")}</button></li></ul>`
       : "";
   const isBusy = status === "streaming" || status === "submitted";
-  const action = isBusy
-    ? `<button class="oc-agent-send-button" type="button" data-state="stop" aria-label="Stop response">${agentIcon("stop")}</button>`
-    : `<button class="oc-agent-send-button" type="submit" data-state="idle" aria-label="Send message">${agentIcon("arrow-up")}</button>`;
+  const action = applicationComposerPrimaryMarkup({ busy: isBusy, voice, camera });
   const composer = `<form class="oc-agent-input-bar" data-workbench-chat-form>
     <div class="oc-agent-input-container">
-      ${attachments}<label class="sr-only" for="workbench-chat-message">Message</label>
-      <textarea id="workbench-chat-message" class="oc-agent-input" rows="1" placeholder="Send a message..."></textarea>
+      ${attachments}
+      ${applicationCameraPreviewMarkup({ camera })}
+      <div class="oc-composer-dictation-status" data-workbench-composer-dictation-status hidden aria-live="polite"><span class="oc-composer-voice-bars" data-state="listening" aria-hidden="true">${Array.from({ length: 7 }, () => "<i></i>").join("")}</span><span>Listening… release to stop</span></div>
+      <label class="sr-only" for="workbench-chat-message">Message</label>
+      <textarea id="workbench-chat-message" class="oc-agent-input" rows="1" placeholder="Send a message..." data-workbench-composer-input>${escapeHtml(draft)}</textarea>
       <div class="oc-agent-input-toolbar">
         <div class="oc-agent-input-tools">
           <button class="oc-agent-attachment-button" type="button" aria-label="Attach">${agentIcon("plus")}</button>
-          <button class="oc-agent-attachment-button" type="button" aria-label="Capture screenshot">${agentIcon("camera")}</button>
-          <button class="oc-agent-attachment-button" type="button" aria-label="Dictate">${agentIcon("mic")}</button>
-          <button class="oc-agent-attachment-button" type="button" aria-label="Talk mode">${agentIcon("audio-lines")}</button>
-          ${applicationModelControlsMarkup({ model, thinking, fast, open: picker })}
+          ${applicationTalkToggleMarkup({ voice })}
+          ${applicationModelControlsMarkup({
+            model,
+            thinking,
+            fast,
+            open: picker,
+            modelProvider,
+            modelQuery,
+          })}
         </div>
         <div class="oc-agent-input-actions">${action}</div>
       </div>
@@ -1842,7 +1881,7 @@ function createToolWorkbenchDefinition(kind) {
   const expandable = !["edit", "generic"].includes(kind);
   const stateOptions =
     kind === "interactive"
-      ? bashLifecycleStates
+      ? interactiveToolLifecycleStates
       : kind === "subagent"
         ? subagentLifecycleStates
         : toolLifecycleStates;
@@ -1887,7 +1926,7 @@ function createToolWorkbenchDefinition(kind) {
       type: "toggle",
     });
   }
-  return {
+  const definition = {
     defaults,
     controls,
     markup(state) {
@@ -1897,6 +1936,35 @@ function createToolWorkbenchDefinition(kind) {
       specimen.innerHTML = toolWorkbenchMarkup({ kind, ...state });
     },
   };
+  if (kind === "interactive") {
+    definition.bind = (specimen) => bindInteractiveToolActions(specimen);
+  }
+  return definition;
+}
+
+export function bindInteractiveToolActions(
+  specimen,
+  clipboard = globalThis.navigator?.clipboard,
+) {
+  const status = specimen.querySelector("[data-workbench-tool-status]");
+  const copy = specimen.querySelector("[data-workbench-tool-copy]");
+  copy?.addEventListener("click", async () => {
+    const output = specimen.querySelector(".oc-agent-bash-output code")?.textContent ?? "";
+    try {
+      if (typeof clipboard?.writeText !== "function") {
+        throw new TypeError("Clipboard API unavailable");
+      }
+      await clipboard.writeText(output);
+      copy.setAttribute("data-state", "copied");
+      copy.setAttribute("aria-label", "Command output copied");
+      if (status) status.textContent = "Command output copied";
+    } catch {
+      copy.setAttribute("data-state", "error");
+      copy.setAttribute("aria-label", "Command output could not be copied");
+      if (status) status.textContent = "Command output could not be copied";
+    }
+  });
+  return copy ? 1 : 0;
 }
 
 function bindApplicationNavigation(specimen, state, update) {
@@ -1907,7 +1975,7 @@ function bindApplicationNavigation(specimen, state, update) {
     });
 }
 
-function bindApplicationModelControls(specimen, update) {
+function bindApplicationModelControls(specimen, state, update) {
   const options = Array.from(
     specimen.querySelectorAll("[data-workbench-application-model]"),
   );
@@ -1916,24 +1984,30 @@ function bindApplicationModelControls(specimen, update) {
   const picker = specimen.querySelector("[data-workbench-model-picker]");
   const thinking = specimen.querySelector("[data-workbench-model-thinking]");
   const fast = specimen.querySelector("[data-workbench-model-fast]");
+  const thinkingOutput = specimen.querySelector("[data-workbench-model-thinking-output]");
+  const thinkingReset = specimen.querySelector("[data-workbench-model-thinking-reset]");
   const reset = specimen.querySelector("[data-workbench-model-reset]");
+  let activeProvider = state.modelProvider ?? "recent";
 
   const applyFilters = () => {
     const query = search?.value.trim().toLowerCase() ?? "";
-    const provider =
-      providers.find((button) => button.getAttribute("aria-pressed") === "true")?.dataset
-        .workbenchModelProvider ?? "recent";
 
     for (const option of options) {
-      const matchesProvider = provider === "recent" || option.dataset.modelProvider === provider;
-      const matchesQuery = (option.textContent ?? "").toLowerCase().includes(query);
+      const selectedModel = applicationModelCatalog.find(
+        ({ value }) => value === option.dataset.workbenchApplicationModel,
+      );
+      const matchesProvider =
+        activeProvider === "recent"
+          ? selectedModel?.recentlyUsed ||
+            option.dataset.workbenchApplicationModel === state.model
+          : selectedModel?.providerId === activeProvider;
+      const matchesQuery = (option.dataset.modelSearch ?? "").includes(query);
       option.hidden = !matchesProvider || !matchesQuery;
     }
   };
 
   for (const option of options) {
     option.addEventListener("click", () => {
-      update("picker", false, { render: false });
       update("model", option.dataset.workbenchApplicationModel);
     });
   }
@@ -1943,24 +2017,100 @@ function bindApplicationModelControls(specimen, update) {
       for (const provider of providers) {
         provider.setAttribute("aria-pressed", String(provider === button));
       }
+      activeProvider = button.dataset.workbenchModelProvider;
+      update("modelProvider", activeProvider, { render: false });
       applyFilters();
     });
   }
 
-  search?.addEventListener("input", applyFilters);
-  picker?.addEventListener("toggle", () => update("picker", picker.open, { render: false }));
-  thinking?.addEventListener("click", () => {
-    const levels = applicationThinkingLevels.map(({ value }) => value).reverse();
-    const current = levels.indexOf(thinking.dataset.workbenchModelThinking);
-    update("thinking", levels[(current + 1) % levels.length]);
+  search?.addEventListener("input", () => {
+    update("modelQuery", search.value, { render: false });
+    applyFilters();
   });
-  fast?.addEventListener("change", () => update("fast", fast.checked));
+  picker?.addEventListener("toggle", () => update("picker", picker.open, { render: false }));
+  thinking?.addEventListener("input", () => {
+    const values = thinking.dataset.thinkingValues?.split(",") ?? [];
+    const value = values[Number(thinking.value)] ?? "high";
+    const label =
+      applicationThinkingLevels.find((entry) => entry.value === value)?.label ?? value;
+    thinking.style.setProperty(
+      "--oc-model-reasoning-fill",
+      `${(Number(thinking.value) / Math.max(1, values.length - 1)) * 100}%`,
+    );
+    thinking.setAttribute("aria-valuetext", label);
+    if (thinkingOutput) thinkingOutput.textContent = label;
+    update("thinking", value, { render: false });
+  });
+  thinking?.addEventListener("change", () => {
+    const values = thinking.dataset.thinkingValues?.split(",") ?? [];
+    update("thinking", values[Number(thinking.value)] ?? "high");
+  });
+  thinkingReset?.addEventListener("click", () => update("thinking", "high"));
+  fast?.addEventListener("click", () => {
+    update("fast", fast.getAttribute("aria-checked") !== "true");
+  });
   reset?.addEventListener("click", () => {
     if (reset.hasAttribute("disabled")) {
       return;
     }
-    update("picker", false, { render: false });
-    update("model", "gpt-5.6-sol");
+    update("model", "openai/gpt-5.5", { render: false });
+    update("thinking", "high", { render: false });
+    update("fast", true);
+  });
+  applyFilters();
+}
+
+export function bindApplicationComposer(specimen, state, update) {
+  const input = specimen.querySelector("[data-workbench-composer-input]");
+  const send = specimen.querySelector("[data-workbench-composer-send]");
+  const dictation = specimen.querySelector("[data-workbench-composer-dictation]");
+  const dictationStatus = specimen.querySelector("[data-workbench-composer-dictation-status]");
+  const syncPrimaryAction = () => {
+    const hasDraft = Boolean(input?.value.trim());
+    if (send) send.hidden = !hasDraft;
+    if (dictation) dictation.hidden = hasDraft;
+  };
+
+  input?.addEventListener("input", () => {
+    update("draft", input.value, { render: false });
+    syncPrimaryAction();
+  });
+  syncPrimaryAction();
+
+  specimen.querySelectorAll("[data-workbench-composer-talk]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (state.voice === "idle") {
+        update("voice", "listening");
+        return;
+      }
+      if (state.camera) update("camera", false, { render: false });
+      update("voice", "idle");
+    });
+  });
+  specimen.querySelector("[data-workbench-composer-camera]")?.addEventListener("click", () => {
+    update("camera", !state.camera);
+  });
+  const setDictationActive = (active) => {
+    dictation?.setAttribute("aria-pressed", String(active));
+    dictation?.classList.toggle("is-active", active);
+    if (dictationStatus) dictationStatus.hidden = !active;
+  };
+  dictation?.addEventListener("pointerdown", (event) => {
+    dictation.setPointerCapture?.(event.pointerId);
+    setDictationActive(true);
+  });
+  for (const eventName of ["pointerup", "pointercancel", "lostpointercapture"]) {
+    dictation?.addEventListener(eventName, () => setDictationActive(false));
+  }
+  dictation?.addEventListener("keydown", (event) => {
+    if ((event.key === " " || event.key === "Enter") && !event.repeat) {
+      setDictationActive(true);
+    }
+  });
+  dictation?.addEventListener("keyup", (event) => {
+    if (event.key === " " || event.key === "Enter") {
+      setDictationActive(false);
+    }
   });
 }
 
@@ -2045,10 +2195,15 @@ const definitions = {
     defaults: {
       dock: "right",
       status: "active",
-      model: "gpt-5.6-sol",
+      model: "openai/gpt-5.5",
       picker: false,
       thinking: "high",
       fast: true,
+      voice: "idle",
+      camera: false,
+      modelProvider: "recent",
+      modelQuery: "",
+      draft: "",
     },
     controls: [
       {
@@ -2085,6 +2240,17 @@ const definitions = {
         label: "Fast mode",
         type: "toggle",
       },
+      {
+        id: "voice",
+        label: "Talk state",
+        type: "choice",
+        options: applicationVoiceStates,
+      },
+      {
+        id: "camera",
+        label: "Camera",
+        type: "toggle",
+      },
     ],
     markup(state) {
       return workspaceApplicationMarkup({
@@ -2099,7 +2265,8 @@ const definitions = {
       });
     },
     bind(specimen, state, update) {
-      bindApplicationModelControls(specimen, update);
+      bindApplicationModelControls(specimen, state, update);
+      bindApplicationComposer(specimen, state, update);
       specimen
         .querySelector("[data-workbench-application-inspector-hide]")
         ?.addEventListener("click", () => update("dock", "hidden"));
@@ -2138,10 +2305,13 @@ const definitions = {
   "application-quick-chat": {
     defaults: {
       status: "idle",
-      model: "gpt-5.6-sol",
+      model: "openai/gpt-5.5",
       picker: false,
       thinking: "high",
       fast: true,
+      modelProvider: "recent",
+      modelQuery: "",
+      draft: "",
     },
     controls: [
       {
@@ -2177,8 +2347,12 @@ const definitions = {
     render(specimen, state) {
       specimen.innerHTML = quickChatApplicationMarkup(state);
     },
-    bind(specimen, _state, update) {
-      bindApplicationModelControls(specimen, update);
+    bind(specimen, state, update) {
+      bindApplicationModelControls(specimen, state, update);
+      bindApplicationComposer(specimen, state, update);
+      specimen
+        .querySelector("[data-workbench-quick-chat-form]")
+        ?.addEventListener("submit", (event) => event.preventDefault());
     },
   },
   "agent-chat": {
@@ -2186,10 +2360,15 @@ const definitions = {
       example: "multi-user",
       status: "ready",
       copyToolbar: false,
-      model: "gpt-5.6-sol",
+      model: "openai/gpt-5.5",
       picker: false,
       thinking: "high",
       fast: true,
+      voice: "idle",
+      camera: false,
+      modelProvider: "recent",
+      modelQuery: "",
+      draft: "",
     },
     controls: [
       {
@@ -2231,6 +2410,17 @@ const definitions = {
         type: "toggle",
         hidden: true,
       },
+      {
+        id: "voice",
+        label: "Talk state",
+        type: "choice",
+        options: applicationVoiceStates,
+      },
+      {
+        id: "camera",
+        label: "Camera",
+        type: "toggle",
+      },
     ],
     markup(state) {
       return compactIconMarkup(agentChatWorkbenchMarkup(state));
@@ -2239,13 +2429,15 @@ const definitions = {
       specimen.innerHTML = agentChatWorkbenchMarkup(state);
     },
     bind(specimen, state, update) {
-      bindApplicationModelControls(specimen, update);
+      bindApplicationModelControls(specimen, state, update);
+      bindApplicationComposer(specimen, state, update);
       const input = specimen.querySelector(".oc-agent-input");
       const status = specimen.querySelector("[data-workbench-chat-status]");
       specimen.querySelectorAll("[data-agent-suggestion-value]").forEach((button) => {
         button.addEventListener("click", () => {
           if (!input) return;
           input.value = button.dataset.agentSuggestionValue;
+          input.dispatchEvent(new Event("input"));
           input.focus();
         });
       });
@@ -2263,6 +2455,7 @@ const definitions = {
           scroller,
           status,
         });
+        update("draft", "", { render: false });
       });
       specimen.querySelector('[aria-label="Stop response"]')?.addEventListener("click", () => {
         update("status", "ready");
@@ -3171,11 +3364,13 @@ ${appSurfaceWorkbenchMarkup(state)}
   },
   "model-picker": {
     defaults: {
-      model: "gpt-5.6-sol",
+      model: "openai/gpt-5.5",
       picker: true,
       thinking: "high",
       fast: true,
       locked: false,
+      modelProvider: "recent",
+      modelQuery: "",
     },
     controls: [
       {
@@ -3212,8 +3407,8 @@ ${appSurfaceWorkbenchMarkup(state)}
     render(specimen, state) {
       specimen.innerHTML = `<div class="oc-agent-model-demo">${modelPickerWorkbenchMarkup(state)}</div>`;
     },
-    bind(specimen, _state, update) {
-      bindApplicationModelControls(specimen, update);
+    bind(specimen, state, update) {
+      bindApplicationModelControls(specimen, state, update);
     },
   },
   "mode-selector": {

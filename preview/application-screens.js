@@ -2,6 +2,14 @@ import { agentIcon } from "./agent-components.js";
 
 const openClawMarkUrl = new URL("./assets/openclaw-mark.png", import.meta.url).href;
 
+function escapeAttribute(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
 function navigationItem({ icon, label, meta = "", current = false } = {}) {
   return `<li><a class="oc-app-navigation-item" href="#"${current ? ' aria-current="page"' : ""} data-workbench-inert-link>
     <span class="oc-app-navigation-icon">${agentIcon(icon)}</span>
@@ -80,66 +88,226 @@ function statusMarkup(state, labels = {}) {
   </span>`;
 }
 
-const applicationModels = [
-  { value: "gpt-5.6-sol", label: "GPT-5.6 Sol", provider: "OpenAI", meta: "Default" },
-  { value: "gpt-5.6-terra", label: "GPT-5.6 Terra", provider: "OpenAI", meta: "Fast" },
-  { value: "claude-opus", label: "Claude Opus", provider: "Anthropic", meta: "200k" },
-  { value: "gemini-pro", label: "Gemini Pro", provider: "Google", meta: "1m" },
+export const applicationModels = [
+  {
+    value: "openai/gpt-5.5",
+    label: "GPT-5.5",
+    provider: "OpenAI",
+    providerId: "openai",
+    meta: "Default",
+    recentlyUsed: true,
+    supportsFast: true,
+  },
+  {
+    value: "openai/gpt-5.3-codex-spark",
+    label: "GPT-5.3 Codex Spark",
+    provider: "OpenAI",
+    providerId: "openai",
+    meta: "Codex",
+    recentlyUsed: true,
+    supportsFast: true,
+  },
+  {
+    value: "anthropic/claude-opus-4-8",
+    label: "Claude Opus 4.8",
+    provider: "Anthropic",
+    providerId: "anthropic",
+    meta: "200k",
+    recentlyUsed: true,
+    supportsFast: false,
+  },
+  {
+    value: "google/gemini-2.5-pro",
+    label: "Gemini 2.5 Pro",
+    provider: "Google",
+    providerId: "google",
+    meta: "1m",
+    recentlyUsed: false,
+    supportsFast: true,
+  },
+  {
+    value: "xai/grok-4",
+    label: "Grok 4",
+    provider: "xAI",
+    providerId: "xai",
+    meta: "256k",
+    recentlyUsed: false,
+    supportsFast: false,
+  },
 ];
 
+const applicationModelProviders = [
+  { id: "recent", label: "Recent", icon: "history" },
+  { id: "openai", label: "OpenAI" },
+  { id: "anthropic", label: "Anthropic" },
+  { id: "google", label: "Google" },
+  { id: "xai", label: "xAI" },
+];
+
+const applicationReasoningStops = [
+  { value: "auto", label: "Auto" },
+  { value: "low", label: "Low" },
+  { value: "medium", label: "Medium" },
+  { value: "high", label: "High" },
+  { value: "xhigh", label: "Extra high" },
+];
+
+function applicationProviderMark(provider) {
+  const marks = {
+    openai: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M22.28 9.82a5.99 5.99 0 0 0-.51-4.91 6.05 6.05 0 0 0-6.51-2.9A6.07 6.07 0 0 0 4.98 4.18a5.99 5.99 0 0 0-4 2.9 6.05 6.05 0 0 0 .75 7.1 5.98 5.98 0 0 0 .51 4.91 6.05 6.05 0 0 0 6.51 2.9A5.98 5.98 0 0 0 13.26 24a6.06 6.06 0 0 0 5.77-4.2 5.99 5.99 0 0 0 4-2.9 6.06 6.06 0 0 0-.75-7.08ZM12 8.86l2.61 1.5v3L12 14.86l-2.6-1.5v-3L12 8.86Z"/></svg>`,
+    anthropic: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10.45 3h3.1L20 21h-3.15l-1.48-4.45H8.63L7.15 21H4l6.45-18Zm-.92 10.78h4.94L12 6.33l-2.47 7.45Z"/></svg>`,
+    google: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>`,
+    xai: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.47 8.78 16.51 23h-4.46L2 8.78h4.47Zm-.01 7.9L8.7 19.84 6.47 23H2l4.46-6.32ZM22 2.58V23h-3.66V7.76L22 2.58ZM22 1l-9.95 14.1-2.24-3.17L17.53 1H22Z"/></svg>`,
+  };
+  return marks[provider] ?? agentIcon("box");
+}
+
+function applicationProviderIcon(provider, className = "") {
+  return `<span class="oc-model-provider-mark${className ? ` ${className}` : ""}" data-provider="${provider}" aria-hidden="true">${applicationProviderMark(provider)}</span>`;
+}
+
 export function applicationModelControlsMarkup({
-  model = "gpt-5.6-sol",
+  model = "openai/gpt-5.5",
   thinking = "high",
   fast = true,
   open = false,
   locked = false,
+  modelProvider = "recent",
+  modelQuery = "",
 } = {}) {
   const selected = applicationModels.find((entry) => entry.value === model) ?? applicationModels[0];
-  const trigger = `<span class="oc-model-provider-mark">${agentIcon("box")}</span>
-      <span><strong>${selected.label}</strong><small>${selected.provider} · ${selected.meta}</small></span>
+  const selectedProvider = applicationModelProviders.some(({ id }) => id === modelProvider)
+    ? modelProvider
+    : "recent";
+  const normalizedQuery = modelQuery.trim().toLowerCase();
+  const selectedThinking =
+    applicationReasoningStops.find((entry) => entry.value === thinking) ??
+    applicationReasoningStops[0];
+  const thinkingIndex = applicationReasoningStops.indexOf(selectedThinking);
+  const fastSupported = selected.supportsFast;
+  const fastActive = fastSupported && fast;
+  const trigger = `${applicationProviderIcon(selected.providerId)}
+      <span><strong>${selected.label}</strong><small>${selectedThinking.label}${fastActive ? " · Fast" : ""}</small></span>
       ${agentIcon("chevron")}`;
   const options = applicationModels
-    .map(
-      (entry) => `<button class="oc-model-option" type="button" aria-pressed="${entry.value === selected.value}" data-workbench-application-model="${entry.value}" data-model-provider="${entry.provider}"${locked ? " disabled" : ""}>
+    .map((entry) => {
+      const matchesProvider =
+        selectedProvider === "recent"
+          ? entry.recentlyUsed || entry.value === selected.value
+          : entry.providerId === selectedProvider;
+      const searchText = `${entry.label} ${entry.provider} ${entry.meta}`.toLowerCase();
+      const matchesQuery = searchText.includes(normalizedQuery);
+      return `<button class="oc-model-option" type="button" aria-pressed="${entry.value === selected.value}" data-workbench-application-model="${entry.value}" data-model-provider="${entry.provider}" data-model-search="${escapeAttribute(searchText)}"${!matchesProvider || !matchesQuery ? " hidden" : ""}${locked ? " disabled" : ""}>
+  ${applicationProviderIcon(entry.providerId, "oc-model-option-provider")}
   <span class="oc-model-option-copy"><strong>${entry.label}</strong><small>${entry.provider}</small></span>
   <span class="oc-model-option-meta">${entry.meta}</span>
   ${entry.value === selected.value ? `<span class="oc-model-check" aria-hidden="true">${agentIcon("check")}</span>` : ""}
-</button>`,
+</button>`;
+    })
+    .join("");
+  const providers = applicationModelProviders
+    .map(({ id, label, icon }) => {
+      const mark = icon ? agentIcon(icon) : applicationProviderIcon(id);
+      return `<button type="button" aria-pressed="${id === selectedProvider}" data-workbench-model-provider="${id}">${mark}<span>${label}</span></button>`;
+    })
+    .join("");
+  const reasoningDots = applicationReasoningStops
+    .map(
+      ({ value }, index) =>
+        `<span class="oc-model-reasoning-dot${index === 3 ? " oc-model-reasoning-dot-default" : ""}" data-stop="${value}"></span>`,
     )
     .join("");
-  const settings = `<div class="oc-model-menu-settings"${locked ? "" : ' role="group" aria-label="Model settings"'}>
-    <button class="oc-model-control" type="button" aria-label="Reasoning level: ${thinking}" data-workbench-model-thinking="${thinking}"${locked ? " disabled" : ""}>
-      ${agentIcon("brain")}<span>Thinking</span><strong>${thinking}</strong>${agentIcon("chevron")}
-    </button>
-    <label class="oc-fast-mode"><input type="checkbox" data-workbench-model-fast${fast ? " checked" : ""}${locked ? " disabled" : ""} /><span>${agentIcon("zap")} Fast</span></label>
-  </div>`;
+  const settings = `<section class="oc-model-menu-settings" aria-label="Model settings">
+    <div class="oc-model-setting-row">
+      <div class="oc-model-setting-heading"><span>${agentIcon("brain")} Reasoning</span><output data-workbench-model-thinking-output>${selectedThinking.label}</output></div>
+      <div class="oc-model-reasoning-control">
+        <span class="oc-model-reasoning-dots" aria-hidden="true">${reasoningDots}</span>
+        <input class="oc-model-reasoning-range" type="range" min="0" max="${applicationReasoningStops.length - 1}" step="1" value="${thinkingIndex}" style="--oc-model-reasoning-fill:${(thinkingIndex / (applicationReasoningStops.length - 1)) * 100}%" data-workbench-model-thinking data-thinking-values="${applicationReasoningStops.map(({ value }) => value).join(",")}" aria-label="Reasoning level" aria-valuetext="${selectedThinking.label}"${locked ? " disabled" : ""} />
+        <button class="oc-model-setting-reset" type="button" aria-label="Reset reasoning to High" data-workbench-model-thinking-reset${thinking === "high" || locked ? " disabled" : ""}>${agentIcon("rotate-ccw")}</button>
+      </div>
+    </div>
+    <div class="oc-model-setting-row oc-model-speed-row">
+      <div class="oc-model-setting-heading"><span>${agentIcon("zap")} Response speed</span><small>${fastSupported ? "Uses more capacity" : "Unavailable for this model"}</small></div>
+      <button class="oc-model-speed-toggle${fastActive ? " is-active" : ""}" type="button" role="switch" aria-checked="${fastActive}" aria-label="Fast responses: ${fastActive ? "On" : "Off"}" data-workbench-model-fast${!fastSupported || locked ? " disabled" : ""}><span aria-hidden="true"></span><strong>${fastActive ? "Fast" : "Standard"}</strong></button>
+    </div>
+  </section>`;
   return `<div class="oc-model-controls" data-locked="${locked}">
   ${
     locked
-      ? `<span class="oc-model-picker"><button class="oc-model-trigger" type="button" aria-label="Selected model: ${selected.label} by ${selected.provider}" disabled>${trigger}</button></span>`
+      ? `<span class="oc-model-picker"><button class="oc-model-trigger" type="button" aria-label="Selected model: ${selected.label} by ${selected.provider}; reasoning ${selectedThinking.label}" disabled>${trigger}</button></span>`
       : `<details class="oc-model-picker" data-workbench-model-picker${open ? " open" : ""}>
-    <summary class="oc-model-trigger" aria-label="Selected model: ${selected.label} by ${selected.provider}">${trigger}</summary>
+    <summary class="oc-model-trigger" aria-label="Selected model: ${selected.label} by ${selected.provider}; reasoning ${selectedThinking.label}${fastActive ? "; Fast responses on" : ""}">${trigger}</summary>
     <div class="oc-model-menu">
       <label class="oc-model-search">
         <span class="sr-only">Search models</span>
         ${agentIcon("search")}
-        <input type="search" placeholder="Search models" data-workbench-model-search />
+        <input type="search" placeholder="Search models" value="${escapeAttribute(modelQuery)}" data-workbench-model-search />
       </label>
       <div class="oc-model-menu-layout">
-        <nav class="oc-model-providers" aria-label="Model providers">
-          <button type="button" aria-pressed="true" data-workbench-model-provider="recent">Recent</button>
-          <button type="button" aria-pressed="false" data-workbench-model-provider="OpenAI">OpenAI</button>
-          <button type="button" aria-pressed="false" data-workbench-model-provider="Anthropic">Anthropic</button>
-          <button type="button" aria-pressed="false" data-workbench-model-provider="Google">Google</button>
-        </nav>
+        <nav class="oc-model-providers" aria-label="Model providers">${providers}</nav>
         <div class="oc-model-options" role="group" aria-label="Models">${options}</div>
       </div>
-      <footer class="oc-model-menu-footer">${settings}<button type="button" data-workbench-model-reset${locked ? " disabled" : ""}>Reset to GPT-5.6 Sol</button></footer>
+      ${settings}
+      <footer class="oc-model-menu-footer"><span>Session override</span><button type="button" data-workbench-model-reset${selected.value === applicationModels[0].value && thinking === "high" && fast ? " disabled" : ""}>Use defaults</button></footer>
     </div>
   </details>`
   }
-  ${locked ? settings : ""}
 </div>`;
+}
+
+function applicationVoiceActivityMarkup(state) {
+  return `<span class="oc-composer-voice-bars" data-state="${state}" aria-hidden="true">${Array.from(
+    { length: 7 },
+    () => "<i></i>",
+  ).join("")}</span>`;
+}
+
+export function applicationTalkToggleMarkup({ voice = "idle" } = {}) {
+  const active = voice !== "idle";
+  return `<button class="oc-composer-tool${active ? " is-active" : ""}" type="button" aria-label="${active ? "Stop talk mode" : "Start talk mode"}" aria-pressed="${active}" data-workbench-composer-talk data-voice-state="${voice}">${agentIcon(active ? "audio-waveform" : "audio-lines")}</button>`;
+}
+
+export function applicationCameraPreviewMarkup({ camera = false } = {}) {
+  if (!camera) return "";
+  return `<div class="oc-composer-camera-preview" data-workbench-camera-preview>
+    <div><span class="oc-composer-camera-person" aria-hidden="true">${agentIcon("user")}</span><span>Camera preview</span></div>
+    <button type="button" aria-label="Switch camera" data-workbench-camera-switch>${agentIcon("switch-camera")}</button>
+  </div>`;
+}
+
+export function applicationComposerPrimaryMarkup({
+  busy = false,
+  voice = "idle",
+  camera = false,
+} = {}) {
+  if (busy) {
+    return `<button class="oc-composer-primary-button is-stop" type="button" aria-label="Stop response">${agentIcon("square")}</button>`;
+  }
+  const voiceActive = voice !== "idle";
+  if (voiceActive) {
+    const voiceLabel =
+      {
+        connecting: "Connecting",
+        listening: "Listening",
+        thinking: "Thinking",
+        error: "Voice unavailable",
+      }[voice] ?? "Listening";
+    return `<div class="oc-composer-primary-actions" data-voice-state="${voice}">
+      <button class="oc-composer-voice-live${voice === "error" ? " is-error" : ""}" type="button" aria-label="Stop talk mode" data-workbench-composer-talk data-voice-state="${voice}">
+        ${voice === "error" ? agentIcon("triangle-alert") : applicationVoiceActivityMarkup(voice)}
+        <span>${voiceLabel}</span>${agentIcon("square")}
+      </button>
+      ${
+        voice === "error"
+          ? ""
+          : `<button class="oc-composer-camera-toggle${camera ? " is-active" : ""}" type="button" aria-label="${camera ? "Turn camera off" : "Turn camera on"}" aria-pressed="${camera}" data-workbench-composer-camera>${agentIcon(camera ? "camera-off" : "camera")}</button>`
+      }
+    </div>`;
+  }
+  return `<div class="oc-composer-primary-actions">
+    <button class="oc-composer-primary-button" type="submit" aria-label="Send message" data-workbench-composer-send hidden>${agentIcon("arrow-up")}</button>
+    <button class="oc-composer-primary-button is-dictation" type="button" aria-label="Hold to dictate" aria-pressed="false" data-workbench-composer-dictation>${agentIcon("mic")}</button>
+  </div>`;
 }
 
 function settingsRow({ title, description, control, stacked = false } = {}) {
@@ -359,7 +527,7 @@ function channelDetail(state) {
       <header><span class="oc-detail-section-icon">${agentIcon("activity")}</span><div><h3 id="channel-activity">Recent delivery</h3><p>Live transport events from the gateway.</p></div><button class="oc-action oc-action-ghost" type="button">View logs</button></header>
       <ol class="oc-activity-list">
         ${activityItem({ icon: "arrow-down-left", title: "Mention received", detail: "#release · maintainer", time: "12s", tone: "success" })}
-        ${activityItem({ icon: "sparkles", title: "Agent response started", detail: "Personal · GPT-5.6", time: "11s", tone: "info" })}
+        ${activityItem({ icon: "sparkles", title: "Agent response started", detail: "Personal · GPT-5.5", time: "11s", tone: "info" })}
         ${activityItem({ icon: "check", title: "Message delivered", detail: "1,482 characters · 3 chunks", time: "7s", tone: "success" })}
         ${activityItem({ icon: "heart-pulse", title: "Health check", detail: "Gateway round trip 42 ms", time: "2m" })}
       </ol>
@@ -564,10 +732,15 @@ function workspaceConversation(
   {
     dock = "right",
     inspector = true,
-    model = "gpt-5.6-sol",
+    model = "openai/gpt-5.5",
     picker = false,
     thinking = "high",
     fast = true,
+    voice = "idle",
+    camera = false,
+    modelProvider = "recent",
+    modelQuery = "",
+    draft = "",
   } = {},
 ) {
   const inspectorVisible = inspector && dock !== "hidden";
@@ -612,19 +785,26 @@ function workspaceConversation(
   </div>
   <footer class="oc-workspace-composer">
     <div class="oc-workspace-compose-box">
+      ${applicationCameraPreviewMarkup({ camera })}
+      <div class="oc-composer-dictation-status" data-workbench-composer-dictation-status hidden aria-live="polite">${applicationVoiceActivityMarkup("listening")}<span>Listening… release to stop</span></div>
       <label class="sr-only" for="workspace-message">Message</label>
-      <textarea id="workspace-message" rows="1" placeholder="Message OpenClaw"></textarea>
+      <textarea id="workspace-message" rows="1" placeholder="Message OpenClaw" data-workbench-composer-input>${escapeAttribute(draft)}</textarea>
       <div class="oc-workspace-compose-toolbar">
         <div>
           <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Attach file">${agentIcon("paperclip")}</button>
-          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Capture screenshot">${agentIcon("camera")}</button>
-          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Dictate">${agentIcon("mic")}</button>
-          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Talk mode">${agentIcon("audio-lines")}</button>
-          ${applicationModelControlsMarkup({ model, thinking, fast, open: picker })}
+          ${applicationTalkToggleMarkup({ voice })}
+          ${applicationModelControlsMarkup({
+            model,
+            thinking,
+            fast,
+            open: picker,
+            modelProvider,
+            modelQuery,
+          })}
         </div>
         <div class="oc-workspace-compose-actions">
           <span class="oc-context-usage" aria-label="Context usage"><span style="--oc-context-used: 41%"></span><small>41%</small></span>
-          <button class="oc-action oc-action-icon oc-action-primary" type="button" aria-label="${status === "active" ? "Stop response" : "Send message"}">${agentIcon(status === "active" ? "square" : "arrow-up")}</button>
+          ${applicationComposerPrimaryMarkup({ busy: status === "active", voice, camera })}
         </div>
       </div>
     </div>
@@ -643,7 +823,7 @@ function workspaceInspector(status) {
       <header><h3>Run</h3>${statusMarkup(status)}</header>
       <dl class="oc-inspector-facts">
         <div><dt>Mode</dt><dd>Agent</dd></div>
-        <div><dt>Model</dt><dd>GPT-5.6 Sol</dd></div>
+        <div><dt>Model</dt><dd>GPT-5.5</dd></div>
         <div><dt>Reasoning</dt><dd>High</dd></div>
         <div><dt>Started</dt><dd>18m ago</dd></div>
       </dl>
@@ -677,16 +857,33 @@ export function workspaceApplicationMarkup({
   dock = "right",
   inspector = true,
   status = "active",
-  model = "gpt-5.6-sol",
+  model = "openai/gpt-5.5",
   picker = false,
   thinking = "high",
   fast = true,
+  voice = "idle",
+  camera = false,
+  modelProvider = "recent",
+  modelQuery = "",
+  draft = "",
 } = {}) {
   const showInspector = inspector && dock !== "hidden";
   return `<div class="oc-chat-shell" data-dock="${dock}" data-inspector="${showInspector}">
   <div class="oc-workspace-grid">
     ${workspaceSessions(status)}
-    ${workspaceConversation(status, { dock, inspector, model, picker, thinking, fast })}
+    ${workspaceConversation(status, {
+      dock,
+      inspector,
+      model,
+      picker,
+      thinking,
+      fast,
+      voice,
+      camera,
+      modelProvider,
+      modelQuery,
+      draft,
+    })}
     ${showInspector ? workspaceInspector(status) : ""}
   </div>
 </div>`;
@@ -755,7 +952,7 @@ export function sessionsApplicationMarkup({
                     sessionsTableRow({
                       title: "Carapace parity",
                       agent: "Personal · openclaw/carapace",
-                      model: "GPT-5.6 Sol",
+                      model: "GPT-5.5",
                       updated: "now",
                       status: "active",
                       selected: true,
@@ -770,14 +967,14 @@ export function sessionsApplicationMarkup({
                     sessionsTableRow({
                       title: "CI queue health",
                       agent: "Operations · maintainers",
-                      model: "GPT-5.6 Terra",
+                      model: "Claude Opus 4.8",
                       updated: "34m",
                       status: "idle",
                     }),
                     sessionsTableRow({
                       title: "Provider auth repro",
                       agent: "Debug · openclaw/openclaw",
-                      model: "GPT-5.6 Sol",
+                      model: "GPT-5.5",
                       updated: "2h",
                       status: "error",
                     }),
@@ -794,55 +991,54 @@ export function sessionsApplicationMarkup({
 
 export function quickChatApplicationMarkup({
   status = "idle",
-  model = "gpt-5.6-sol",
+  model = "openai/gpt-5.5",
   picker = false,
   thinking = "high",
   fast = true,
+  modelProvider = "recent",
+  modelQuery = "",
+  draft = "",
 } = {}) {
   const running = status === "active";
   const failed = status === "error";
   const reply = running
     ? "Reviewing the captured page and current workspace…"
-    : failed
-      ? "Quick Chat could not reach the gateway. Check the connection and try again."
-      : "Ready. I can use the current app, selected text, or a screenshot as context.";
-  const actionLabel = failed ? "Retry connection" : running ? "Stop response" : "Send message";
+    : "Quick Chat could not reach the gateway. Check the connection and try again.";
+  const primaryAction = failed
+    ? `<button class="oc-quick-chat-send is-error" type="button" aria-label="Retry connection">${agentIcon("refresh-cw")}</button>`
+    : `<button class="oc-quick-chat-send" type="${running ? "button" : "submit"}" aria-label="${running ? "Stop response" : "Send message"}">${agentIcon(running ? "square" : "arrow-up-circle")}</button>`;
   return `<div class="oc-quick-chat-stage">
   <section class="oc-quick-chat" data-state="${status}" aria-label="Quick Chat">
-    <header class="oc-quick-chat-header">
-      <div><span class="oc-quick-chat-mark"><img src="${openClawMarkUrl}" alt="" /></span><strong>Quick Chat</strong></div>
-      <div class="oc-pane-actions">
-        <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Open full chat">${agentIcon("maximize-2")}</button>
-        <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Close Quick Chat">${agentIcon("x")}</button>
-      </div>
-    </header>
+    <form class="oc-quick-chat-input-row" data-workbench-quick-chat-form>
+      <button class="oc-quick-chat-agent" type="button" aria-label="Select agent"><img src="${openClawMarkUrl}" alt="" /></button>
+      ${applicationModelControlsMarkup({
+        model,
+        thinking,
+        fast,
+        open: picker,
+        modelProvider,
+        modelQuery,
+      })}
+      <label class="sr-only" for="quick-chat-message">Message</label>
+      <textarea id="quick-chat-message" rows="1" placeholder="Message OpenClaw" data-workbench-composer-input>${escapeAttribute(draft)}</textarea>
+      <button class="oc-quick-chat-action" type="button" aria-label="Continue a recent conversation" data-compact-hide>${agentIcon("history")}</button>
+      <button class="oc-quick-chat-action" type="button" aria-label="Dictate">${agentIcon("mic")}</button>
+      <button class="oc-quick-chat-action is-optional" type="button" aria-label="Attach text from current app">${agentIcon("file-text")}</button>
+      <button class="oc-quick-chat-action is-optional" type="button" aria-label="Capture screenshot">${agentIcon("camera")}</button>
+      ${primaryAction}
+    </form>
     <div class="oc-quick-chat-context">
-      <span>${agentIcon("monitor")} Safari</span>
-      <span>${agentIcon("camera")} Screenshot attached</span>
+      <span>${agentIcon("file-text")} Safari — OpenClaw docs (842 chars)</span>
       <button type="button" aria-label="Clear captured context">${agentIcon("x")}</button>
     </div>
-    <div class="oc-quick-chat-reply">
+    ${
+      running || failed
+        ? `<div class="oc-quick-chat-reply">
       <span class="oc-quick-chat-agent"><img src="${openClawMarkUrl}" alt="" /></span>
       <p>${reply}</p>
-    </div>
-    <div class="oc-quick-chat-composer" role="group" aria-label="Message composer">
-      <label class="sr-only" for="quick-chat-message">Message</label>
-      <textarea id="quick-chat-message" rows="2" placeholder="Ask OpenClaw"></textarea>
-      <div class="oc-quick-chat-toolbar">
-        <div class="oc-quick-chat-tools">
-          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Attach">${agentIcon("paperclip")}</button>
-          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Capture screenshot">${agentIcon("camera")}</button>
-          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Dictate">${agentIcon("mic")}</button>
-          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Talk mode">${agentIcon("audio-lines")}</button>
-          ${applicationModelControlsMarkup({ model, thinking, fast, open: picker })}
-        </div>
-        <button class="oc-action oc-action-icon ${failed ? "oc-action-secondary" : "oc-action-primary"}" type="button" aria-label="${actionLabel}">${agentIcon(failed ? "refresh-cw" : running ? "square" : "arrow-up")}</button>
-      </div>
-    </div>
-    <footer class="oc-quick-chat-footer">
-      <span>${agentIcon("shield-check")} Screen context stays local until sent</span>
-      <kbd>⌘ ↵</kbd>
-    </footer>
+    </div>`
+        : ""
+    }
   </section>
 </div>`;
 }
