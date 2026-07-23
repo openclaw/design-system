@@ -80,23 +80,62 @@ function statusMarkup(state, labels = {}) {
   </span>`;
 }
 
-function applicationToolbar({ label, detail = "", state = "ready" } = {}) {
-  return `<header class="oc-app-toolbar">
-  <div class="oc-app-toolbar-context">
-    <span class="oc-app-toolbar-label">${label}</span>
-    ${detail ? `<span class="oc-app-toolbar-divider" aria-hidden="true"></span><span class="oc-app-toolbar-detail">${detail}</span>` : ""}
-  </div>
-  <button class="oc-app-command" type="button">
-    ${agentIcon("search")}
-    <span>Search or run a command</span>
-    <kbd>⌘ K</kbd>
+const applicationModels = [
+  { value: "gpt-5.6-sol", label: "GPT-5.6 Sol", provider: "OpenAI", meta: "Default" },
+  { value: "gpt-5.6-terra", label: "GPT-5.6 Terra", provider: "OpenAI", meta: "Fast" },
+  { value: "claude-opus", label: "Claude Opus", provider: "Anthropic", meta: "200k" },
+  { value: "gemini-pro", label: "Gemini Pro", provider: "Google", meta: "1m" },
+];
+
+export function applicationModelControlsMarkup({
+  model = "gpt-5.6-sol",
+  thinking = "high",
+  fast = true,
+  open = false,
+  locked = false,
+} = {}) {
+  const selected = applicationModels.find((entry) => entry.value === model) ?? applicationModels[0];
+  const trigger = `<span class="oc-model-provider-mark">${agentIcon("box")}</span>
+      <span><strong>${selected.label}</strong><small>${selected.provider}</small></span>
+      ${agentIcon("chevron")}`;
+  const options = applicationModels
+    .map(
+      (entry) => `<button class="oc-model-option" type="button" aria-pressed="${entry.value === selected.value}" data-workbench-application-model="${entry.value}" data-model-provider="${entry.provider}"${locked ? " disabled" : ""}>
+  <span class="oc-model-option-copy"><strong>${entry.label}</strong><small>${entry.provider}</small></span>
+  <span class="oc-model-option-meta">${entry.meta}</span>
+  ${entry.value === selected.value ? `<span class="oc-model-check" aria-hidden="true">${agentIcon("check")}</span>` : ""}
+</button>`,
+    )
+    .join("");
+  return `<div class="oc-model-controls" data-locked="${locked}">
+  ${
+    locked
+      ? `<span class="oc-model-picker"><button class="oc-model-trigger" type="button" aria-label="Selected model: ${selected.label} by ${selected.provider}" disabled>${trigger}</button></span>`
+      : `<details class="oc-model-picker" data-workbench-model-picker${open ? " open" : ""}>
+    <summary class="oc-model-trigger" aria-label="Selected model: ${selected.label} by ${selected.provider}">${trigger}</summary>
+    <div class="oc-model-menu">
+      <label class="oc-model-search">
+        <span class="sr-only">Search models</span>
+        ${agentIcon("search")}
+        <input type="search" placeholder="Search models" data-workbench-model-search />
+      </label>
+      <div class="oc-model-menu-layout">
+        <nav class="oc-model-providers" aria-label="Model providers">
+          <button type="button" aria-pressed="true" data-workbench-model-provider="recent">Recent</button>
+          <button type="button" aria-pressed="false" data-workbench-model-provider="OpenAI">OpenAI</button>
+          <button type="button" aria-pressed="false" data-workbench-model-provider="Anthropic">Anthropic</button>
+          <button type="button" aria-pressed="false" data-workbench-model-provider="Google">Google</button>
+        </nav>
+        <div class="oc-model-options" role="group" aria-label="Models">${options}</div>
+      </div>
+    </div>
+  </details>`
+  }
+  <button class="oc-model-control" type="button" aria-label="Reasoning level: ${thinking}" data-workbench-model-thinking="${thinking}"${locked ? " disabled" : ""}>
+    ${agentIcon("brain")}<span>Thinking</span><strong>${thinking}</strong>${agentIcon("chevron")}
   </button>
-  <div class="oc-app-toolbar-actions">
-    ${statusMarkup(state)}
-    <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Notifications">${agentIcon("bell")}</button>
-    <button class="oc-app-profile" type="button" aria-label="Open account menu">P</button>
-  </div>
-</header>`;
+  <label class="oc-fast-mode"><input type="checkbox" data-workbench-model-fast${fast ? " checked" : ""}${locked ? " disabled" : ""} /><span>${agentIcon("zap")} Fast</span></label>
+</div>`;
 }
 
 function settingsRow({ title, description, control, stacked = false } = {}) {
@@ -162,123 +201,101 @@ function settingsNavigation(state) {
 
 function gatewayIdentity(state) {
   const offline = state === "offline";
-  return `<section class="oc-identity-panel" aria-labelledby="settings-gateway-identity">
-  <div class="oc-identity-mark">${agentIcon(offline ? "unplug" : "radio-tower")}</div>
-  <div class="oc-identity-copy">
-    <span class="oc-identity-kicker">Active gateway</span>
-    <h2 id="settings-gateway-identity">Local OpenClaw</h2>
-    <p>${offline ? "Last connected 4 minutes ago" : "Listening on this Mac · 12 ms"}</p>
-  </div>
-  <div class="oc-identity-meta">
-    ${statusMarkup(state, { ready: "Connected", offline: "Reconnect required" })}
-    <button class="oc-action oc-action-secondary" type="button">${offline ? "Reconnect" : "Open details"}</button>
-  </div>
-</section>`;
-}
-
-export function settingsApplicationMarkup({
-  navigation = "expanded",
-  density = "comfortable",
-  state = "ready",
-} = {}) {
-  const offline = state === "offline";
-  return `<div class="oc-app-frame" data-navigation="${navigation}">
-  ${applicationNavigation({ current: "Settings", navigation, state })}
-  <main class="oc-app-main">
-    ${applicationToolbar({ label: "Settings", detail: "Personal workspace", state })}
-    <div class="oc-app-content">
-      <div class="oc-settings-shell" data-density="${density}">
-        ${settingsNavigation(state)}
-        <section class="oc-settings-detail" aria-labelledby="settings-general">
-          <header class="oc-detail-header">
-            <div>
-              <p class="oc-detail-kicker">Application</p>
-              <h2 id="settings-general">General</h2>
-              <p>Control how OpenClaw starts, connects, and behaves on this device.</p>
-            </div>
-            <button class="oc-action oc-action-ghost" type="button">Restore defaults</button>
-          </header>
-          <div class="oc-settings-detail-scroll">
-            ${offline ? `<div class="oc-banner oc-banner-error" role="alert"><span class="oc-banner-indicator" aria-hidden="true"></span><div class="oc-banner-content"><strong class="oc-banner-title">Gateway unavailable</strong><p>Local preferences remain editable. Gateway-backed changes will sync after reconnecting.</p></div><button class="oc-action oc-action-secondary" type="button">Retry</button></div>` : ""}
-            ${gatewayIdentity(state)}
-            <section class="oc-settings-section" aria-labelledby="settings-startup">
-              <header class="oc-settings-section-header">
-                <div class="oc-settings-section-heading">
-                  <h3 class="oc-settings-section-title" id="settings-startup">Startup and presence</h3>
-                  <p class="oc-settings-section-description">Keep the local runtime available without turning the app into background noise.</p>
-                </div>
-              </header>
-              <div class="oc-settings-group">
-                ${settingsRow({
-                  title: "Launch gateway at login",
-                  description: "Start the local runtime after signing in to this Mac.",
-                  control:
-                    '<label class="oc-switch-label"><span class="sr-only">Launch gateway at login</span><input class="oc-switch" type="checkbox" role="switch" checked /></label>',
-                })}
-                ${settingsRow({
-                  title: "Show in menu bar",
-                  description: "Keep connection state and session shortcuts one click away.",
-                  control:
-                    '<label class="oc-switch-label"><span class="sr-only">Show in menu bar</span><input class="oc-switch" type="checkbox" role="switch" checked /></label>',
-                })}
-                ${settingsRow({
-                  title: "Update channel",
-                  description: "Receive stable releases or opt into earlier builds.",
-                  control:
-                    '<span class="oc-select-wrap"><select class="oc-select" aria-label="Update channel"><option>Stable</option><option>Beta</option><option>Nightly</option></select></span>',
-                })}
-              </div>
-            </section>
-            <section class="oc-settings-section" aria-labelledby="settings-interface">
-              <header class="oc-settings-section-header">
-                <div class="oc-settings-section-heading">
-                  <h3 class="oc-settings-section-title" id="settings-interface">Interface</h3>
-                  <p class="oc-settings-section-description">Use the same semantic roles across native and browser surfaces.</p>
-                </div>
-              </header>
-              <div class="oc-settings-group">
-                ${settingsRow({
-                  title: "Theme",
-                  description: "Follow the system or keep a fixed appearance.",
-                  control:
-                    '<div class="oc-segmented" role="group" aria-label="Theme"><button class="oc-segmented-item" type="button" aria-pressed="true">System</button><button class="oc-segmented-item" type="button" aria-pressed="false">Light</button><button class="oc-segmented-item" type="button" aria-pressed="false">Dark</button></div>',
-                })}
-                ${settingsRow({
-                  title: "Interface density",
-                  description: "Tune information density without reducing control targets.",
-                  control: `<div class="oc-segmented" role="group" aria-label="Interface density"><button class="oc-segmented-item" type="button" aria-pressed="${density === "comfortable"}">Comfortable</button><button class="oc-segmented-item" type="button" aria-pressed="${density === "compact"}">Compact</button></div>`,
-                })}
-              </div>
-            </section>
-            <section class="oc-settings-section" aria-labelledby="settings-defaults">
-              <header class="oc-settings-section-header">
-                <div class="oc-settings-section-heading">
-                  <h3 class="oc-settings-section-title" id="settings-defaults">Session defaults</h3>
-                  <p class="oc-settings-section-description">New sessions inherit these values and remain independently editable.</p>
-                </div>
-              </header>
-              <div class="oc-settings-group">
-                ${settingsRow({
-                  title: "Default workspace",
-                  description: "The working directory used when a session has no explicit project.",
-                  stacked: true,
-                  control:
-                    '<div class="oc-field"><label class="oc-field-label" for="settings-workspace">Workspace</label><input class="oc-input" id="settings-workspace" value="~/Projects/openclaw" /></div>',
-                })}
-              </div>
-            </section>
-          </div>
-        </section>
-      </div>
-    </div>
-  </main>
+  return `<div class="oc-settings-group oc-settings-gateway">
+  ${settingsRow({
+    title: "Local OpenClaw",
+    description: offline ? "Last connected 4 minutes ago." : "Listening on this Mac · 12 ms.",
+    control: `<div class="oc-settings-inline-actions">${statusMarkup(state, {
+      ready: "Connected",
+      offline: "Offline",
+    })}<button class="oc-action oc-action-ghost" type="button">${offline ? "Reconnect" : "Details"}</button></div>`,
+  })}
 </div>`;
 }
 
-function summaryMetric({ icon, label, value, detail, tone = "neutral" } = {}) {
-  return `<div class="oc-summary-metric" data-tone="${tone}">
-  <span class="oc-summary-metric-icon">${agentIcon(icon)}</span>
-  <span class="oc-summary-metric-copy"><small>${label}</small><strong>${value}</strong><span>${detail}</span></span>
+export function settingsApplicationMarkup({
+  density = "compact",
+  state = "ready",
+} = {}) {
+  const offline = state === "offline";
+  return `<div class="oc-settings-shell" data-density="${density}">
+  ${settingsNavigation(state)}
+  <main class="oc-settings-detail" aria-labelledby="settings-general">
+    <header class="oc-detail-header">
+      <div>
+        <h1 id="settings-general">General</h1>
+        <p>Startup, appearance, and defaults for this device.</p>
+      </div>
+      <button class="oc-action oc-action-ghost" type="button">Restore defaults</button>
+    </header>
+    <div class="oc-settings-detail-scroll">
+      ${offline ? `<div class="oc-banner oc-banner-error" role="alert"><span class="oc-banner-indicator" aria-hidden="true"></span><div class="oc-banner-content"><strong class="oc-banner-title">Gateway unavailable</strong><p>Gateway-backed changes will sync after reconnecting.</p></div><button class="oc-action oc-action-secondary" type="button">Retry</button></div>` : ""}
+      ${gatewayIdentity(state)}
+      <section class="oc-settings-section" aria-labelledby="settings-startup">
+        <header class="oc-settings-section-header">
+          <div class="oc-settings-section-heading">
+            <h2 class="oc-settings-section-title" id="settings-startup">Startup</h2>
+          </div>
+        </header>
+        <div class="oc-settings-group">
+          ${settingsRow({
+            title: "Launch gateway at login",
+            description: "Start the local runtime when you sign in.",
+            control:
+              '<label class="oc-switch-label"><span class="sr-only">Launch gateway at login</span><input class="oc-switch" type="checkbox" role="switch" checked /></label>',
+          })}
+          ${settingsRow({
+            title: "Show in menu bar",
+            description: "Keep connection state and session shortcuts nearby.",
+            control:
+              '<label class="oc-switch-label"><span class="sr-only">Show in menu bar</span><input class="oc-switch" type="checkbox" role="switch" checked /></label>',
+          })}
+          ${settingsRow({
+            title: "Update channel",
+            description: "Choose stable or prerelease builds.",
+            control:
+              '<span class="oc-select-wrap"><select class="oc-select" aria-label="Update channel"><option>Stable</option><option>Beta</option><option>Nightly</option></select></span>',
+          })}
+        </div>
+      </section>
+      <section class="oc-settings-section" aria-labelledby="settings-interface">
+        <header class="oc-settings-section-header">
+          <div class="oc-settings-section-heading">
+            <h2 class="oc-settings-section-title" id="settings-interface">Interface</h2>
+          </div>
+        </header>
+        <div class="oc-settings-group">
+          ${settingsRow({
+            title: "Theme",
+            description: "Follow the system or use a fixed appearance.",
+            control:
+              '<div class="oc-segmented" role="group" aria-label="Theme"><button class="oc-segmented-item" type="button" aria-pressed="true">System</button><button class="oc-segmented-item" type="button" aria-pressed="false">Light</button><button class="oc-segmented-item" type="button" aria-pressed="false">Dark</button></div>',
+          })}
+          ${settingsRow({
+            title: "Density",
+            description: "Adjust information density.",
+            control: `<div class="oc-segmented" role="group" aria-label="Interface density"><button class="oc-segmented-item" type="button" aria-pressed="${density === "comfortable"}">Comfortable</button><button class="oc-segmented-item" type="button" aria-pressed="${density === "compact"}">Compact</button></div>`,
+          })}
+        </div>
+      </section>
+      <section class="oc-settings-section" aria-labelledby="settings-defaults">
+        <header class="oc-settings-section-header">
+          <div class="oc-settings-section-heading">
+            <h2 class="oc-settings-section-title" id="settings-defaults">Session defaults</h2>
+          </div>
+        </header>
+        <div class="oc-settings-group">
+          ${settingsRow({
+            title: "Default workspace",
+            description: "Used when a session has no explicit project.",
+            stacked: true,
+            control:
+              '<div class="oc-field"><label class="sr-only" for="settings-workspace">Workspace</label><input class="oc-input" id="settings-workspace" value="~/Projects/openclaw" /></div>',
+          })}
+        </div>
+      </section>
+    </div>
+  </main>
 </div>`;
 }
 
@@ -399,13 +416,11 @@ export function operationsApplicationMarkup({
   return `<div class="oc-app-frame" data-navigation="${navigation}">
   ${applicationNavigation({ current: channels ? "Channels" : "Automation", navigation })}
   <main class="oc-app-main">
-    ${applicationToolbar({ label: "Operations", detail: channels ? "Channels" : "Automation", state: state === "error" ? "error" : "ready" })}
     <div class="oc-app-content">
       <header class="oc-page-header oc-page-header-compact">
         <div class="oc-page-header-content">
-          <p class="oc-page-header-kicker">Operate</p>
-          <h1 class="oc-page-header-title">${channels ? "Channel network" : "Scheduled work"}</h1>
-          <p class="oc-page-header-description">${channels ? "Watch delivery health and tune every connected transport." : "Schedule recurring agent work and inspect each run."}</p>
+          <h1 class="oc-page-header-title">${channels ? "Channels" : "Automations"}</h1>
+          <p class="oc-page-header-description">${channels ? `5 configured · ${state === "error" ? "3" : "4"} connected` : "3 recurring tasks · 2 enabled"}</p>
         </div>
         <div class="oc-page-header-actions">
           <div class="oc-segmented" role="group" aria-label="Operations view">
@@ -415,73 +430,7 @@ export function operationsApplicationMarkup({
           <button class="oc-action oc-action-primary" type="button">${agentIcon("plus")} ${channels ? "Add channel" : "New automation"}</button>
         </div>
       </header>
-      <section class="oc-summary-strip" aria-label="${channels ? "Channel health" : "Automation health"}">
-        ${
-          channels
-            ? [
-                summaryMetric({
-                  icon: "radio-tower",
-                  label: "Connected",
-                  value: state === "error" ? "3 / 5" : "4 / 5",
-                  detail: state === "error" ? "1 paused · 1 issue" : "1 paused",
-                  tone: state === "error" ? "warning" : "success",
-                }),
-                summaryMetric({
-                  icon: "messages-square",
-                  label: "Messages today",
-                  value: "1,284",
-                  detail: "+18% from yesterday",
-                  tone: "info",
-                }),
-                summaryMetric({
-                  icon: "gauge",
-                  label: "Median delivery",
-                  value: "320 ms",
-                  detail: "All transports",
-                  tone: "neutral",
-                }),
-                summaryMetric({
-                  icon: state === "error" ? "triangle-alert" : "shield-check",
-                  label: "Attention",
-                  value: state === "error" ? "1 issue" : "All clear",
-                  detail: state === "error" ? "Discord token" : "No delivery failures",
-                  tone: state === "error" ? "error" : "success",
-                }),
-              ].join("")
-            : [
-                summaryMetric({
-                  icon: "calendar-check",
-                  label: "Enabled",
-                  value: "2 / 3",
-                  detail: "1 paused",
-                  tone: "success",
-                }),
-                summaryMetric({
-                  icon: "play",
-                  label: "Runs this week",
-                  value: "42",
-                  detail: "95% successful",
-                  tone: "info",
-                }),
-                summaryMetric({
-                  icon: "timer",
-                  label: "Agent time",
-                  value: "3h 18m",
-                  detail: "Across all jobs",
-                  tone: "neutral",
-                }),
-                summaryMetric({
-                  icon: state === "error" ? "triangle-alert" : "shield-check",
-                  label: "Last outcome",
-                  value: state === "error" ? "Failed" : "Complete",
-                  detail: "Release digest",
-                  tone: state === "error" ? "error" : "success",
-                }),
-              ].join("")
-        }
-      </section>
-      <div class="oc-pane-layout oc-pane-layout-tight">
-        <section class="oc-pane oc-master-detail" aria-label="${channels ? "Channel configuration" : "Automation configuration"}">
+      <section class="oc-pane oc-master-detail" aria-label="${channels ? "Channel configuration" : "Automation configuration"}">
           <section class="oc-pane oc-master-pane" aria-label="${channels ? "Channels" : "Automations"}">
             <header class="oc-pane-header">
               <div class="oc-pane-heading">
@@ -576,8 +525,7 @@ export function operationsApplicationMarkup({
             </header>
             ${channels ? channelDetail(state) : automationDetail(state)}
           </section>
-        </section>
-      </div>
+      </section>
     </div>
   </main>
 </div>`;
@@ -611,7 +559,17 @@ function workspaceSessions(status) {
 </aside>`;
 }
 
-function workspaceConversation(status, { dock = "right", inspector = true } = {}) {
+function workspaceConversation(
+  status,
+  {
+    dock = "right",
+    inspector = true,
+    model = "gpt-5.6-sol",
+    picker = false,
+    thinking = "high",
+    fast = true,
+  } = {},
+) {
   const inspectorVisible = inspector && dock !== "hidden";
   const dockAction = !inspectorVisible
     ? "Show inspector"
@@ -631,43 +589,42 @@ function workspaceConversation(status, { dock = "right", inspector = true } = {}
     </div>
   </header>
   <div class="oc-pane-body oc-workspace-transcript">
-    <div class="oc-workspace-day">Today</div>
     <article class="oc-workspace-message oc-workspace-message-user">
-      <p>Bring the macOS app and Control UI application surfaces to parity. The result should feel like a real OpenClaw workspace, not a component demo.</p>
+      <p>Make the application surface quieter, tighter, and closer to the actual OpenClaw apps.</p>
     </article>
     <article class="oc-workspace-message oc-workspace-message-agent">
-      <header><span class="oc-workspace-agent-mark"><img src="${openClawMarkUrl}" alt="" /></span><strong>OpenClaw</strong><time>10:42</time></header>
-      <p>I mapped the shared application anatomy and kept platform behavior in each consumer. I’m now tightening the product hierarchy around the actual operator workflows.</p>
+      <header><span class="oc-workspace-agent-mark"><img src="${openClawMarkUrl}" alt="" /></span><strong>OpenClaw</strong><time>now</time></header>
+      <p>I removed duplicate shell chrome, reduced spacing, and brought the actual model and reasoning controls into the composer.</p>
       <div class="oc-workspace-progress">
-        <div class="oc-workspace-progress-header"><span>Implementation plan</span><strong>3 / 4</strong></div>
+        <div class="oc-workspace-progress-header"><span>Parity pass</span><strong>3 / 4</strong></div>
         <ol>
-          <li data-state="complete">${agentIcon("check")}<span>Audit macOS and Control UI surfaces</span></li>
-          <li data-state="complete">${agentIcon("check")}<span>Define shared application anatomy</span></li>
-          <li data-state="complete">${agentIcon("check")}<span>Build product-grade preview screens</span></li>
-          <li data-state="active">${agentIcon("loader-circle")}<span>Capture responsive visual evidence</span></li>
+          <li data-state="complete">${agentIcon("check")}<span>Remove redundant app chrome</span></li>
+          <li data-state="complete">${agentIcon("check")}<span>Compact rows and pane headers</span></li>
+          <li data-state="complete">${agentIcon("check")}<span>Integrate model controls</span></li>
+          <li data-state="active">${agentIcon("loader-circle")}<span>Add real application screens</span></li>
         </ol>
       </div>
       <details class="oc-workspace-tool" open>
-        <summary><span>${agentIcon("terminal")} Ran checks</span><small>4.2s</small>${agentIcon("chevron")}</summary>
-        <div><code>bun run check</code><span>165 pass · 0 fail</span></div>
+        <summary><span>${agentIcon("terminal")} Edited application anatomy</span><small>6 files</small>${agentIcon("chevron")}</summary>
+        <div><code>styles/candidate/application.css</code><span>compact parity</span></div>
       </details>
-      <p>The new shell is intentionally denser: global navigation, local task context, live state, and deep controls stay visible without turning every region into a floating card.</p>
     </article>
   </div>
   <footer class="oc-workspace-composer">
     <div class="oc-workspace-compose-box">
       <label class="sr-only" for="workspace-message">Message</label>
-      <textarea id="workspace-message" rows="2" placeholder="Ask OpenClaw to make a change…"></textarea>
+      <textarea id="workspace-message" rows="1" placeholder="Message OpenClaw"></textarea>
       <div class="oc-workspace-compose-toolbar">
         <div>
           <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Attach file">${agentIcon("paperclip")}</button>
-          <button class="oc-workspace-mode" type="button">${agentIcon("mouse-pointer-2")} Agent ${agentIcon("chevron")}</button>
-          <button class="oc-workspace-mode" type="button">${agentIcon("box")} GPT-5.6 Sol ${agentIcon("chevron")}</button>
+          ${applicationModelControlsMarkup({ model, thinking, fast, open: picker })}
         </div>
-        <button class="oc-action oc-action-icon oc-action-primary" type="button" aria-label="Send message">${agentIcon("arrow-up")}</button>
+        <div class="oc-workspace-compose-actions">
+          <span class="oc-context-usage" aria-label="Context usage"><span style="--oc-context-used: 41%"></span><small>41%</small></span>
+          <button class="oc-action oc-action-icon oc-action-primary" type="button" aria-label="${status === "active" ? "Stop response" : "Send message"}">${agentIcon(status === "active" ? "square" : "arrow-up")}</button>
+        </div>
       </div>
     </div>
-    <span class="oc-workspace-compose-note">OpenClaw can make mistakes. Review changes before shipping.</span>
   </footer>
 </section>`;
 }
@@ -717,21 +674,171 @@ export function workspaceApplicationMarkup({
   dock = "right",
   inspector = true,
   status = "active",
-  navigation = "compact",
+  model = "gpt-5.6-sol",
+  picker = false,
+  thinking = "high",
+  fast = true,
 } = {}) {
   const showInspector = inspector && dock !== "hidden";
-  return `<div class="oc-app-frame" data-navigation="${navigation}" data-dock="${dock}" data-inspector="${showInspector}">
+  return `<div class="oc-chat-shell" data-dock="${dock}" data-inspector="${showInspector}">
+  <div class="oc-workspace-grid">
+    ${workspaceSessions(status)}
+    ${workspaceConversation(status, { dock, inspector, model, picker, thinking, fast })}
+    ${showInspector ? workspaceInspector(status) : ""}
+  </div>
+</div>`;
+}
+
+function sessionsTableRow({
+  title,
+  agent,
+  model,
+  updated,
+  status,
+  selected = false,
+} = {}) {
+  return `<tr${selected ? ' aria-selected="true"' : ""}>
+  <td><input class="oc-checkbox" type="checkbox" aria-label="Select ${title}"${selected ? " checked" : ""} /></td>
+  <td><div class="oc-session-cell"><strong>${title}</strong><small>${agent}</small></div></td>
+  <td>${model}</td>
+  <td>${statusMarkup(status, { active: "Running", idle: "Idle", error: "Failed" })}</td>
+  <td><time>${updated}</time></td>
+  <td><button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Actions for ${title}">${agentIcon("ellipsis")}</button></td>
+</tr>`;
+}
+
+export function sessionsApplicationMarkup({
+  state = "ready",
+  navigation = "expanded",
+} = {}) {
+  const empty = state === "empty";
+  const loading = state === "loading";
+  const failed = state === "error";
+  return `<div class="oc-app-frame" data-navigation="${navigation}">
   ${applicationNavigation({ current: "Sessions", navigation })}
   <main class="oc-app-main">
-    ${applicationToolbar({ label: "Sessions", detail: "Carapace app parity", state: status === "error" ? "error" : "ready" })}
-    <div class="oc-app-content">
-      <div class="oc-workspace-grid">
-        ${workspaceSessions(status)}
-        ${workspaceConversation(status, { dock, inspector })}
-        ${showInspector ? workspaceInspector(status) : ""}
+    <div class="oc-app-content oc-session-content">
+      <header class="oc-page-header oc-page-header-compact">
+        <div class="oc-page-header-content">
+          <h1 class="oc-page-header-title">Sessions</h1>
+          <p class="oc-page-header-description">${empty ? "No matching sessions" : failed ? "Session data unavailable" : "24 sessions · 3 running"}</p>
+        </div>
+        <div class="oc-page-header-actions">
+          <button class="oc-action oc-action-primary" type="button">${agentIcon("plus")} New session</button>
+        </div>
+      </header>
+      <div class="oc-session-toolbar">
+        <label class="oc-search-field"><span class="sr-only">Search sessions</span>${agentIcon("search")}<input type="search" placeholder="Search sessions" /></label>
+        <div class="oc-segmented" role="group" aria-label="Session scope">
+          <button class="oc-segmented-item" type="button" aria-pressed="true">All</button>
+          <button class="oc-segmented-item" type="button" aria-pressed="false">Running</button>
+          <button class="oc-segmented-item" type="button" aria-pressed="false">Unread</button>
+        </div>
+        <button class="oc-action oc-action-ghost" type="button">${agentIcon("list-filter")} Filters</button>
       </div>
+      ${
+        failed
+          ? `<div class="oc-pane-state" role="alert"><div class="oc-empty"><span class="oc-empty-icon">${agentIcon("triangle-alert")}</span><h2 class="oc-empty-title">Could not load sessions</h2><p class="oc-empty-description">The gateway did not return the session collection.</p><button class="oc-action oc-action-secondary" type="button">${agentIcon("refresh-cw")} Retry</button></div></div>`
+          : empty
+          ? `<div class="oc-pane-state"><div class="oc-empty"><span class="oc-empty-icon">${agentIcon("messages-square")}</span><h2 class="oc-empty-title">No sessions found</h2><p class="oc-empty-description">Try another filter or start a new session.</p></div></div>`
+          : `<div class="oc-table-wrap oc-session-table-wrap"${loading ? ' aria-busy="true"' : ""}>
+        <table class="oc-table oc-session-table">
+          <thead><tr><th scope="col"><span class="sr-only">Select</span></th><th scope="col">Session</th><th scope="col">Model</th><th scope="col">State</th><th scope="col">Updated</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+          <tbody>
+            ${
+              loading
+                ? `<tr><td colspan="6"><span class="oc-loader" role="status"><span class="oc-loader-spinner" aria-hidden="true"></span>Loading sessions</span></td></tr>`
+                : [
+                    sessionsTableRow({
+                      title: "Carapace parity",
+                      agent: "Personal · openclaw/carapace",
+                      model: "GPT-5.6 Sol",
+                      updated: "now",
+                      status: "active",
+                      selected: true,
+                    }),
+                    sessionsTableRow({
+                      title: "Release validation",
+                      agent: "Release · openclaw/openclaw",
+                      model: "Claude Opus",
+                      updated: "8m",
+                      status: "idle",
+                    }),
+                    sessionsTableRow({
+                      title: "CI queue health",
+                      agent: "Operations · maintainers",
+                      model: "GPT-5.6 Terra",
+                      updated: "34m",
+                      status: "idle",
+                    }),
+                    sessionsTableRow({
+                      title: "Provider auth repro",
+                      agent: "Debug · openclaw/openclaw",
+                      model: "GPT-5.6 Sol",
+                      updated: "2h",
+                      status: "error",
+                    }),
+                  ].join("")
+            }
+          </tbody>
+        </table>
+      </div>`
+      }
     </div>
   </main>
+</div>`;
+}
+
+export function quickChatApplicationMarkup({
+  status = "idle",
+  model = "gpt-5.6-sol",
+  picker = false,
+  thinking = "high",
+  fast = true,
+} = {}) {
+  const running = status === "active";
+  const failed = status === "error";
+  const reply = running
+    ? "Reviewing the captured page and current workspace…"
+    : failed
+      ? "Quick Chat could not reach the gateway. Check the connection and try again."
+      : "Ready. I can use the current app, selected text, or a screenshot as context.";
+  const actionLabel = failed ? "Retry connection" : running ? "Stop response" : "Send message";
+  return `<div class="oc-quick-chat-stage">
+  <section class="oc-quick-chat" data-state="${status}" aria-label="Quick Chat">
+    <header class="oc-quick-chat-header">
+      <div><span class="oc-quick-chat-mark"><img src="${openClawMarkUrl}" alt="" /></span><strong>Quick Chat</strong></div>
+      <div class="oc-pane-actions">
+        <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Open full chat">${agentIcon("maximize-2")}</button>
+        <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Close Quick Chat">${agentIcon("x")}</button>
+      </div>
+    </header>
+    <div class="oc-quick-chat-context">
+      <span>${agentIcon("monitor")} Safari</span>
+      <span>${agentIcon("camera")} Screenshot attached</span>
+      <button type="button" aria-label="Clear captured context">${agentIcon("x")}</button>
+    </div>
+    <div class="oc-quick-chat-reply">
+      <span class="oc-quick-chat-agent"><img src="${openClawMarkUrl}" alt="" /></span>
+      <p>${reply}</p>
+    </div>
+    <div class="oc-quick-chat-composer" role="group" aria-label="Message composer">
+      <label class="sr-only" for="quick-chat-message">Message</label>
+      <textarea id="quick-chat-message" rows="2" placeholder="Ask OpenClaw"></textarea>
+      <div class="oc-quick-chat-toolbar">
+        <div class="oc-quick-chat-tools">
+          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Attach">${agentIcon("paperclip")}</button>
+          <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Dictate">${agentIcon("mic")}</button>
+          ${applicationModelControlsMarkup({ model, thinking, fast, open: picker })}
+        </div>
+        <button class="oc-action oc-action-icon ${failed ? "oc-action-secondary" : "oc-action-primary"}" type="button" aria-label="${actionLabel}">${agentIcon(failed ? "refresh-cw" : running ? "square" : "arrow-up")}</button>
+      </div>
+    </div>
+    <footer class="oc-quick-chat-footer">
+      <span>${agentIcon("shield-check")} Screen context stays local until sent</span>
+      <kbd>⌘ ↵</kbd>
+    </footer>
+  </section>
 </div>`;
 }
 
@@ -739,4 +846,6 @@ export const applicationScreenMarkup = {
   settings: settingsApplicationMarkup(),
   operations: operationsApplicationMarkup(),
   workspace: workspaceApplicationMarkup(),
+  sessions: sessionsApplicationMarkup(),
+  "quick-chat": quickChatApplicationMarkup(),
 };

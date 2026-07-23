@@ -655,7 +655,7 @@ export const referenceAreas = [
   {
     id: "applications",
     label: "Applications",
-    description: "Shared app shells, settings, operations, and workspaces",
+    description: "Compact app shells, model controls, settings, sessions, and workspaces",
     path: "applications/settings/",
     pages: [
       {
@@ -674,7 +674,19 @@ export const referenceAreas = [
         id: "application-workspace",
         label: "Workspace",
         path: "applications/workspace/",
-        keywords: "application agent workspace inspector dock split pane session",
+        keywords: "application agent workspace inspector dock split pane session model picker",
+      },
+      {
+        id: "application-sessions",
+        label: "Sessions",
+        path: "applications/sessions/",
+        keywords: "application sessions table search filter status bulk actions",
+      },
+      {
+        id: "application-quick-chat",
+        label: "Quick Chat",
+        path: "applications/quick-chat/",
+        keywords: "application quick chat mac spotlight composer model picker capture context",
       },
     ],
   },
@@ -796,6 +808,8 @@ const candidateReferenceIds = new Set([
   "application-settings",
   "application-operations",
   "application-workspace",
+  "application-sessions",
+  "application-quick-chat",
 ]);
 
 const labAreaIds = new Set(["interface", "agent-components", "charts", "blocks", "applications"]);

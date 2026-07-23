@@ -145,6 +145,8 @@ describe("CSS contract", () => {
     expect(components).toContain("border-radius: var(--oc-radius-control)");
     expect(components).toContain("border-radius: var(--oc-radius-inset)");
     expect(references).not.toContain("--oc-radius-full");
+    expect(components).toContain('html[data-theme="light"] .oc-action-secondary');
+    expect(components).toContain('html[data-theme-resolved="light"] .oc-action-secondary');
     expect(components).toContain("@media (prefers-reduced-motion: reduce)");
     expect(components).toContain("transform: none");
   });
@@ -261,12 +263,15 @@ describe("CSS contract", () => {
       ".oc-app-toolbar-detail",
       ".oc-app-toolbar-divider",
       ".oc-app-toolbar-label",
+      ".oc-chat-shell",
+      ".oc-context-usage",
       ".oc-detail-grid",
       ".oc-detail-grid-span",
       ".oc-detail-header",
       ".oc-detail-kicker",
       ".oc-detail-section",
       ".oc-detail-section-icon",
+      ".oc-fast-mode",
       ".oc-field",
       ".oc-identity-copy",
       ".oc-identity-kicker",
@@ -281,6 +286,20 @@ describe("CSS contract", () => {
       ".oc-inspector-section",
       ".oc-master-detail",
       ".oc-master-pane",
+      ".oc-model-check",
+      ".oc-model-control",
+      ".oc-model-controls",
+      ".oc-model-menu",
+      ".oc-model-menu-layout",
+      ".oc-model-option",
+      ".oc-model-option-copy",
+      ".oc-model-option-meta",
+      ".oc-model-options",
+      ".oc-model-picker",
+      ".oc-model-provider-mark",
+      ".oc-model-providers",
+      ".oc-model-search",
+      ".oc-model-trigger",
       ".oc-page-header",
       ".oc-page-header-actions",
       ".oc-page-header-compact",
@@ -304,15 +323,33 @@ describe("CSS contract", () => {
       ".oc-pane-state",
       ".oc-pane-title",
       ".oc-pane-title-row",
+      ".oc-quick-chat",
+      ".oc-quick-chat-agent",
+      ".oc-quick-chat-composer",
+      ".oc-quick-chat-context",
+      ".oc-quick-chat-footer",
+      ".oc-quick-chat-header",
+      ".oc-quick-chat-mark",
+      ".oc-quick-chat-reply",
+      ".oc-quick-chat-stage",
+      ".oc-quick-chat-toolbar",
+      ".oc-quick-chat-tools",
+      ".oc-search-field",
       ".oc-segmented",
       ".oc-select-wrap",
+      ".oc-session-cell",
+      ".oc-session-content",
       ".oc-session-list",
       ".oc-session-list-avatar",
       ".oc-session-list-copy",
       ".oc-session-list-item",
+      ".oc-session-table",
+      ".oc-session-table-wrap",
+      ".oc-session-toolbar",
       ".oc-settings-detail",
       ".oc-settings-detail-scroll",
       ".oc-settings-group",
+      ".oc-settings-inline-actions",
       ".oc-settings-navigation",
       ".oc-settings-navigation-footer",
       ".oc-settings-navigation-header",
@@ -347,6 +384,7 @@ describe("CSS contract", () => {
       ".oc-summary-metric-copy",
       ".oc-summary-metric-icon",
       ".oc-summary-strip",
+      ".oc-workspace-compose-actions",
       ".oc-workspace-conversation",
       ".oc-workspace-compose-box",
       ".oc-workspace-compose-note",
@@ -356,8 +394,10 @@ describe("CSS contract", () => {
       ".oc-workspace-inspector",
       ".oc-workspace-inspector-action",
       ".oc-workspace-mode",
+      ".oc-workspace-progress",
       ".oc-workspace-sessions",
       ".oc-workspace-sessions-footer",
+      ".oc-workspace-transcript",
     ]);
 
     for (const candidate of [controls, feedback, data, application]) {
@@ -404,6 +444,9 @@ describe("CSS contract", () => {
     expect(application).toMatch(
       /\.oc-settings-row-interactive\[aria-pressed="true"\][\s\S]*?--oc-surface-accent-soft/,
     );
+    expect(application).toContain('.oc-model-providers button[aria-pressed="true"]');
+    expect(application).toContain('.oc-model-option[aria-pressed="true"]');
+    expect(application).not.toContain('.oc-model-option[aria-selected="true"]');
     expect(application).toMatch(
       /\.oc-app-content > :is\(\.oc-settings-shell, \.oc-workspace-grid\)[\s\S]*?grid-row: 1 \/ -1/,
     );
@@ -433,6 +476,10 @@ describe("CSS contract", () => {
     expect(application).not.toContain(".application-workspace");
     expect(application).toContain(".oc-workspace-composer");
     expect(lab).not.toContain(".oc-workspace-composer");
+    expect(application).toContain("td:not([colspan])");
+    expect(ruleDeclarations(application, ".oc-workspace-compose-box")).toContain(
+      "overflow: visible",
+    );
     expect(application).not.toMatch(/(?:^|\n)\.oc-resource-(?:list|search)/);
     expect(application).toMatch(/\.oc-master-detail > \.oc-pane \{[\s\S]*?border-width: 0/);
     expect(application).toMatch(
@@ -448,7 +495,19 @@ describe("CSS contract", () => {
       /@media \(max-width: 48rem\)[\s\S]*?\.oc-settings-navigation-list \{[\s\S]*?overflow-x: auto/,
     );
     expect(application).toMatch(
-      /@media \(max-width: 48rem\)[\s\S]*?\.oc-app-frame\[data-dock="bottom"\]\[data-inspector="true"\] \.oc-workspace-sessions \{[\s\S]*?grid-row: auto/,
+      /@media \(max-width: 48rem\)[\s\S]*?\.oc-app-frame\[data-dock="bottom"\]\[data-inspector="true"\] \.oc-workspace-sessions[\s\S]*?grid-row: auto/,
+    );
+    expect(application).toMatch(
+      /@media \(max-width: 48rem\)[\s\S]*?\.oc-chat-shell\[data-dock="bottom"\]\[data-inspector="true"\] \.oc-workspace-sessions[\s\S]*?grid-row: auto/,
+    );
+    expect(application).toMatch(
+      /@media \(max-width: 34rem\)[\s\S]*?\.oc-chat-shell\[data-dock="bottom"\]\[data-inspector="true"\] \.oc-workspace-grid[\s\S]*?grid-template-rows: minmax\(0, 1fr\)/,
+    );
+    expect(application).toMatch(
+      /@media \(max-width: 34rem\)[\s\S]*?\.oc-master-detail \{[\s\S]*?grid-template-rows: minmax\(10rem, 0\.4fr\) minmax\(0, 1fr\)/,
+    );
+    expect(application).not.toMatch(
+      /@media \(max-width: 34rem\)[\s\S]*?\.oc-fast-mode \{[\s\S]*?display: none/,
     );
     expect(application).toMatch(
       /@media \(max-width: 64rem\)[\s\S]*?\.oc-workspace-inspector-action \{[\s\S]*?display: none/,
