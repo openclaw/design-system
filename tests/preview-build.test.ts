@@ -58,7 +58,7 @@ describe("preview route build", () => {
 
   test("derives route roots from manifest depth", () => {
     expect(getRouteRoot("")).toBe("./");
-    expect(getRouteRoot("foundations/")).toBe("../");
+    expect(getRouteRoot("introduction/")).toBe("../");
     expect(getRouteRoot("interface/primitives/button/")).toBe("../../../");
   });
 
@@ -94,7 +94,7 @@ describe("preview route build", () => {
     const source = '<title>Carapace</title><script type="module" src="./app.js"></script><body data-preview-route="overview" data-preview-page="overview" data-preview-root="./"></body>';
 
     for (const [id, title] of [
-      ["foundations", "Foundations · Carapace"],
+      ["foundations", "Introduction · Carapace"],
       ["interface", "Components · Carapace"],
       ["compositions", "Compositions · Carapace"],
       ["resources", "Resources · Carapace"],
@@ -138,6 +138,7 @@ describe("preview route build", () => {
     expect(emitted.map(({ fileName }) => fileName)).toContain(
       "interface/primitives/button/index.html",
     );
+    expect(emitted.map(({ fileName }) => fileName)).toContain("introduction/index.html");
   });
 
   test(

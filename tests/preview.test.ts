@@ -144,8 +144,12 @@ describe("preview contracts", () => {
       supportsViewport: true,
     });
     expect(getWorkbenchShellProfile("agent-chat")).toEqual({
-      canvasPreset: "viewport",
+      canvasPreset: "conversation",
       supportsViewport: true,
+    });
+    expect(getWorkbenchShellProfile("primitive-provider-logo")).toEqual({
+      canvasPreset: "compact",
+      supportsViewport: false,
     });
   });
 
@@ -1316,7 +1320,6 @@ describe("preview contracts", () => {
       {
         id: "size",
         type: "choice",
-        compare: "rows",
         options: [
           { label: "Small", value: "sm" },
           { label: "Medium", value: "md" },
@@ -1414,7 +1417,6 @@ describe("preview contracts", () => {
       {
         id: "size",
         type: "choice",
-        compare: "rows",
         options: [
           { label: "Small", value: "sm" },
           { label: "Medium", value: "md" },
@@ -1443,7 +1445,7 @@ describe("preview contracts", () => {
       },
     ]);
     expect(normalizeWorkbenchState(definition, {})).toEqual({
-      size: WORKBENCH_ALL_VALUE,
+      size: "md",
       label: true,
       framed: false,
       state: "default",
@@ -1473,7 +1475,7 @@ describe("preview contracts", () => {
         layout: "grid",
       }),
     ).toEqual({
-      size: WORKBENCH_ALL_VALUE,
+      size: "md",
       label: true,
       framed: false,
       state: "default",
@@ -1804,21 +1806,24 @@ describe("preview contracts", () => {
 
     const areaOverviewIds = new Set(["foundations", "interface", "compositions", "resources"]);
     for (const area of referenceAreas.filter(({ id }) => areaOverviewIds.has(id))) {
-      const fragment = await readFile(`preview/static-routes/${area.id}.html`, "utf8");
+      const routeFile = area.id === "foundations" ? "introduction" : area.id;
+      const fragment = await readFile(`preview/static-routes/${routeFile}.html`, "utf8");
       expect(fragment).toContain('class="preview-stage"');
       expect(fragment).not.toContain("<html");
       expect(fragment).not.toContain(legacyDisplayName);
     }
 
-    const foundations = await readFile("preview/static-routes/foundations.html", "utf8");
-    expect(foundations).toContain('class="intro intro-compact foundations-overview"');
-    expect(foundations).toContain('class="foundations-card-grid"');
-    expect(foundations).toContain('class="reference-card foundations-card-featured"');
-    expect(foundations).toContain('class="foundations-card-cluster"');
-    expect(foundations).toContain('href="./tokens/"');
-    expect(foundations).toContain('href="./typography/"');
-    expect(foundations).toContain('href="./base/"');
-    expect(foundations.match(/class="reference-card[^"]*"/g)).toHaveLength(7);
+    const introduction = await readFile("preview/static-routes/introduction.html", "utf8");
+    expect(introduction).toContain('class="intro introduction-page"');
+    expect(introduction).toContain('class="introduction-toc"');
+    expect(introduction).toContain('class="introduction-principles"');
+    expect(introduction).toContain('class="foundations-card-grid"');
+    expect(introduction).toContain('class="reference-card foundations-card-featured"');
+    expect(introduction).toContain('class="foundations-card-cluster"');
+    expect(introduction).toContain('href="../foundations/tokens/"');
+    expect(introduction).toContain('href="../foundations/typography/"');
+    expect(introduction).toContain('href="../foundations/base/"');
+    expect(introduction.match(/class="reference-card[^"]*"/g)).toHaveLength(7);
 
     const contentPageIds = referencePages
       .map(({ id }) => id)
@@ -1926,6 +1931,9 @@ describe("preview contracts", () => {
     expect(home).toContain('href="./interface/primitives/clipboard-text/"');
     expect(home).toContain('href="./agent-components/model-picker/"');
     expect(home).toContain('href="./interface/primitives/provider-logo/"');
+    expect(home).toContain('aria-label="Anthropic"');
+    expect(home).toContain('aria-label="Mistral"');
+    expect(home).not.toContain('aria-label="OpenAI"><span class="oc-provider-logo-mark" aria-hidden="true">OA');
     expect(home).toContain('href="./agent-components/question-tool/"');
     expect(home).toContain('href="./agent-components/agent-chat/"');
     expect(home).toContain('href="./applications/sessions/"');

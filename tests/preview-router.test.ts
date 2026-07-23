@@ -60,6 +60,11 @@ describe("preview router", () => {
   test("maps canonical, extensionless, index, and hashed URLs to known pages", () => {
     const siteRoot = "https://openclaw.github.io/design-system/";
 
+    expect(resolvePreviewRoute(`${siteRoot}introduction`, siteRoot)).toMatchObject({
+      pageId: "foundations",
+      path: "introduction/",
+      hash: "",
+    });
     expect(resolvePreviewRoute(`${siteRoot}foundations/colors`, siteRoot)).toMatchObject({
       pageId: "foundation-colors",
       path: "foundations/colors/",
@@ -79,6 +84,7 @@ describe("preview router", () => {
     });
 
     expect(resolvePreviewRoute("https://openclaw.github.io/foundations/colors/", siteRoot)).toBeNull();
+    expect(resolvePreviewRoute(`${siteRoot}foundations/`, siteRoot)).toBeNull();
     expect(resolvePreviewRoute(`${siteRoot}assets/openclaw-mark.png`, siteRoot)).toBeNull();
     expect(resolvePreviewRoute(`${siteRoot}missing/`, siteRoot)).toBeNull();
 

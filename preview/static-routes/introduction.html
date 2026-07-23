@@ -1,0 +1,90 @@
+<div class="preview-stage">
+  <article class="intro introduction-page" aria-labelledby="introduction-title">
+    <header class="introduction-hero">
+      <p class="eyebrow">Introduction</p>
+      <h1 id="introduction-title">One visual contract for the OpenClaw product family.</h1>
+      <p class="introduction-lede">Carapace is the shared design system for OpenClaw applications, operational tools, public sites, and agent experiences. It defines the visual language and reusable anatomy; each product keeps ownership of its routes, data, permissions, and behavior.</p>
+      <div class="introduction-summary" aria-label="Project scope">
+        <span><strong>Tokens</strong> Theme-aware decisions</span>
+        <span><strong>Components</strong> Reusable interface contracts</span>
+        <span><strong>Agent patterns</strong> Conversation and tool states</span>
+        <span><strong>App surfaces</strong> Compact product anatomy</span>
+      </div>
+    </header>
+
+    <div class="introduction-layout">
+      <div class="introduction-content">
+        <section id="purpose">
+          <p class="eyebrow">Purpose</p>
+          <h2>Consistency without flattening every product.</h2>
+          <p>OpenClaw spans a menu bar app, full application panes, control surfaces, documentation, and conversational workflows. Those products should feel related without pretending they have identical jobs. Carapace supplies stable decisions for color, type, spacing, focus, motion, controls, data density, and agent activity so teams can spend their energy on product behavior.</p>
+          <p>The system deliberately avoids owning business logic. A model picker can define structure, state, and interaction expectations while the consuming application still decides which providers are available, how a session override is stored, and whether an option is permitted.</p>
+        </section>
+
+        <section id="principles">
+          <p class="eyebrow">Principles</p>
+          <h2>Quiet, compact, legible, and explicit.</h2>
+          <div class="introduction-principles">
+            <article><strong>Product first</strong><p>Operational screens favor scanability and repeated action over decorative composition.</p></article>
+            <article><strong>Dense, not cramped</strong><p>Controls stay compact while text, focus, touch targets, and hierarchy remain clear.</p></article>
+            <article><strong>State is visible</strong><p>Loading, selection, progress, failure, permissions, and streaming never rely on color alone.</p></article>
+            <article><strong>Motion explains</strong><p>Animation connects state changes. Reduced-motion behavior is part of the same contract.</p></article>
+            <article><strong>Consumers retain ownership</strong><p>Carapace provides anatomy and visual behavior, not application routing or domain policy.</p></article>
+            <article><strong>Examples are executable</strong><p>Reference pages expose live states, responsive canvases, usage guidance, and canonical markup.</p></article>
+          </div>
+        </section>
+
+        <section id="architecture">
+          <p class="eyebrow">Architecture</p>
+          <h2>Adopt from the foundation upward.</h2>
+          <ol class="introduction-layers">
+            <li><span>01</span><div><strong>Tokens and themes</strong><p>Semantic values describe intent across light and dark contexts.</p></div></li>
+            <li><span>02</span><div><strong>Base and typography</strong><p>Focus, selection, document rhythm, and accessible defaults create the shared baseline.</p></div></li>
+            <li><span>03</span><div><strong>Components and effects</strong><p>Small reusable contracts cover controls, navigation, feedback, data, identity, and motion.</p></div></li>
+            <li><span>04</span><div><strong>Agent and application patterns</strong><p>Composed surfaces show how primitives behave in real workflows without becoming a framework.</p></div></li>
+          </ol>
+        </section>
+
+        <section id="adoption">
+          <p class="eyebrow">Adoption</p>
+          <h2>Use the smallest layer that solves the problem.</h2>
+          <p>Import the package styles for a complete surface, or adopt the documented candidate layers while a contract is being evaluated. Start with tokens and base styles, then choose components by role. Do not copy preview-only scaffolding into products; the reference shell exists to inspect states, themes, and responsive behavior.</p>
+          <div class="introduction-callout">
+            <strong>Definition of parity</strong>
+            <p>A Carapace component is not “done” because its colors look similar. It must carry the same information hierarchy, states, keyboard behavior, density, motion intent, and ownership boundary as the product surface it represents.</p>
+          </div>
+        </section>
+      </div>
+
+      <nav class="introduction-toc" aria-label="On this page">
+        <p>On this page</p>
+        <a href="#purpose">Purpose</a>
+        <a href="#principles">Principles</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#adoption">Adoption</a>
+        <a href="#foundations">Foundations</a>
+      </nav>
+    </div>
+
+    <section class="foundations-overview" id="foundations" aria-labelledby="foundations-title">
+      <p class="eyebrow">Foundations</p>
+      <h2 id="foundations-title">The visual contract, by role.</h2>
+      <p>Start from the shared variables, then move through color, type, space, geometry, motion, and the baseline that every surface inherits.</p>
+    <div class="foundations-card-grid" role="list">
+      <a class="reference-card foundations-card-featured" href="../foundations/tokens/" role="listitem">
+        <span>Source of truth</span>
+        <strong>Design tokens</strong>
+        <p>Every canonical variable in one searchable catalog — colors, type, space, radius, shadow, and motion.</p>
+      </a>
+      <div class="foundations-card-cluster" role="list">
+        <a class="reference-card" href="../foundations/colors/" role="listitem"><span>Theme-aware</span><strong>Colors</strong><p>Palette sources mapped to semantic and product roles.</p></a>
+        <a class="reference-card" href="../foundations/typography/" role="listitem"><span>Four roles</span><strong>Typography</strong><p>Display, body, editorial, and code — plus the type scale.</p></a>
+        <a class="reference-card" href="../foundations/layout/" role="listitem"><span>Rhythm</span><strong>Layout</strong><p>Spacing steps and content widths for page structure.</p></a>
+        <a class="reference-card" href="../foundations/shape-and-depth/" role="listitem"><span>Geometry</span><strong>Shape and depth</strong><p>Semantic radii and elevation without decorative noise.</p></a>
+        <a class="reference-card" href="../foundations/motion/" role="listitem"><span>Timing</span><strong>Motion</strong><p>Durations and easing that explain state change.</p></a>
+        <a class="reference-card" href="../foundations/base/" role="listitem"><span>Baseline</span><strong>Base styles</strong><p>Focus, selection, accessibility, and reduced motion.</p></a>
+      </div>
+    </div>
+    </section>
+  </article>
+</div>

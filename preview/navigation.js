@@ -8,15 +8,15 @@ export const introductionPage = {
 export const referenceAreas = [
   {
     id: "foundations",
-    label: "Foundations",
-    description: "Tokens, type, layout, and visual properties",
-    path: "foundations/",
+    label: "Introduction",
+    description: "Project purpose, principles, adoption, and foundations",
+    path: "introduction/",
     pages: [
       {
         id: "foundations",
         label: "Introduction",
-        path: "foundations/",
-        keywords: "visual foundation system",
+        path: "introduction/",
+        keywords: "introduction project purpose visual contract adoption architecture",
       },
       {
         id: "foundation-tokens",

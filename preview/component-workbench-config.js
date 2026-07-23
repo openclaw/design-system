@@ -196,8 +196,12 @@ const providerLogoStates = [
 
 const providerLogoProviders = [
   { id: "openai", name: "OpenAI" },
+  { id: "anthropic", name: "Anthropic" },
   { id: "gemini", name: "Gemini" },
   { id: "xai", name: "xAI" },
+  { id: "groq", name: "Groq" },
+  { id: "mistral", name: "Mistral" },
+  { id: "openrouter", name: "OpenRouter" },
 ];
 
 const spiralLoaderSizes = [
@@ -433,7 +437,7 @@ export function linkWorkbenchMarkup({ variant = "inline", disabled = false } = {
   const examples = {
     inline: {
       label: "Inline link",
-      href: "/foundations/",
+      href: "/introduction/",
       className: "oc-link",
     },
     muted: {
@@ -1276,8 +1280,12 @@ export function skeletonLineWorkbenchMarkup({ count = "3", width = "mixed" } = {
 function providerLogoMark(provider) {
   const marks = {
     openai: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.181a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.096 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.984 5.984 0 0 0 13.26 24a6.055 6.055 0 0 0 5.771-4.205 5.989 5.989 0 0 0 3.997-2.9 6.055 6.055 0 0 0-.747-7.072zM13.26 22.43a4.475 4.475 0 0 1-2.876-1.04l.141-.08 4.778-2.758a.794.794 0 0 0 .392-.681v-6.736l2.02 1.168a.071.071 0 0 1 .038.052v5.582a4.504 4.504 0 0 1-4.493 4.493zm-9.661-4.126a4.47 4.47 0 0 1-.534-3.013l.141.084 4.783 2.758a.771.771 0 0 0 .78 0l5.842-3.372v2.332a.08.08 0 0 1-.033.061L9.74 19.95a4.5 4.5 0 0 1-6.141-1.646zM2.34 7.762a4.485 4.485 0 0 1 2.365-1.972V11.6a.766.766 0 0 0 .388.676l5.814 3.354-2.02 1.168a.075.075 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.762zm16.596 3.855-5.833-3.387L15.119 7.06a.075.075 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.104v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023-.141-.085-4.783-2.741a.775.775 0 0 0-.785 0L9.409 9.14V6.808a.066.066 0 0 1 .028-.061l4.83-2.786a4.499 4.499 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.163a.08.08 0 0 1-.038-.056V6.074a4.499 4.499 0 0 1 7.375-3.453l-.141.08-4.778 2.758a.794.794 0 0 0-.393.68zm1.097-2.365 2.602-1.499 2.606 1.499v2.999l-2.597 1.499-2.606-1.499z"/></svg>`,
+    anthropic: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M10.45 3h3.1L20 21h-3.15l-1.48-4.45H8.63L7.15 21H4l6.45-18Zm-.92 10.78h4.94L12 6.33l-2.47 7.45Z"/></svg>`,
     gemini: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>`,
     xai: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.469 8.776 16.512 23h-4.464L2.005 8.776H6.47zm-.004 7.9 2.233 3.164L6.467 23H2l4.465-6.324zM22 2.582V23h-3.659V7.764L22 2.582zM22 1l-9.952 14.095-2.233-3.163L17.533 1H22z"/></svg>`,
+    groq: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.04 2C8.18 1.97 5.04 5 5 8.78c-.04 3.79 3.06 6.88 6.91 6.91h2.42v-2.57h-2.29a4.33 4.33 0 0 1-4.41-4.23 4.33 4.33 0 0 1 4.31-4.32h.1a4.32 4.32 0 0 1 4.36 4.28v6.3a4.32 4.32 0 0 1-4.28 4.28 4.38 4.38 0 0 1-3.07-1.25l-1.85 1.82A7 7 0 0 0 12.03 22h.09A6.93 6.93 0 0 0 19 15.18v-6.5C18.91 4.96 15.82 2 12.04 2Z"/></svg>`,
+    mistral: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M3.428 3.4h3.429v3.428h3.429v3.429h3.429V6.828h3.427V3.4h3.43v13.714H24v3.429H13.714v-3.428h-3.428v-3.429h-3.43v3.428h3.43v3.429H0v-3.429h3.428V3.4zm10.286 13.715h3.428v-3.429h-3.427v3.429z" clip-rule="evenodd"/></svg>`,
+    openrouter: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="4" d="M0 11.7c.7 0 3.4-.6 4.8-1.4 1.4-.8 1.4-.8 4.3-2.9 3.7-2.6 6.3-1.7 10.6-1.7M0 11.7c.7 0 3.4.6 4.8 1.4 1.4.8 1.4.8 4.3 2.9 3.7 2.6 6.3 1.7 10.6 1.7"/><path fill="currentColor" d="m24 5.7-7.2 4.2V1.5L24 5.7Zm0 12-7.2-4.2v8.4l7.2-4.2Z"/></svg>`,
   };
   return marks[provider] ?? "";
 }
@@ -2270,7 +2278,6 @@ ${appSurfaceWorkbenchMarkup(state)}
         id: "size",
         label: "Size",
         type: "choice",
-        compare: "rows",
         options: providerLogoSizes,
       },
       {

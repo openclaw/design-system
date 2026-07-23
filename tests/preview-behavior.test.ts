@@ -213,7 +213,7 @@ describe("preview behavior", () => {
 
   test("keeps Link specimen markup aligned with public variants and a single trailing arrow", () => {
     expect(linkWorkbenchMarkup({ variant: "inline" })).toBe(
-      '<a class="oc-link" href="/foundations/" data-workbench-inert-link>Inline link</a>',
+      '<a class="oc-link" href="/introduction/" data-workbench-inert-link>Inline link</a>',
     );
     expect(linkWorkbenchMarkup({ variant: "muted" })).toBe(
       '<a class="oc-link oc-link-muted" href="/resources/" data-workbench-inert-link>Muted link</a>',

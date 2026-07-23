@@ -65,7 +65,6 @@ const inlineWorkbenchPages = new Set([
   "primitive-link",
   "primitive-loader",
   "primitive-pill",
-  "primitive-provider-logo",
   "primitive-skeleton-line",
   "primitive-tooltip",
   "spiral-loader",
@@ -93,18 +92,31 @@ const dataWorkbenchPages = new Set([
   "primitive-table",
 ]);
 
+const compactWorkbenchPages = new Set([
+  "primitive-avatar",
+  "primitive-link",
+  "primitive-loader",
+  "primitive-meter",
+  "primitive-provider-logo",
+  "spiral-loader",
+  "text-shimmer",
+]);
+
+const conversationWorkbenchPages = new Set([
+  "agent-chat",
+  "input-bar",
+  "message-list",
+  "user-message",
+]);
+
 const viewportWorkbenchPages = new Set([
   "application-settings",
   "application-operations",
   "application-workspace",
   "application-sessions",
   "application-quick-chat",
-  "agent-chat",
-  "input-bar",
-  "message-list",
   "primitive-app-surface",
   "primitive-sidebar",
-  "user-message",
 ]);
 
 export function getWorkbenchShellProfile(pageId) {
@@ -116,6 +128,12 @@ export function getWorkbenchShellProfile(pageId) {
   }
   if (dataWorkbenchPages.has(pageId)) {
     return { canvasPreset: "data", supportsViewport: true };
+  }
+  if (compactWorkbenchPages.has(pageId)) {
+    return { canvasPreset: "compact", supportsViewport: false };
+  }
+  if (conversationWorkbenchPages.has(pageId)) {
+    return { canvasPreset: "conversation", supportsViewport: true };
   }
   if (viewportWorkbenchPages.has(pageId)) {
     return { canvasPreset: "viewport", supportsViewport: true };
