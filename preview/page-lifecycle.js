@@ -567,8 +567,13 @@ export function mountPage(
 
   const document = root.ownerDocument;
   const view = document.defaultView;
-  delete document.body.dataset.referenceLayout;
-  delete document.body.dataset.shellMode;
+  // renderComponentWorkbench marks the body before mountPage runs; clearing
+  // unconditionally here stripped the workbench full-width layout right after
+  // it was applied. Only reset when this route did not mount a workbench.
+  if (!root.querySelector("[data-component-workbench]")) {
+    delete document.body.dataset.referenceLayout;
+    delete document.body.dataset.shellMode;
+  }
   addHomeMaturityBadges(root);
   hydrateAvatarFixtures(root);
   root.querySelectorAll("[data-preview-indeterminate]").forEach((input) => {
