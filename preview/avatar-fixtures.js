@@ -46,7 +46,7 @@ function hexToHue(hex) {
 
 export const avatarStyles = ["mosaic", "quad", "rings"];
 
-export function avatarFixtureUrl(seed, { color, style } = {}) {
+export function avatarFixtureUrl(seed, { color, style, animated = false } = {}) {
   // Deterministic identity art: any stable string works as the seed — a
   // name, an email hash, or a hex color via the color option. Each seed
   // owns one analogous hue family and a dense pattern, so identities read
@@ -81,8 +81,7 @@ export function avatarFixtureUrl(seed, { color, style } = {}) {
     return bits;
   };
   const cells = [];
-  const put = (x, y, fill) =>
-    cells.push(`<rect x="${x * 5}" y="${y * 5}" width="5" height="5" fill="${fill}"/>`);
+  const put = (x, y, fill) => cells.push({ x, y, fill });
   const pick = () => {
     const roll = next() % 100;
     if (roll < 42) return c[0];
@@ -118,7 +117,28 @@ export function avatarFixtureUrl(seed, { color, style } = {}) {
       }
     }
   }
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" shape-rendering="crispEdges"><rect width="40" height="40" fill="${bg}"/>${cells.join("")}</svg>`;
+  // Animated identities twinkle deterministically: a hashed subset of cells
+  // cycles through the palette with staggered starts, baked into the SVG so
+  // it plays inside a plain <img>. Serve the static URL when the consumer
+  // honors prefers-reduced-motion.
+  const animatedCells = new Set();
+  if (animated) {
+    while (animatedCells.size < 14) {
+      animatedCells.add(next() % cells.length);
+    }
+  }
+  const rects = cells
+    .map(({ x, y, fill }, index) => {
+      if (!animatedCells.has(index)) {
+        return `<rect x="${x * 5}" y="${y * 5}" width="5" height="5" fill="${fill}"/>`;
+      }
+      const alt = c[(next() % 3)];
+      const begin = ((next() % 24) / 10).toFixed(1);
+      const dur = (1.8 + (next() % 14) / 10).toFixed(1);
+      return `<rect x="${x * 5}" y="${y * 5}" width="5" height="5" fill="${fill}"><animate attributeName="fill" values="${fill};${alt};${fill}" dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0.55;1" dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/></rect>`;
+    })
+    .join("");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" shape-rendering="crispEdges"><rect width="40" height="40" fill="${bg}"/>${rects}</svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 

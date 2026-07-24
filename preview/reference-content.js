@@ -417,6 +417,7 @@ avatarFixtureUrl("Shelly");                          // name
 avatarFixtureUrl("req_8f31");                        // request or session hash
 avatarFixtureUrl("agent-7", { color: "#ff6b45" });   // hex locks the palette
 avatarFixtureUrl("Shelly", { style: "rings" });      // mosaic | quad | rings
+avatarFixtureUrl("Shelly", { animated: true });      // cells twinkle inside the SVG
 
 // Unknown identities fall back to the claw mark
 resolveAvatarUrl(session.ownerName);`, "js")}
