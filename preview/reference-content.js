@@ -832,6 +832,25 @@ Retry-After: 12s · request id req_8f31</span></div>
     <section data-section-kind="markup" aria-labelledby="option-card-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="option-card-markup">The input does the work</h2></div></div>${codeBlock(`<label class="oc-option-card">\n  <input type="radio" name="setup-path" checked />\n  <span class="oc-option-card-icon">…</span>\n  <span class="oc-option-card-copy"><strong>Express setup</strong><small>Recommended defaults.</small></span>\n</label>\n\n<div class="oc-connect">\n  <div class="oc-connect-qr" role="img" aria-label="Pairing QR code">…</div>\n  <code class="oc-connect-code">418 302</code>\n</div>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="option-card-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="option-card-guidance">Real inputs, one decision at a time</h2></div></div>${guidanceList(["Cards wrap radio inputs; selection and focus come from the input.", "Offer the manual alternative next to every QR path.", "Pairing codes stay short, grouped, and monospace.", "Verification, retry, and expiry handling stay consumer-owned."])}</section>`,
 
+  "primitive-hovercard": () =>
+    `${pageIntro("Component", "Hovercard", "Anchored reference context revealed from a link, and the native-dialog lightbox for inspecting a single attachment.")}
+    <section data-section-kind="preview" aria-labelledby="hovercard-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="hovercard-preview">Reference context</h2></div><span class="oc-pill">.oc-hovercard</span></div>
+      <div class="specimen-frame"><div style="display: grid; gap: var(--oc-space-4); justify-items: start;">
+        <div class="oc-hovercard" role="tooltip">
+          <div class="oc-hovercard-header">${icon("git-branch")}<span>openclaw/carapace</span><span class="oc-badge oc-badge-success">Open</span></div>
+          <p class="oc-hovercard-title">feat: bring Carapace application surfaces to parity #30</p>
+          <p class="oc-hovercard-copy">Adds interactive settings, operations, workspace, sessions, and Quick Chat screens with model, state, theme, and viewport controls.</p>
+          <div class="oc-hovercard-meta"><span>42 files</span><span>+17,229 −2,756</span><span>Updated today</span></div>
+        </div>
+        <div class="oc-lightbox" style="position: static; display: block;">
+          <div class="oc-lightbox-header">${icon("image")}<strong>application-surface.png</strong><small>1440 × 900 · 184 KB</small><div class="oc-lightbox-actions"><button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Download">${icon("download")}</button><button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Close">${icon("x")}</button></div></div>
+          <div class="oc-lightbox-stage"><span style="display: grid; width: 14rem; height: 7rem; border: 1px dashed var(--oc-border-strong); border-radius: var(--oc-radius-inset); color: var(--oc-text-muted); font-size: var(--oc-font-size-xs); place-items: center;">Attachment preview</span></div>
+        </div>
+      </div></div>
+    </section>
+    <section data-section-kind="markup" aria-labelledby="hovercard-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="hovercard-markup">Surface only; anchoring stays local</h2></div></div>${codeBlock(`<div class="oc-hovercard" role="tooltip">\n  <div class="oc-hovercard-header">…<span>openclaw/carapace</span></div>\n  <p class="oc-hovercard-title">feat: application surfaces #30</p>\n  <p class="oc-hovercard-copy">Short description…</p>\n</div>\n\n<dialog class="oc-lightbox" aria-label="Attachment preview">\n  <div class="oc-lightbox-header">…</div>\n  <div class="oc-lightbox-stage"><img src="…" alt="…" /></div>\n</dialog>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="hovercard-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="hovercard-guidance">Context, not a second page</h2></div></div>${guidanceList(["Hovercards must also open on keyboard focus, never hover alone.", "Clamp descriptions; the link remains the way to read everything.", "Use a native dialog for the lightbox so focus and Escape behave.", "Fetching, caching, and positioning stay consumer-owned."])}</section>`,
+
   "primitive-indicators": () =>
     `${pageIntro("Component", "Indicators", "Compact signals for sessions and collections: metric strips, owner chips, unread dots, run spinners, and toned badges.")}
     <section data-section-kind="preview" aria-labelledby="indicators-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="indicators-preview">Collection and row signals</h2></div><span class="oc-pill">.oc-summary-strip</span></div>

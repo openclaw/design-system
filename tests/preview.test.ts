@@ -345,6 +345,7 @@ describe("preview contracts", () => {
         "primitive-code-block",
         "primitive-command-palette",
         "primitive-empty",
+        "primitive-hovercard",
         "primitive-indicators",
         "primitive-input",
         "primitive-input-area",

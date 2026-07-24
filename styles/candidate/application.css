@@ -5149,3 +5149,110 @@
   color: var(--oc-text-muted);
   font-size: var(--oc-font-size-xs);
 }
+
+/* Hovercard: anchored context for a reference (issue, PR, user) that a
+   link reveals on hover or focus. Positioning and fetch stay
+   consumer-owned; this styles only the floating surface. */
+.oc-hovercard {
+  display: grid;
+  width: min(100%, 20rem);
+  padding: var(--oc-space-3);
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-surface);
+  background: var(--oc-bg-elevated);
+  box-shadow: var(--oc-shadow-lg);
+  color: var(--oc-text-primary);
+  font-size: var(--oc-font-size-xs);
+  gap: var(--oc-space-2);
+}
+
+.oc-hovercard-header {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-muted);
+}
+
+.oc-hovercard-header .oc-badge {
+  margin-left: auto;
+}
+
+.oc-hovercard-title {
+  margin: 0;
+  font-size: var(--oc-font-size-sm);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.oc-hovercard-copy {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  -webkit-box-orient: vertical;
+  color: var(--oc-text-secondary);
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.oc-hovercard-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-muted);
+}
+
+/* Lightbox: a full-viewport dialog for inspecting one attachment. Uses a
+   native dialog; open, close, and keyboard handling stay native or
+   consumer-owned. */
+.oc-lightbox {
+  width: min(92vw, 64rem);
+  padding: 0;
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-surface);
+  background: var(--oc-bg-page);
+  color: var(--oc-text-primary);
+}
+
+.oc-lightbox::backdrop {
+  background: rgb(0 0 0 / 0.6);
+}
+
+.oc-lightbox-header {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  padding: var(--oc-space-2) var(--oc-space-3);
+  border-bottom: 1px solid var(--oc-border-subtle);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-lightbox-header strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-lightbox-header small {
+  color: var(--oc-text-muted);
+}
+
+.oc-lightbox-actions {
+  display: flex;
+  margin-left: auto;
+  gap: var(--oc-space-1);
+}
+
+.oc-lightbox-stage {
+  display: grid;
+  max-height: 70vh;
+  place-items: center;
+  padding: var(--oc-space-3);
+  background: var(--oc-bg-recessed);
+}
+
+.oc-lightbox-stage img {
+  max-width: 100%;
+  max-height: calc(70vh - 2 * var(--oc-space-3));
+  border-radius: var(--oc-radius-inset);
+  object-fit: contain;
+}

@@ -327,6 +327,12 @@ export const referenceAreas = [
         keywords: "oc-app-surface root wrapper background color font",
       },
       {
+        id: "primitive-hovercard",
+        label: "Hovercard",
+        path: "interface/primitives/hovercard/",
+        keywords: "oc-hovercard oc-lightbox link preview reference attachment dialog",
+      },
+      {
         id: "primitive-hero",
         label: "Hero",
         path: "interface/primitives/hero/",
@@ -897,6 +903,7 @@ const candidateReferenceIds = new Set([
   "primitive-log-viewer",
   "primitive-menu-panel",
   "primitive-option-card",
+  "primitive-hovercard",
   "primitive-badge",
   "primitive-banner",
   "primitive-checkbox",
