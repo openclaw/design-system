@@ -4706,3 +4706,125 @@
     transition: none;
   }
 }
+
+/* Split pane: two work regions sharing an axis, with an optional tab strip
+   per pane and a divider affordance. Resize behavior, persistence, and
+   keyboard drag stay consumer-owned; the divider is only the visual grip. */
+.oc-split {
+  display: grid;
+  min-height: 0;
+  gap: 0;
+}
+
+.oc-split[data-axis="row"] {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
+.oc-split[data-axis="column"] {
+  grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
+.oc-split-pane {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.oc-split-divider {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border: 0;
+  padding: 0;
+  background: var(--oc-border-subtle);
+  cursor: col-resize;
+}
+
+.oc-split[data-axis="row"] .oc-split-divider {
+  width: 1px;
+}
+
+.oc-split[data-axis="column"] .oc-split-divider {
+  height: 1px;
+  cursor: row-resize;
+}
+
+/* The grip enlarges the hit area beyond the 1px rule without moving panes. */
+.oc-split-divider::before {
+  position: absolute;
+  content: "";
+  inset: 0 -3px;
+}
+
+.oc-split[data-axis="column"] .oc-split-divider::before {
+  inset: -3px 0;
+}
+
+.oc-split-divider:focus-visible {
+  outline: 2px solid var(--oc-focus-ring);
+  outline-offset: 1px;
+}
+
+.oc-panel-tab-strip {
+  display: flex;
+  overflow-x: auto;
+  align-items: center;
+  gap: var(--oc-space-1);
+  padding: var(--oc-space-1) var(--oc-space-2);
+  border-bottom: 1px solid var(--oc-border-subtle);
+  background: var(--oc-bg-surface);
+}
+
+.oc-panel-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oc-space-1);
+  padding: var(--oc-space-1) var(--oc-space-2);
+  border: 0;
+  border-radius: var(--oc-radius-inset);
+  background: none;
+  color: var(--oc-text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--oc-font-size-xs);
+  white-space: nowrap;
+}
+
+.oc-panel-tab[aria-selected="true"],
+.oc-panel-tab[aria-current="true"] {
+  background: var(--oc-surface-interactive);
+  color: var(--oc-text-primary);
+}
+
+.oc-panel-tab:focus-visible {
+  outline: 2px solid var(--oc-focus-ring);
+  outline-offset: -2px;
+}
+
+.oc-panel-tab-close {
+  display: inline-grid;
+  width: 1rem;
+  height: 1rem;
+  border: 0;
+  border-radius: var(--oc-radius-inset);
+  background: none;
+  color: var(--oc-text-muted);
+  cursor: pointer;
+  place-items: center;
+}
+
+.oc-panel-tab-close:hover {
+  background: var(--oc-surface-interactive-hover);
+  color: var(--oc-text-primary);
+}
+
+.oc-panel-tab-strip .oc-action {
+  margin-left: auto;
+}
+
+.oc-split-pane-body {
+  min-height: 0;
+  overflow: auto;
+  background: var(--oc-bg-page);
+}

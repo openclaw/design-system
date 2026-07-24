@@ -751,6 +751,30 @@ const contents = {
     <section data-section-kind="markup" aria-labelledby="code-block-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="code-block-markup">Name the source in the header</h2></div></div>${codeBlock(`<div class="oc-code-block">\n  <div class="oc-code-block-header"><span>openclaw.json</span><button class="oc-action oc-action-ghost" type="button">Copy</button></div>\n  <pre tabindex="0" aria-label="Configuration example"><code>…</code></pre>\n</div>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="code-block-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="code-block-guidance">Structure only; highlighting stays consumer-owned</h2></div></div>${guidanceList(["Name the file, language, or command in the header.", "Make the scrollable region keyboard focusable with an accessible name.", "Announce copy results through a polite live region.", "Token or syntax coloring belongs to the consumer's highlighter."])}</section>`,
 
+  "primitive-split-pane": () =>
+    `${pageIntro("Component", "Split Pane", "Two work regions on one axis with per-pane tab strips and a divider affordance; resize behavior stays consumer-owned.")}
+    <section data-section-kind="preview" aria-labelledby="split-pane-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="split-pane-preview">Docked panels</h2></div><span class="oc-pill">.oc-split</span></div>
+      <div class="specimen-frame"><div class="oc-split" data-axis="row" style="width: 100%; height: 16rem; border: 1px solid var(--oc-border-subtle); border-radius: var(--oc-radius-surface); overflow: hidden;">
+        <section class="oc-split-pane" aria-label="Terminal">
+          <div class="oc-panel-tab-strip" role="tablist" aria-label="Terminal sessions">
+            <button class="oc-panel-tab" type="button" role="tab" aria-selected="true">carapace <span class="oc-panel-tab-close" aria-label="Close carapace tab" role="button">${icon("x")}</span></button>
+            <button class="oc-panel-tab" type="button" role="tab" aria-selected="false">gateway</button>
+            <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="New terminal">${icon("plus")}</button>
+          </div>
+          <div class="oc-split-pane-body" style="padding: var(--oc-space-3); font-family: var(--oc-font-mono); font-size: var(--oc-font-size-xs); color: var(--oc-text-secondary);">bun run check<br />193 pass · 0 fail</div>
+        </section>
+        <button class="oc-split-divider" type="button" aria-label="Resize panels" aria-orientation="vertical"></button>
+        <section class="oc-split-pane" aria-label="Browser">
+          <div class="oc-panel-tab-strip" role="tablist" aria-label="Browser tabs">
+            <button class="oc-panel-tab" type="button" role="tab" aria-selected="true">carapace.design</button>
+          </div>
+          <div class="oc-split-pane-body" style="display: grid; place-items: center; color: var(--oc-text-muted); font-size: var(--oc-font-size-xs);">Preview surface</div>
+        </section>
+      </div></div>
+    </section>
+    <section data-section-kind="markup" aria-labelledby="split-pane-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="split-pane-markup">Panes, strip, divider</h2></div></div>${codeBlock(`<div class="oc-split" data-axis="row">\n  <section class="oc-split-pane" aria-label="Terminal">\n    <div class="oc-panel-tab-strip" role="tablist">…</div>\n    <div class="oc-split-pane-body">…</div>\n  </section>\n  <button class="oc-split-divider" type="button" aria-label="Resize panels"></button>\n  <section class="oc-split-pane" aria-label="Browser">…</section>\n</div>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="split-pane-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="split-pane-guidance">The divider is a grip, not a layout engine</h2></div></div>${guidanceList(["Drag, keyboard resize, and size persistence stay in the consumer.", "Keep one tab strip per pane; overflowing tabs scroll instead of wrapping.", "Name every pane and the divider for assistive technology.", "Use data-axis to switch between side-by-side and stacked layouts."])}</section>`,
+
   "primitive-indicators": () =>
     `${pageIntro("Component", "Indicators", "Compact signals for sessions and collections: metric strips, owner chips, unread dots, run spinners, and toned badges.")}
     <section data-section-kind="preview" aria-labelledby="indicators-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="indicators-preview">Collection and row signals</h2></div><span class="oc-pill">.oc-summary-strip</span></div>

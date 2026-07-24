@@ -352,6 +352,7 @@ describe("preview contracts", () => {
         "primitive-radio",
         "primitive-select",
         "primitive-skeleton-line",
+        "primitive-split-pane",
         "primitive-switch",
         "primitive-table",
       ].sort(),

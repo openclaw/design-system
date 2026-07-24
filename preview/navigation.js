@@ -255,6 +255,12 @@ export const referenceAreas = [
         keywords: "oc-skeleton-line loading placeholder progress content",
       },
       {
+        id: "primitive-split-pane",
+        label: "Split Pane",
+        path: "interface/primitives/split-pane/",
+        keywords: "oc-split divider panel tab strip dock resize terminal browser",
+      },
+      {
         id: "primitive-table",
         label: "Table",
         path: "interface/primitives/table/",
@@ -862,6 +868,7 @@ const candidateReferenceIds = new Set([
   "primitive-code-block",
   "primitive-command-palette",
   "primitive-indicators",
+  "primitive-split-pane",
   "primitive-badge",
   "primitive-banner",
   "primitive-checkbox",
