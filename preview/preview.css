@@ -770,9 +770,10 @@ body[data-page-kind="home"] .preview-stage {
   height: 100%;
   max-width: none;
   /* Cover keeps the crustacean framed at every cell width; width-scaling let
-     wide viewports push the artwork below the visible band, hiding it. */
+     wide viewports push the artwork below the visible band, hiding it. The
+     head sits at the top of the source, so top-anchor to never clip it. */
   object-fit: cover;
-  object-position: 50% 22%;
+  object-position: 50% 0%;
   opacity: 0.82;
   -webkit-mask-image: linear-gradient(
     to bottom,
