@@ -415,7 +415,6 @@ describe("CSS contract", () => {
       ".oc-model-menu-settings",
       ".oc-model-option",
       ".oc-model-option-copy",
-      ".oc-model-option-meta",
       ".oc-model-option-provider",
       ".oc-model-options",
       ".oc-model-picker",

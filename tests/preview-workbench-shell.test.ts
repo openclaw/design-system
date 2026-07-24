@@ -359,12 +359,10 @@ describe("workbench shell contracts", () => {
     const workspaceInspectorHide = createButton();
     const workspaceModel = createButton({
       workbenchApplicationModel: "anthropic/claude-opus-4-8",
-      modelSearch: "claude opus 4.8 anthropic 200k",
     });
     workspaceModel.textContent = "Claude Opus 4.8 Anthropic";
     const grokModel = createButton({
       workbenchApplicationModel: "xai/grok-4",
-      modelSearch: "grok 4 xai 256k",
     });
     grokModel.textContent = "Grok 4 xAI";
     const recentProvider = createButton(

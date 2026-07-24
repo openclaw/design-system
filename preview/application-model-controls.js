@@ -14,7 +14,6 @@ export const applicationModels = [
     label: "GPT-5.5",
     provider: "OpenAI",
     providerId: "openai",
-    meta: "Default",
     recentlyUsed: true,
     supportsFast: true,
   },
@@ -23,7 +22,6 @@ export const applicationModels = [
     label: "GPT-5.3 Codex Spark",
     provider: "OpenAI",
     providerId: "openai",
-    meta: "Codex",
     recentlyUsed: true,
     supportsFast: true,
   },
@@ -32,7 +30,6 @@ export const applicationModels = [
     label: "Claude Opus 4.8",
     provider: "Anthropic",
     providerId: "anthropic",
-    meta: "200k",
     recentlyUsed: true,
     supportsFast: false,
   },
@@ -41,7 +38,6 @@ export const applicationModels = [
     label: "Gemini 2.5 Pro",
     provider: "Google",
     providerId: "google",
-    meta: "1m",
     recentlyUsed: false,
     supportsFast: true,
   },
@@ -50,7 +46,6 @@ export const applicationModels = [
     label: "Grok 4",
     provider: "xAI",
     providerId: "xai",
-    meta: "256k",
     recentlyUsed: false,
     supportsFast: false,
   },
@@ -76,7 +71,7 @@ export const defaultApplicationModel = applicationModels[0].value;
 export const defaultReasoningLevel = "high";
 
 function modelSearchText(entry) {
-  return `${entry.label} ${entry.provider} ${entry.meta}`.toLowerCase();
+  return `${entry.label} ${entry.provider}`.toLowerCase();
 }
 
 // Single source for menu filtering: the static markup and the live binder
@@ -137,7 +132,6 @@ export function applicationModelControlsMarkup({
       return `<button class="oc-model-option" type="button" aria-pressed="${entry.value === selected.value}" data-workbench-application-model="${entry.value}" data-model-provider="${entry.provider}"${matches ? "" : " hidden"}${locked ? " disabled" : ""}>
   ${applicationProviderIcon(entry.providerId, "oc-model-option-provider")}
   <span class="oc-model-option-copy"><strong>${entry.label}</strong><small>${entry.provider}</small></span>
-  <span class="oc-model-option-meta">${entry.meta}</span>
   ${entry.value === selected.value ? `<span class="oc-model-check" aria-hidden="true">${agentIcon("check")}</span>` : ""}
 </button>`;
     })

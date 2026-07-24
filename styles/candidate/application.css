@@ -3062,8 +3062,8 @@
 .oc-model-option {
   display: grid;
   width: 100%;
-  min-height: 2.5rem;
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  min-height: 2.25rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--oc-space-2);
   padding: var(--oc-space-1) var(--oc-space-2);
@@ -3111,8 +3111,7 @@
   font-size: var(--oc-font-size-xs);
 }
 
-.oc-model-option-copy small,
-.oc-model-option-meta {
+.oc-model-option-copy small {
   color: var(--oc-text-muted);
   font-size: 0.625rem;
 }

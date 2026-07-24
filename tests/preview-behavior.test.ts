@@ -687,14 +687,14 @@ describe("preview behavior", () => {
       'data-workbench-application-model="google/gemini-2.5-pro" data-model-provider="Google"',
     );
     expect(filteredModelPicker).toContain('value="gem" data-workbench-model-search');
-    const metadataFilteredModelPicker = modelPickerWorkbenchMarkup({
+    const providerFilteredModelPicker = modelPickerWorkbenchMarkup({
       modelProvider: "xai",
-      modelQuery: "256k",
+      modelQuery: "grok",
     });
-    expect(metadataFilteredModelPicker).toContain(
+    expect(providerFilteredModelPicker).toContain(
       'data-workbench-application-model="xai/grok-4" data-model-provider="xAI"',
     );
-    expect(metadataFilteredModelPicker).not.toContain(
+    expect(providerFilteredModelPicker).not.toContain(
       'data-workbench-application-model="xai/grok-4" data-model-provider="xAI" hidden',
     );
     expect(modelPickerWorkbenchMarkup()).toContain("data-workbench-model-reset disabled");
