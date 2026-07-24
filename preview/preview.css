@@ -283,22 +283,6 @@ html[data-theme="light"] .brand-mark {
   line-height: 1;
 }
 
-.brand-context {
-  display: inline-flex;
-  min-height: 22px;
-  align-items: center;
-  padding: 3px 7px;
-  border: 1px solid var(--oc-border-subtle);
-  background: var(--oc-bg-surface);
-  color: var(--oc-text-secondary);
-  font-family: var(--oc-font-mono);
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
 .brand:focus-visible {
   outline: 2px solid var(--oc-focus-ring);
   outline-offset: 2px;
@@ -825,20 +809,6 @@ body[data-page-kind="home"] .preview-stage {
   color: var(--oc-text-muted);
   font-size: 13px;
   line-height: 1.5;
-}
-
-.home-brand-package {
-  display: inline-flex;
-  width: fit-content;
-  margin: 0;
-  padding: 6px 10px;
-  border: 1px solid var(--oc-border-subtle);
-  border-radius: var(--oc-radius-control);
-  background: color-mix(in srgb, var(--oc-bg-surface) 72%, transparent);
-  color: var(--oc-text-muted);
-  font-family: var(--oc-font-mono);
-  font-size: 12px;
-  line-height: 1.2;
 }
 
 .home-component-link {
@@ -6516,10 +6486,6 @@ body:is([data-preview-page="interface-primitives"], [data-page-kind="example"])
 @media (max-width: 680px) {
   .topbar {
     grid-template-columns: 44px minmax(0, 1fr) 44px 44px;
-  }
-
-  .brand-context {
-    display: none;
   }
 
   .brand-mark {

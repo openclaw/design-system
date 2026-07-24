@@ -187,9 +187,8 @@ describe("preview contracts", () => {
     expect(home).toContain('data-preview-route="overview"');
     expect(home).toContain('class="home-component-grid"');
     expect(home).toContain('class="home-component-cell home-brand-cell"');
-    expect(home).toMatch(
-      /<div class="home-brand-intro">\s*<code class="home-brand-package">@openclaw\/carapace<\/code>/,
-    );
+    expect(home).toMatch(/<div class="home-brand-intro">\s*<p class="eyebrow">/);
+    expect(home).not.toContain('class="home-brand-package"');
     expect(home).toContain('<h1 id="preview-title">Carapace</h1>');
     expect(home).toContain("Shared tokens, components, agent patterns, and application anatomy");
     expect(home).toContain("Carapace is the durable visual contract between products");

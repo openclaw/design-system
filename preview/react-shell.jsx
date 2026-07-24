@@ -766,7 +766,6 @@ export function ReactShell({
             </span>
             <span className="brand-wordmark">Carapace</span>
           </span>
-          <span className="brand-context">Design System</span>
         </a>
         <GlobalSearch currentPageId={currentPageId} siteRoot={siteRoot} onNavigate={onNavigate} />
         <div className="topbar-actions">
