@@ -111,7 +111,6 @@ describe("preview route build", () => {
       ["introduction", "Introduction · Carapace"],
       ["interface", "Components · Carapace"],
       ["effects", "Effects · Carapace"],
-      ["compositions", "Compositions · Carapace"],
       ["resources", "Resources · Carapace"],
     ]) {
       const route = previewRoutes.find((entry) => entry.id === id);

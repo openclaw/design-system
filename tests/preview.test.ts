@@ -82,7 +82,6 @@ describe("preview contracts", () => {
     const areaOverviewIds = new Set([
       "foundations",
       "interface",
-      "compositions",
       "resources",
     ]);
     for (const area of referenceAreas.filter(({ id }) => areaOverviewIds.has(id))) {

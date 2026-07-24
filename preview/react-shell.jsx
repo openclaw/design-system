@@ -22,7 +22,6 @@ const pageKinds = {
   interface: "index",
   charts: "index",
   blocks: "index",
-  compositions: "index",
   resources: "index",
   "foundation-tokens": "catalog",
   "foundation-colors": "catalog",

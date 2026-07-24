@@ -1,5 +1,4 @@
 import homeHtml from "./index.html?raw";
-import compositionsHtml from "./static-routes/compositions.html?raw";
 import interfaceHtml from "./static-routes/interface.html?raw";
 import resourcesHtml from "./static-routes/resources.html?raw";
 import homeArtworkUrl from "./assets/carapace-home-artwork.avif?url";
@@ -7,7 +6,6 @@ import homeArtworkUrl from "./assets/carapace-home-artwork.avif?url";
 const staticRoutes = new Map([
   ["overview", { html: homeHtml, path: "", document: true }],
   ["interface", { html: interfaceHtml, path: "interface/", document: false }],
-  ["compositions", { html: compositionsHtml, path: "compositions/", document: false }],
   ["resources", { html: resourcesHtml, path: "resources/", document: false }],
 ]);
 
