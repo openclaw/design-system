@@ -21,6 +21,7 @@ import Calendar from "lucide/dist/esm/icons/calendar.mjs";
 import CalendarClock from "lucide/dist/esm/icons/calendar-clock.mjs";
 import Camera from "lucide/dist/esm/icons/camera.mjs";
 import CameraOff from "lucide/dist/esm/icons/camera-off.mjs";
+import ChartNoAxesCombined from "lucide/dist/esm/icons/chart-no-axes-combined.mjs";
 import Check from "lucide/dist/esm/icons/check.mjs";
 import ChevronDown from "lucide/dist/esm/icons/chevron-down.mjs";
 import ChevronRight from "lucide/dist/esm/icons/chevron-right.mjs";
@@ -31,6 +32,7 @@ import CircleCheck from "lucide/dist/esm/icons/circle-check.mjs";
 import CircleHelp from "lucide/dist/esm/icons/circle-question-mark.mjs";
 import Code2 from "lucide/dist/esm/icons/code-xml.mjs";
 import Copy from "lucide/dist/esm/icons/copy.mjs";
+import Database from "lucide/dist/esm/icons/database.mjs";
 import Download from "lucide/dist/esm/icons/download.mjs";
 import Ellipsis from "lucide/dist/esm/icons/ellipsis.mjs";
 import ExternalLink from "lucide/dist/esm/icons/external-link.mjs";
@@ -39,6 +41,7 @@ import EyeOff from "lucide/dist/esm/icons/eye-off.mjs";
 import FileCode from "lucide/dist/esm/icons/file-code.mjs";
 import FileJson from "lucide/dist/esm/icons/file-braces.mjs";
 import FileText from "lucide/dist/esm/icons/file-text.mjs";
+import FlaskConical from "lucide/dist/esm/icons/flask-conical.mjs";
 import FolderGit2 from "lucide/dist/esm/icons/folder-git-2.mjs";
 import GitBranch from "lucide/dist/esm/icons/git-branch.mjs";
 import Globe from "lucide/dist/esm/icons/globe.mjs";
@@ -50,6 +53,7 @@ import Inbox from "lucide/dist/esm/icons/inbox.mjs";
 import Italic from "lucide/dist/esm/icons/italic.mjs";
 import LayoutDashboard from "lucide/dist/esm/icons/layout-dashboard.mjs";
 import LayoutGrid from "lucide/dist/esm/icons/layout-grid.mjs";
+import Library from "lucide/dist/esm/icons/library.mjs";
 import Link from "lucide/dist/esm/icons/link.mjs";
 import ListFilter from "lucide/dist/esm/icons/list-filter.mjs";
 import LoaderCircle from "lucide/dist/esm/icons/loader-circle.mjs";
@@ -63,10 +67,12 @@ import Monitor from "lucide/dist/esm/icons/monitor.mjs";
 import Moon from "lucide/dist/esm/icons/moon.mjs";
 import MousePointer2 from "lucide/dist/esm/icons/mouse-pointer-2.mjs";
 import Newspaper from "lucide/dist/esm/icons/newspaper.mjs";
+import NotebookPen from "lucide/dist/esm/icons/notebook-pen.mjs";
 import Palette from "lucide/dist/esm/icons/palette.mjs";
 import PanelLeftClose from "lucide/dist/esm/icons/panel-left-close.mjs";
 import PanelLeftOpen from "lucide/dist/esm/icons/panel-left-open.mjs";
 import PanelRightClose from "lucide/dist/esm/icons/panel-right-close.mjs";
+import PanelTop from "lucide/dist/esm/icons/panel-top.mjs";
 import PanelsTopLeft from "lucide/dist/esm/icons/panels-top-left.mjs";
 import Paperclip from "lucide/dist/esm/icons/paperclip.mjs";
 import PenLine from "lucide/dist/esm/icons/pen-line.mjs";
@@ -91,6 +97,7 @@ import Terminal from "lucide/dist/esm/icons/terminal.mjs";
 import TriangleAlert from "lucide/dist/esm/icons/triangle-alert.mjs";
 import Underline from "lucide/dist/esm/icons/underline.mjs";
 import User from "lucide/dist/esm/icons/user.mjs";
+import Workflow from "lucide/dist/esm/icons/workflow.mjs";
 import X from "lucide/dist/esm/icons/x.mjs";
 import Zap from "lucide/dist/esm/icons/zap.mjs";
 
@@ -117,6 +124,7 @@ const icons = {
   "calendar-clock": CalendarClock,
   camera: Camera,
   "camera-off": CameraOff,
+  "chart-no-axes-combined": ChartNoAxesCombined,
   check: Check,
   "chevron-down": ChevronDown,
   "chevron-right": ChevronRight,
@@ -127,6 +135,7 @@ const icons = {
   "circle-help": CircleHelp,
   "code-2": Code2,
   copy: Copy,
+  database: Database,
   download: Download,
   ellipsis: Ellipsis,
   "external-link": ExternalLink,
@@ -135,6 +144,7 @@ const icons = {
   "file-code": FileCode,
   "file-json": FileJson,
   "file-text": FileText,
+  "flask-conical": FlaskConical,
   "folder-git-2": FolderGit2,
   "git-branch": GitBranch,
   globe: Globe,
@@ -146,6 +156,7 @@ const icons = {
   italic: Italic,
   "layout-dashboard": LayoutDashboard,
   "layout-grid": LayoutGrid,
+  library: Library,
   link: Link,
   "list-filter": ListFilter,
   "loader-circle": LoaderCircle,
@@ -159,10 +170,12 @@ const icons = {
   moon: Moon,
   "mouse-pointer-2": MousePointer2,
   newspaper: Newspaper,
+  "notebook-pen": NotebookPen,
   palette: Palette,
   "panel-left-close": PanelLeftClose,
   "panel-left-open": PanelLeftOpen,
   "panel-right-close": PanelRightClose,
+  "panel-top": PanelTop,
   "panels-top-left": PanelsTopLeft,
   paperclip: Paperclip,
   "pen-line": PenLine,
@@ -187,6 +200,7 @@ const icons = {
   "triangle-alert": TriangleAlert,
   underline: Underline,
   user: User,
+  workflow: Workflow,
   x: X,
   zap: Zap,
 };

@@ -1963,7 +1963,7 @@ export function bindInteractiveToolActions(
   return copy ? 1 : 0;
 }
 
-function bindApplicationNavigation(specimen, state, update) {
+export function bindApplicationNavigation(specimen, state, update) {
   specimen
     .querySelector("[data-workbench-application-navigation]")
     ?.addEventListener("click", () => {
