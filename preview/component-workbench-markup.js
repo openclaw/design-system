@@ -13,7 +13,6 @@ import {
   applicationTalkToggleMarkup,
 } from "./application-screens.js";
 import { avatarFixtureUrl, clawAvatarUrl } from "./avatar-fixtures.js";
-import { crustaceanArtworkUrl } from "./banner-artwork.js";
 import {
   buttonWorkbenchExamples,
 } from "./component-reference.js";
@@ -793,11 +792,10 @@ export function brandBannerWorkbenchMarkup({
   size = "hero",
   content = true,
 } = {}) {
-  const crustacean = crustaceanArtworkUrl(asset);
   const art =
     asset === "mark"
       ? `<img src="${interactiveOpenClawMarkUrl}" alt="" />`
-      : `<img src="${crustacean || interactiveArtifactUrl}" alt="" />`;
+      : `<img src="${interactiveArtifactUrl}" alt="" />`;
   const contentMarkup = content
     ? `<div class="oc-brand-banner-content">
     <p class="oc-eyebrow">OpenClaw design system</p>

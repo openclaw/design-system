@@ -66,7 +66,7 @@ import {
   toastWorkbenchMarkup,
   userMessageWorkbenchMarkup,
 } from "../preview/component-workbench-config.js";
-import { bannerTones, crustaceanArtworkUrl } from "../preview/banner-artwork.js";
+import { bannerTones } from "../preview/banner-artwork.js";
 
 function keyboardEvent(key) {
   const event = new Event("keydown", { cancelable: true });
@@ -986,13 +986,6 @@ describe("preview behavior", () => {
     expect(banner).toContain('data-shader="dither"');
     expect(banner).toContain('data-tone="ocean"');
     expect(brandBannerWorkbenchMarkup({ asset: "mark" })).toContain("openclaw-mark");
-    const lobster = crustaceanArtworkUrl("lobster");
-    expect(lobster.startsWith("data:image/svg+xml,")).toBe(true);
-    expect(crustaceanArtworkUrl("lobster")).toBe(lobster);
-    expect(crustaceanArtworkUrl("nope")).toBe("");
-    expect(brandBannerWorkbenchMarkup({ asset: "shrimp" })).toContain(
-      crustaceanArtworkUrl("shrimp"),
-    );
     // Every tone is a four-step palette the shader can index directly.
     for (const palette of Object.values(bannerTones)) {
       expect(palette).toHaveLength(4);
