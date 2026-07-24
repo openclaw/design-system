@@ -2173,10 +2173,17 @@ describe("preview contracts", () => {
     );
     expect(home.match(/oc-app-surface/g)).toHaveLength(1);
     expect(previewStyles).toContain("--home-grid-row-height: clamp(12rem, 24vw, 17rem)");
-    expect(previewStyles).toContain("grid-auto-rows: var(--home-grid-row-height)");
+    expect(previewStyles).toContain(
+      "grid-auto-rows: minmax(var(--home-grid-row-height), auto)",
+    );
     expect(previewStyles).toContain("content-visibility: auto");
     expect(previewStyles).toContain(
       "contain-intrinsic-size: auto var(--home-grid-row-height)",
+    );
+    // The brand cell is always above the fold and must not let the
+    // render-skipping placeholder cap its row height and clip the intro copy.
+    expect(previewStyles).toMatch(
+      /\.home-brand-cell \{[\s\S]*?content-visibility: visible[\s\S]*?contain-intrinsic-size: none/,
     );
     expect(previewStyles).not.toContain(".home-component-cell:has(");
     expect(previewStyles).not.toContain(".home-component-cell:hover");
