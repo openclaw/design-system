@@ -66,7 +66,7 @@ import {
   toastWorkbenchMarkup,
   userMessageWorkbenchMarkup,
 } from "../preview/component-workbench-config.js";
-import { bannerArtworkUrl } from "../preview/banner-artwork.js";
+import { bannerTones, crustaceanArtworkUrl } from "../preview/banner-artwork.js";
 
 function keyboardEvent(key) {
   const event = new Event("keydown", { cancelable: true });
@@ -975,17 +975,27 @@ describe("preview behavior", () => {
     expect(release).toContain("Agent guidance follows the repository default branch");
     expect(release).not.toContain("Runtime assets and skills always release together");
   });
-  test("brand banner offers generated artwork and a shader contract", () => {
-    const reef = bannerArtworkUrl("reef");
-    expect(reef.startsWith("data:image/svg+xml,")).toBe(true);
-    // Deterministic: the same artwork URL on every call, unknown kinds are empty.
-    expect(bannerArtworkUrl("reef")).toBe(reef);
-    expect(bannerArtworkUrl("nope")).toBe("");
-
-    const banner = brandBannerWorkbenchMarkup({ asset: "swell", shader: "dither" });
-    expect(banner).toContain('data-asset="swell"');
+  test("brand banner varies the crab artwork instead of adding assets", () => {
+    const banner = brandBannerWorkbenchMarkup({
+      variant: "close",
+      shader: "dither",
+      tone: "ocean",
+    });
+    expect(banner).toContain("carapace-home-artwork");
+    expect(banner).toContain('data-variant="close"');
     expect(banner).toContain('data-shader="dither"');
-    expect(banner).toContain(bannerArtworkUrl("swell"));
-    expect(brandBannerWorkbenchMarkup({ asset: "crab" })).toContain("carapace-home-artwork");
+    expect(banner).toContain('data-tone="ocean"');
+    expect(brandBannerWorkbenchMarkup({ asset: "mark" })).toContain("openclaw-mark");
+    const lobster = crustaceanArtworkUrl("lobster");
+    expect(lobster.startsWith("data:image/svg+xml,")).toBe(true);
+    expect(crustaceanArtworkUrl("lobster")).toBe(lobster);
+    expect(crustaceanArtworkUrl("nope")).toBe("");
+    expect(brandBannerWorkbenchMarkup({ asset: "shrimp" })).toContain(
+      crustaceanArtworkUrl("shrimp"),
+    );
+    // Every tone is a four-step palette the shader can index directly.
+    for (const palette of Object.values(bannerTones)) {
+      expect(palette).toHaveLength(4);
+    }
   });
 });

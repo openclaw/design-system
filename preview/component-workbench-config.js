@@ -1139,9 +1139,11 @@ ${appSurfaceWorkbenchMarkup(state)}
   "primitive-brand-banner": {
     defaults: {
       asset: "crab",
+      variant: "classic",
       anchor: "top",
       effect: "fade",
       shader: "none",
+      tone: "ember",
       size: "hero",
       content: true,
     },
@@ -1152,11 +1154,21 @@ ${appSurfaceWorkbenchMarkup(state)}
         type: "choice",
         options: [
           { label: "Crab artwork", value: "crab" },
-          { label: "Reef", value: "reef" },
-          { label: "Swell", value: "swell" },
-          { label: "Bloom", value: "bloom" },
-          { label: "Identity mosaic", value: "mosaic" },
+          { label: "Lobster", value: "lobster" },
+          { label: "Shrimp", value: "shrimp" },
+          { label: "Hermit crab", value: "hermit" },
           { label: "OpenClaw mark", value: "mark" },
+        ],
+      },
+      {
+        id: "variant",
+        label: "Variant",
+        type: "choice",
+        options: [
+          { label: "Classic", value: "classic" },
+          { label: "Close-up", value: "close" },
+          { label: "Mirrored", value: "mirror" },
+          { label: "Emerge", value: "emerge" },
         ],
       },
       {
@@ -1168,6 +1180,17 @@ ${appSurfaceWorkbenchMarkup(state)}
           { label: "Dither", value: "dither" },
           { label: "Pixelate", value: "pixelate" },
           { label: "Duotone", value: "duotone" },
+        ],
+      },
+      {
+        id: "tone",
+        label: "Tone",
+        type: "choice",
+        options: [
+          { label: "Ember", value: "ember" },
+          { label: "Ocean", value: "ocean" },
+          { label: "Violet", value: "violet" },
+          { label: "Ink", value: "ink" },
         ],
       },
       {
@@ -1211,7 +1234,7 @@ ${appSurfaceWorkbenchMarkup(state)}
     },
     bind(specimen, state) {
       for (const image of specimen.querySelectorAll(".oc-brand-banner-art img")) {
-        applyBannerShader(image, state.shader);
+        applyBannerShader(image, state.shader, { tone: state.tone });
       }
     },
   },

@@ -13,7 +13,7 @@ import {
   applicationTalkToggleMarkup,
 } from "./application-screens.js";
 import { avatarFixtureUrl, clawAvatarUrl } from "./avatar-fixtures.js";
-import { bannerArtworkUrl } from "./banner-artwork.js";
+import { crustaceanArtworkUrl } from "./banner-artwork.js";
 import {
   buttonWorkbenchExamples,
 } from "./component-reference.js";
@@ -783,34 +783,21 @@ export function sidebarWorkbenchMarkup({
 </aside>`;
 }
 
-export const brandBannerCast = [
-  "Shelly",
-  "Barnacle",
-  "Scampi",
-  "Krill",
-  "Pincer",
-  "Scuttle",
-  "Mantis",
-  "Krabby",
-];
-
 export function brandBannerWorkbenchMarkup({
   asset = "crab",
+  variant = "classic",
   anchor = "top",
   effect = "fade",
   shader = "none",
+  tone = "ember",
   size = "hero",
   content = true,
 } = {}) {
-  const generated = bannerArtworkUrl(asset);
+  const crustacean = crustaceanArtworkUrl(asset);
   const art =
-    asset === "mosaic"
-      ? brandBannerCast
-          .map((seed) => `<img src="${avatarFixtureUrl(seed)}" alt="" />`)
-          .join("")
-      : asset === "mark"
-        ? `<img src="${interactiveOpenClawMarkUrl}" alt="" />`
-        : `<img src="${generated || interactiveArtifactUrl}" alt="" />`;
+    asset === "mark"
+      ? `<img src="${interactiveOpenClawMarkUrl}" alt="" />`
+      : `<img src="${crustacean || interactiveArtifactUrl}" alt="" />`;
   const contentMarkup = content
     ? `<div class="oc-brand-banner-content">
     <p class="oc-eyebrow">OpenClaw design system</p>
@@ -818,7 +805,7 @@ export function brandBannerWorkbenchMarkup({
     <p>A reusable artwork band: the asset and effect belong to the banner, the copy and actions stay consumer-owned.</p>
   </div>`
     : "";
-  return `<section class="oc-brand-banner" data-asset="${asset}" data-anchor="${anchor}" data-effect="${effect}" data-shader="${shader}" data-size="${size}">
+  return `<section class="oc-brand-banner" data-asset="${asset}" data-variant="${variant}" data-anchor="${anchor}" data-effect="${effect}" data-shader="${shader}" data-tone="${tone}" data-size="${size}">
   <div class="oc-brand-banner-art" aria-hidden="true">${art}</div>
   ${contentMarkup}
 </section>`;

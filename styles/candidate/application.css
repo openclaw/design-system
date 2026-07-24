@@ -5520,6 +5520,23 @@
   object-position: 50% 0%;
 }
 
+/* Crab variations: same asset, different framings. Close-up zooms into the
+   head, mirror flips the composition, emerge rises from the bottom edge. */
+.oc-brand-banner[data-variant="close"] .oc-brand-banner-art img {
+  transform: scale(2.1);
+  transform-origin: 56% 14%;
+}
+
+.oc-brand-banner[data-variant="mirror"] .oc-brand-banner-art img {
+  transform: scaleX(-1);
+}
+
+.oc-brand-banner[data-variant="emerge"] .oc-brand-banner-art img {
+  object-position: 50% 100%;
+  transform: scale(1.35) translateY(6%);
+  transform-origin: 50% 100%;
+}
+
 .oc-brand-banner[data-anchor="bottom"] .oc-brand-banner-art img {
   object-position: 50% 100%;
 }
@@ -5567,19 +5584,6 @@
   image-rendering: pixelated;
   opacity: 0.5;
   transform: translateY(-50%);
-}
-
-/* Mosaic tiles the generated identities into a pixel band. */
-.oc-brand-banner[data-asset="mosaic"] .oc-brand-banner-art {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-}
-
-.oc-brand-banner[data-asset="mosaic"] .oc-brand-banner-art img {
-  position: static;
-  image-rendering: pixelated;
-  opacity: 0.45;
 }
 
 .oc-brand-banner-content {
