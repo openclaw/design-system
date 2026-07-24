@@ -761,6 +761,9 @@ describe("CSS contract", () => {
           path !== "preview/assets/openclaw-mark-hover.png" &&
           path !== "preview/assets/user-vincentkoc.png" &&
           path !== "preview/assets/user-steipete.png" &&
+          path !== "preview/assets/carapace-lobster-artwork.avif" &&
+          path !== "preview/assets/carapace-shrimp-artwork.avif" &&
+          path !== "preview/assets/carapace-hermit-artwork.avif" &&
           path !== "preview/assets/carapace-home-artwork.avif" &&
           path !== "preview/public/carapace-og.png" &&
           forbiddenExtensions.test(path),
