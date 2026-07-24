@@ -1,4 +1,5 @@
 import { agentIcon } from "./agent-icons.js";
+import { applyBannerShader } from "./banner-artwork.js";
 import {
   appendAgentUserMessage,
 } from "./agent-components-interactions.js";
@@ -1136,7 +1137,14 @@ ${appSurfaceWorkbenchMarkup(state)}
     },
   },
   "primitive-brand-banner": {
-    defaults: { asset: "crab", anchor: "top", effect: "fade", size: "hero", content: true },
+    defaults: {
+      asset: "crab",
+      anchor: "top",
+      effect: "fade",
+      shader: "none",
+      size: "hero",
+      content: true,
+    },
     controls: [
       {
         id: "asset",
@@ -1144,8 +1152,22 @@ ${appSurfaceWorkbenchMarkup(state)}
         type: "choice",
         options: [
           { label: "Crab artwork", value: "crab" },
+          { label: "Reef", value: "reef" },
+          { label: "Swell", value: "swell" },
+          { label: "Bloom", value: "bloom" },
           { label: "Identity mosaic", value: "mosaic" },
           { label: "OpenClaw mark", value: "mark" },
+        ],
+      },
+      {
+        id: "shader",
+        label: "Shader",
+        type: "choice",
+        options: [
+          { label: "None", value: "none" },
+          { label: "Dither", value: "dither" },
+          { label: "Pixelate", value: "pixelate" },
+          { label: "Duotone", value: "duotone" },
         ],
       },
       {
@@ -1186,6 +1208,11 @@ ${appSurfaceWorkbenchMarkup(state)}
     markup: brandBannerWorkbenchMarkup,
     render(specimen, state) {
       specimen.innerHTML = brandBannerWorkbenchMarkup(state);
+    },
+    bind(specimen, state) {
+      for (const image of specimen.querySelectorAll(".oc-brand-banner-art img")) {
+        applyBannerShader(image, state.shader);
+      }
     },
   },
   "primitive-hero": {
