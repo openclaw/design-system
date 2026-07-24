@@ -721,7 +721,9 @@ body[data-page-kind="home"] .preview-stage {
 
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-auto-rows: var(--home-grid-row-height);
+  /* Rows keep the shared rhythm but may grow: the brand intro copy is taller
+     than one fixed row at wide viewports and clipped flush without this. */
+  grid-auto-rows: minmax(var(--home-grid-row-height), auto);
   gap: 1px;
   padding: 0;
   margin: 0;
@@ -747,6 +749,10 @@ body[data-page-kind="home"] .preview-stage {
   isolation: isolate;
   grid-column: span 2;
   grid-template-rows: minmax(0, 1fr);
+  /* Always above the fold, so render-skipping buys nothing; its intrinsic-size
+     placeholder capped the row and clipped the intro copy flush at the bottom. */
+  content-visibility: visible;
+  contain-intrinsic-size: none;
 }
 
 .home-artwork-layer {
