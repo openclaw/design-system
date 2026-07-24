@@ -5256,3 +5256,22 @@
   border-radius: var(--oc-radius-inset);
   object-fit: contain;
 }
+
+/* Session table cells: the title line carries the leading run or unread
+   indicator and trailing badges without wrapping the row. */
+.oc-session-cell-title {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  min-width: 0;
+}
+
+.oc-session-cell-title strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-session-cell-owner-muted {
+  color: var(--oc-text-muted);
+}

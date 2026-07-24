@@ -469,6 +469,8 @@ describe("CSS contract", () => {
       ".oc-select-wrap",
       ".oc-session-badges",
       ".oc-session-cell",
+      ".oc-session-cell-owner-muted",
+      ".oc-session-cell-title",
       ".oc-session-content",
       ".oc-session-list",
       ".oc-session-list-avatar",

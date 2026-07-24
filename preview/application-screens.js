@@ -1,4 +1,5 @@
 import { agentIcon } from "./agent-icons.js";
+import { avatarFixtureUrl } from "./avatar-fixtures.js";
 import {
   applicationModelControlsMarkup,
   escapeAttribute,
@@ -722,18 +723,32 @@ export function workspaceApplicationMarkup({
 </div>`;
 }
 
+function ownerChipMarkup(name) {
+  return `<span class="oc-owner-chip"><span class="oc-avatar oc-avatar-xs oc-avatar-pixel" aria-hidden="true"><img class="oc-avatar-image" src="${avatarFixtureUrl(name)}" alt="" width="20" height="20" /></span><span>${escapeAttribute(name)}</span></span>`;
+}
+
 function sessionsTableRow({
   title,
   agent,
   model,
   updated,
   status,
+  owner = "",
+  badges = "",
+  unread = false,
   selected = false,
 } = {}) {
+  const leading =
+    status === "active"
+      ? `<span class="oc-run-spinner" role="status" aria-label="Session running"></span>`
+      : unread
+        ? `<span class="oc-unread-dot" role="status" aria-label="Unread activity"></span>`
+        : "";
   return `<tr${selected ? ' aria-selected="true"' : ""}>
   <td><input class="oc-checkbox" type="checkbox" aria-label="Select ${escapeAttribute(title)}"${selected ? " checked" : ""} /></td>
-  <td><div class="oc-session-cell"><strong>${escapeAttribute(title)}</strong><small>${escapeAttribute(agent)}</small></div></td>
+  <td><div class="oc-session-cell"><span class="oc-session-cell-title">${leading}<strong>${escapeAttribute(title)}</strong>${badges ? `<span class="oc-session-badges">${badges}</span>` : ""}</span><small>${escapeAttribute(agent)}</small></div></td>
   <td>${escapeAttribute(model)}</td>
+  <td>${owner ? ownerChipMarkup(owner) : `<span class="oc-session-cell-owner-muted">—</span>`}</td>
   <td>${statusMarkup(status, { active: "Running", idle: "Idle", error: "Failed" })}</td>
   <td><time>${escapeAttribute(updated)}</time></td>
   <td><button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Actions for ${escapeAttribute(title)}">${agentIcon("ellipsis")}</button></td>
@@ -760,6 +775,12 @@ export function sessionsApplicationMarkup({
           <button class="oc-action oc-action-primary" type="button">${agentIcon("plus")} New session</button>
         </div>
       </header>
+      <div class="oc-summary-strip">
+        <div class="oc-summary-metric"><span class="oc-summary-metric-icon">${agentIcon("message-square")}</span><span class="oc-summary-metric-copy"><strong>24</strong><small>Sessions</small></span></div>
+        <div class="oc-summary-metric" data-tone="success"><span class="oc-summary-metric-icon">${agentIcon("play")}</span><span class="oc-summary-metric-copy"><strong>3</strong><small>Running</small></span></div>
+        <div class="oc-summary-metric" data-tone="warning"><span class="oc-summary-metric-icon">${agentIcon("shield-check")}</span><span class="oc-summary-metric-copy"><strong>${state === "error" ? "—" : "2"}</strong><small>Awaiting approval</small></span></div>
+        <div class="oc-summary-metric"${state === "error" ? ' data-tone="error"' : ""}><span class="oc-summary-metric-icon">${agentIcon("triangle-alert")}</span><span class="oc-summary-metric-copy"><strong>${state === "error" ? "!" : "1"}</strong><small>Failed</small></span></div>
+      </div>
       <div class="oc-session-toolbar">
         <label class="oc-search-field"><span class="sr-only">Search sessions</span>${agentIcon("search")}<input type="search" placeholder="Search sessions" /></label>
         <div class="oc-segmented" role="group" aria-label="Session scope">
@@ -776,11 +797,11 @@ export function sessionsApplicationMarkup({
           ? `<div class="oc-pane-state"><div class="oc-empty"><span class="oc-empty-icon">${agentIcon("messages-square")}</span><h2 class="oc-empty-title">No sessions found</h2><p class="oc-empty-description">Try another filter or start a new session.</p></div></div>`
           : `<div class="oc-table-wrap oc-session-table-wrap"${loading ? ' aria-busy="true"' : ""}>
         <table class="oc-table oc-session-table">
-          <thead><tr><th scope="col"><span class="sr-only">Select</span></th><th scope="col">Session</th><th scope="col">Model</th><th scope="col">State</th><th scope="col">Updated</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+          <thead><tr><th scope="col"><span class="sr-only">Select</span></th><th scope="col">Session</th><th scope="col">Model</th><th scope="col">Owner</th><th scope="col">State</th><th scope="col">Updated</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
           <tbody>
             ${
               loading
-                ? `<tr><td colspan="6"><span class="oc-loader" role="status"><span class="oc-loader-spinner" aria-hidden="true"></span>Loading sessions</span></td></tr>`
+                ? `<tr><td colspan="7"><span class="oc-loader" role="status"><span class="oc-loader-spinner" aria-hidden="true"></span>Loading sessions</span></td></tr>`
                 : [
                     sessionsTableRow({
                       title: "Carapace parity",
@@ -788,6 +809,8 @@ export function sessionsApplicationMarkup({
                       model: "GPT-5.5",
                       updated: "now",
                       status: "active",
+                      owner: "Mina",
+                      badges: '<span class="oc-badge oc-badge-success">PR #30</span>',
                       selected: true,
                     }),
                     sessionsTableRow({
@@ -796,6 +819,9 @@ export function sessionsApplicationMarkup({
                       model: "Claude Opus",
                       updated: "8m",
                       status: "idle",
+                      owner: "Atlas",
+                      badges: '<span class="oc-badge oc-badge-warning">Approval</span>',
+                      unread: true,
                     }),
                     sessionsTableRow({
                       title: "CI queue health",
@@ -810,6 +836,7 @@ export function sessionsApplicationMarkup({
                       model: "GPT-5.5",
                       updated: "2h",
                       status: "error",
+                      badges: '<span class="oc-badge oc-badge-info">Cloud</span>',
                     }),
                   ].join("")
             }
