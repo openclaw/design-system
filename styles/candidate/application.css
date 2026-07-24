@@ -5352,7 +5352,7 @@
 }
 
 .oc-avatar[data-presence="offline"]::before {
-  background: var(--oc-text-inactive);
+  background: var(--oc-status-error-fg);
 }
 
 .oc-avatar[data-presence="offline"] .oc-avatar-image {

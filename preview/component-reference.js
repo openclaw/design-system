@@ -38,7 +38,7 @@ export const avatarWorkbenchExamples = [
   ),
   avatarExample(
     "default",
-    "Default",
+    "Image",
     "Image-backed identity at the standard interface size.",
     `<span class="oc-avatar oc-avatar-pixel">
   <img
@@ -60,7 +60,7 @@ export const avatarWorkbenchExamples = [
   ),
   {
     id: "claw-default",
-    label: "Claw default",
+    label: "Default",
     purpose: "Deterministic pixel-claw identity for agents and surfaces without their own avatar.",
     markup: `<span class="oc-avatar oc-avatar-pixel" role="img" aria-label="OpenClaw agent">
   <img class="oc-avatar-image" src="claw-avatar.svg" alt="" width="40" height="40" />

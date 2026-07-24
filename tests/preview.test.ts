@@ -597,7 +597,7 @@ describe("preview contracts", () => {
     ]);
     expect(
       allCode.match(
-        /<!-- (Inline|Small|Default|Large|Claw default|User|Presence|Stack|Thinking|Speaking|Overflow) -->/g,
+        /<!-- (Inline|Small|Image|Large|Default|User|Presence|Stack|Thinking|Speaking|Overflow) -->/g,
       ),
     ).toHaveLength(11);
     expect(allCode).not.toContain("...");
