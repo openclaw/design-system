@@ -264,7 +264,7 @@ describe("preview behavior", () => {
       expect(markup).toContain('class="oc-banner-indicator" aria-hidden="true"');
     }
     expect(success).toContain(
-      '<button class="oc-action oc-action-secondary" type="button">Review</button>',
+      '<button class="oc-action oc-action-secondary oc-banner-action" type="button">Review</button>',
     );
   });
   test("renders App Surface with optional toolbar chrome and nested card", () => {

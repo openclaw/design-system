@@ -105,14 +105,17 @@ describe("workbench schema contracts", () => {
         ],
       },
       { id: "action", type: "toggle" },
+      { id: "dismissible", type: "toggle" },
     ]);
     expect(normalizeWorkbenchState(definition, { tone: "success", action: false })).toEqual({
       tone: "success",
       action: false,
+      dismissible: false,
     });
     expect(normalizeWorkbenchState(definition, { tone: "unknown", action: "yes" })).toEqual({
       tone: WORKBENCH_ALL_VALUE,
       action: true,
+      dismissible: false,
     });
   });
   test("publishes only real Link variants through the workbench schema", () => {

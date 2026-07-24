@@ -947,7 +947,7 @@ ${appSurfaceWorkbenchMarkup(state)}
     },
   },
   "primitive-banner": {
-    defaults: { tone: "warning", action: true },
+    defaults: { tone: "warning", action: true, dismissible: false },
     controls: [
       {
         id: "tone",
@@ -959,6 +959,11 @@ ${appSurfaceWorkbenchMarkup(state)}
       {
         id: "action",
         label: "Action",
+        type: "toggle",
+      },
+      {
+        id: "dismissible",
+        label: "Dismissible",
         type: "toggle",
       },
     ],

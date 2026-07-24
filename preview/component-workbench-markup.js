@@ -480,7 +480,7 @@ export function clipboardTextWorkbenchMarkup({ variant = "icon" } = {}) {
 </div>`;
 }
 
-export function bannerWorkbenchMarkup({ tone = "warning", action = true } = {}) {
+export function bannerWorkbenchMarkup({ tone = "warning", action = true, dismissible = false } = {}) {
   const content = {
     default: {
       title: "Notice",
@@ -507,7 +507,10 @@ export function bannerWorkbenchMarkup({ tone = "warning", action = true } = {}) 
   const modifier = selectedTone === "default" ? "" : ` oc-banner-${selectedTone}`;
   const selected = content[selectedTone];
   const adjacentAction = action
-    ? '\n  <button class="oc-action oc-action-secondary" type="button">Review</button>'
+    ? '\n  <button class="oc-action oc-action-secondary oc-banner-action" type="button">Review</button>'
+    : "";
+  const dismiss = dismissible
+    ? '\n  <button class="oc-banner-dismiss" type="button" aria-label="Dismiss notice"><i data-lucide="x" aria-hidden="true"></i></button>'
     : "";
 
   return `<div class="oc-banner${modifier}" role="status">
@@ -515,7 +518,7 @@ export function bannerWorkbenchMarkup({ tone = "warning", action = true } = {}) 
   <div class="oc-banner-content">
     <strong class="oc-banner-title">${selected.title}</strong>
     <p>${selected.message}</p>
-  </div>${adjacentAction}
+  </div>${adjacentAction}${dismiss}
 </div>`;
 }
 
