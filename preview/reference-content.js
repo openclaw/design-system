@@ -27,6 +27,10 @@ import { icon } from "./icons.js";
 import { getReferenceMaturity } from "./navigation.js";
 
 const brandMarkHoverUrl = new URL("./assets/openclaw-mark-hover.png", import.meta.url).href;
+const brandMarkUrl = new URL("./assets/openclaw-mark.png", import.meta.url).href;
+const userAvatarUrl = new URL("./assets/user-vincentkoc.png", import.meta.url).href;
+const pairQrUrl = new URL("./assets/pair-qr.svg", import.meta.url).href;
+const homeArtworkUrl = new URL("./assets/carapace-home-artwork.avif", import.meta.url).href;
 const brandFaviconUrl = new URL("./assets/openclaw-favicon.svg", import.meta.url).href;
 
 function escapeHtml(value) {
@@ -573,9 +577,9 @@ const contents = {
   "primitive-pagination": () =>
     `${pageIntro("Component", "Pagination", "A navigation control for moving across stable, addressable pages in a larger collection.")}
     <section data-section-kind="preview" aria-labelledby="pagination-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="pagination-preview">Page navigation</h2></div><span class="oc-pill">.oc-pagination</span></div>
-      <div class="specimen-frame"><nav class="oc-pagination" aria-label="Results pages"><a class="oc-pagination-link" href="?page=1" aria-label="Previous page" data-workbench-inert-link>←</a><ol class="oc-pagination-list"><li><a class="oc-pagination-link" href="?page=1" data-workbench-inert-link>1</a></li><li><a class="oc-pagination-link" href="?page=2" aria-current="page" data-workbench-inert-link>2</a></li><li><a class="oc-pagination-link" href="?page=3" data-workbench-inert-link>3</a></li><li><span class="oc-pagination-ellipsis" aria-hidden="true">…</span></li><li><a class="oc-pagination-link" href="?page=12" data-workbench-inert-link>12</a></li></ol><a class="oc-pagination-link" href="?page=3" aria-label="Next page" data-workbench-inert-link>→</a></nav>
-      <nav class="oc-pagination oc-pagination-compact" aria-label="Results pages"><a class="oc-pagination-link" href="?page=1" aria-label="Previous page" data-workbench-inert-link>←</a><span class="oc-pagination-status">Page 2 of 12</span><a class="oc-pagination-link" href="?page=3" aria-label="Next page" data-workbench-inert-link>→</a></nav>
-      <div class="oc-pagination-more"><button class="oc-action oc-action-secondary" type="button">Load 20 more</button><span class="oc-pagination-status">Showing 40 of 231</span></div></div>
+      <div class="specimen-frame"><div class="pagination-example-list"><div><small>Numbered pages</small><nav class="oc-pagination" aria-label="Results pages"><a class="oc-pagination-link" href="?page=1" aria-label="Previous page" data-workbench-inert-link>←</a><ol class="oc-pagination-list"><li><a class="oc-pagination-link" href="?page=1" data-workbench-inert-link>1</a></li><li><a class="oc-pagination-link" href="?page=2" aria-current="page" data-workbench-inert-link>2</a></li><li><a class="oc-pagination-link" href="?page=3" data-workbench-inert-link>3</a></li><li><span class="oc-pagination-ellipsis" aria-hidden="true">…</span></li><li><a class="oc-pagination-link" href="?page=12" data-workbench-inert-link>12</a></li></ol><a class="oc-pagination-link" href="?page=3" aria-label="Next page" data-workbench-inert-link>→</a></nav>
+      </div><div><small>Compact</small><nav class="oc-pagination oc-pagination-compact" aria-label="Results pages"><a class="oc-pagination-link" href="?page=1" aria-label="Previous page" data-workbench-inert-link>←</a><span class="oc-pagination-status">Page 2 of 12</span><a class="oc-pagination-link" href="?page=3" aria-label="Next page" data-workbench-inert-link>→</a></nav>
+      </div><div><small>Load more</small><div class="oc-pagination-more"><button class="oc-action oc-action-secondary" type="button">Load 20 more</button><span class="oc-pagination-status">Showing 40 of 231</span></div></div></div></div>
     </section>
     <section data-section-kind="markup" aria-labelledby="pagination-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="pagination-markup">Mark the current page</h2></div></div>${codeBlock(`<nav class="oc-pagination" aria-label="Results pages">\n  <ol class="oc-pagination-list">\n    <li><a class="oc-pagination-link" href="?page=1">1</a></li>\n    <li><a class="oc-pagination-link" href="?page=2" aria-current="page">2</a></li>\n  </ol>\n</nav>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="pagination-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="pagination-guidance">Keep pages addressable</h2></div></div>${guidanceList(["Use Load more for a continuous feed without stable page destinations.", "Preserve the current page in the URL.", "Give previous and next controls explicit accessible names.", "For an unavailable destination, remove href before applying aria-disabled and tabindex=-1."])}</section>`,
@@ -759,7 +763,7 @@ const contents = {
       <div class="specimen-frame"><div class="oc-split" data-axis="row" style="width: 100%; height: 16rem; border: 1px solid var(--oc-border-subtle); border-radius: var(--oc-radius-surface); overflow: hidden;">
         <section class="oc-split-pane" aria-label="Terminal">
           <div class="oc-panel-tab-strip" role="tablist" aria-label="Terminal sessions">
-            <button class="oc-panel-tab" type="button" role="tab" aria-selected="true">carapace <span class="oc-panel-tab-close" aria-label="Close carapace tab" role="button"><i data-lucide="x" aria-hidden="true"></i></span></button>
+            <button class="oc-panel-tab" type="button" role="tab" aria-selected="true">carapace<span class="oc-panel-tab-close" aria-hidden="true"><i data-lucide="x" aria-hidden="true"></i></span></button>
             <button class="oc-panel-tab" type="button" role="tab" aria-selected="false">gateway</button>
             <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="New terminal"><i data-lucide="plus" aria-hidden="true"></i></button>
           </div>
@@ -796,7 +800,7 @@ Retry-After: 12s · request id req_8f31</span></div>
     `${pageIntro("Component", "Menu Panel", "The compact surface behind a menu-bar or tray icon: identity, usage meters, session shortcuts, and a footer action row.")}
     <section data-section-kind="preview" aria-labelledby="menu-panel-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="menu-panel-preview">Menu bar extra</h2></div><span class="oc-pill">.oc-menu-panel</span></div>
       <div class="specimen-frame"><div class="oc-menu-panel">
-        <header class="oc-menu-panel-header"><img src="./assets/openclaw-mark.png" alt="" width="24" height="24" /><span class="oc-menu-panel-copy"><strong>OpenClaw</strong><small>Gateway online · v2026.7.1</small></span><span class="oc-status oc-status-success"><span class="oc-status-indicator" aria-hidden="true"></span><span class="oc-status-label">Ready</span></span></header>
+        <header class="oc-menu-panel-header"><img src="${brandMarkUrl}" alt="" width="24" height="24" /><span class="oc-menu-panel-copy"><strong>OpenClaw</strong><small>Gateway online · v2026.7.1</small></span><span class="oc-status oc-status-success"><span class="oc-status-indicator" aria-hidden="true"></span><span class="oc-status-label">Ready</span></span></header>
         <div class="oc-menu-panel-usage">
           <div class="oc-menu-panel-usage-row"><span class="oc-menu-panel-usage-label">Context</span><div class="oc-inspector-meter" role="meter" aria-label="Context used" aria-valuenow="41" aria-valuemin="0" aria-valuemax="100"><span style="width: 41%"></span></div><span class="oc-menu-panel-usage-value">41%</span></div>
           <div class="oc-menu-panel-usage-row"><span class="oc-menu-panel-usage-label">Daily cost</span><div class="oc-inspector-meter" role="meter" aria-label="Daily budget used" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"><span style="width: 62%"></span></div><span class="oc-menu-panel-usage-value">$3.10</span></div>
@@ -818,13 +822,13 @@ Retry-After: 12s · request id req_8f31</span></div>
       <div class="specimen-frame"><div style="display: grid; gap: var(--oc-space-5); width: min(100%, 42rem); grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); align-items: start;">
         <fieldset class="oc-option-group" style="border: 0; margin: 0; padding: 0;">
           <legend class="sr-only">Choose a setup path</legend>
-          <label class="oc-option-card"><input type="radio" name="setup-path" checked /><span class="oc-option-card-thumb" aria-hidden="true"><img src="./assets/carapace-home-artwork.avif" alt="" loading="lazy" /></span><span class="oc-option-card-copy"><strong>Express setup</strong><small>Recommended defaults with one provider.</small></span><span class="oc-option-card-meta">2 min</span></label>
+          <label class="oc-option-card"><input type="radio" name="setup-path" checked /><span class="oc-option-card-thumb" aria-hidden="true"><img src="${homeArtworkUrl}" alt="" loading="lazy" /></span><span class="oc-option-card-copy"><strong>Express setup</strong><small>Recommended defaults with one provider.</small></span><span class="oc-option-card-meta">2 min</span></label>
           <label class="oc-option-card"><input type="radio" name="setup-path" /><span class="oc-option-card-icon"><i data-lucide="sliders-horizontal" aria-hidden="true"></i></span><span class="oc-option-card-copy"><strong>Custom setup</strong><small>Choose providers, channels, and agents.</small></span><span class="oc-option-card-meta">10 min</span></label>
           <label class="oc-option-card"><input type="radio" name="setup-path" /><span class="oc-option-card-icon"><i data-lucide="download" aria-hidden="true"></i></span><span class="oc-option-card-copy"><strong>Import</strong><small>Bring settings from another install.</small></span></label>
         </fieldset>
         <div class="oc-connect">
           <h3 class="oc-connect-title">Pair this device</h3>
-          <div class="oc-connect-qr" role="img" aria-label="Pairing QR code for openclaw.ai/pair"><img src="./assets/pair-qr.svg" alt="" width="144" height="144" /></div>
+          <div class="oc-connect-qr" role="img" aria-label="Pairing QR code for openclaw.ai/pair"><img src="${pairQrUrl}" alt="" width="144" height="144" /></div>
           <code class="oc-connect-code">418 302</code>
           <p class="oc-connect-copy">Scan with the OpenClaw app or enter the code on your other device.</p>
           <span class="oc-connect-alternative">Or connect with <a href="#" data-workbench-inert-link>a gateway URL</a></span>

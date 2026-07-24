@@ -1,4 +1,6 @@
 import { avatarFixtureUrl, clawAvatarUrl } from "./avatar-fixtures.js";
+
+const userAvatarUrl = new URL("./assets/user-vincentkoc.png", import.meta.url).href;
 import { agentAvatarMarkup } from "./agent-identity.js";
 
 export { avatarFixtureUrl } from "./avatar-fixtures.js";
@@ -75,7 +77,7 @@ export const avatarWorkbenchExamples = [
   <img class="oc-avatar-image" src="user.png" alt="" width="40" height="40" />
 </span>`,
     previewMarkup: `<span class="oc-avatar" role="img" aria-label="Vincent">
-  <img class="oc-avatar-image" src="./assets/user-vincentkoc.png" alt="" width="40" height="40" />
+  <img class="oc-avatar-image" src="${userAvatarUrl}" alt="" width="40" height="40" />
 </span>`,
   },
   avatarExample(

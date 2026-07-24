@@ -1330,6 +1330,18 @@ ${appSurfaceWorkbenchMarkup(state)}
     render(specimen, state) {
       specimen.innerHTML = `<div class="primitive-input-grid">${inputGroupWorkbenchMarkup(state)}</div>`;
     },
+    bind(specimen) {
+      const input = specimen.querySelector(".oc-input-group-stepper .oc-input");
+      if (!input) return;
+      specimen.querySelectorAll(".oc-input-group-step").forEach((button, index) => {
+        button.addEventListener("click", () => {
+          const step = index === 0 ? -1 : 1;
+          const min = Number(input.min || "-Infinity");
+          const max = Number(input.max || "Infinity");
+          input.value = String(Math.min(max, Math.max(min, Number(input.value || 0) + step)));
+        });
+      });
+    },
   },
   "primitive-autocomplete": {
     defaults: { value: "", disabled: false },

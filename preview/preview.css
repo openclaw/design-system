@@ -5712,7 +5712,7 @@ body:is([data-preview-page="interface-primitives"], [data-page-kind="example"])
 .primitive-avatar-variants .primitive-avatar-example,
 .primitive-avatar-variants .primitive-avatar-presence {
   display: grid;
-  grid-template-columns: 3rem minmax(0, 1fr);
+  grid-template-columns: minmax(3rem, auto) minmax(0, 1fr);
   min-height: 3rem;
   align-items: center;
   gap: var(--oc-space-3);
@@ -6999,4 +6999,36 @@ body:is([data-preview-page="interface-primitives"], [data-page-kind="example"])
 .component-workbench-canvas:has(.oc-command-palette[open]),
 .component-workbench-canvas:has(.oc-dropdown-menu:not([hidden])) {
   overflow: visible;
+}
+
+/* The palette page shows the dialog as an inline specimen so it can never
+   clip; real invocation stays available through the trigger elsewhere. */
+body[data-preview-page="primitive-command-palette"] .oc-command-palette {
+  position: static;
+  margin: var(--oc-space-3) auto 0;
+  transform: none;
+}
+
+/* Pagination examples separate like other multi-form specimens. */
+.pagination-example-list {
+  display: grid;
+  width: min(100%, 34rem);
+  gap: var(--oc-space-4);
+}
+
+.pagination-example-list > div {
+  display: grid;
+  padding-top: var(--oc-space-3);
+  border-top: 1px solid var(--oc-border-subtle);
+  gap: var(--oc-space-2);
+}
+
+.pagination-example-list > div:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.pagination-example-list small {
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
 }

@@ -69,6 +69,7 @@
 
 .oc-check {
   display: inline-flex;
+  user-select: none;
   min-height: var(--oc-control-min-height);
   align-items: center;
   gap: var(--oc-space-3);
