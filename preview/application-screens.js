@@ -533,11 +533,24 @@ export function operationsApplicationMarkup({
 </div>`;
 }
 
-function sessionListItem({ title, detail, time, selected = false, active = false } = {}) {
+function sessionListItem({
+  title,
+  detail,
+  time,
+  agent = "OpenClaw",
+  selected = false,
+  active = false,
+  unread = false,
+} = {}) {
+  const trailing = active
+    ? `<span class="oc-run-spinner" role="status" aria-label="Session running"></span>`
+    : unread
+      ? `<span class="oc-unread-dot" role="status" aria-label="Unread activity"></span>`
+      : `<time>${escapeAttribute(time)}</time>`;
   return `<button class="oc-session-list-item" type="button" aria-pressed="${selected}">
-  <span class="oc-session-list-avatar">${agentIcon(active ? "sparkles" : "message-square")}</span>
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"${active ? ' data-state="speaking"' : ""} aria-hidden="true"><img class="oc-avatar-image" src="${avatarFixtureUrl(agent)}" alt="" width="24" height="24" /></span>
   <span class="oc-session-list-copy"><strong>${escapeAttribute(title)}</strong><small>${escapeAttribute(detail)}</small></span>
-  <time>${escapeAttribute(time)}</time>
+  ${trailing}
 </button>`;
 }
 
@@ -549,10 +562,10 @@ function workspaceSessions(status) {
   </header>
   <div class="oc-app-resource-search"><span>${agentIcon("search")}</span><input type="search" aria-label="Search sessions" placeholder="Search sessions" /></div>
   <div class="oc-session-list">
-    ${sessionListItem({ title: "Carapace parity", detail: "Design system", time: "now", selected: true, active: status === "active" })}
-    ${sessionListItem({ title: "Release validation", detail: "openclaw/openclaw", time: "8m" })}
-    ${sessionListItem({ title: "CI queue health", detail: "maintainers", time: "34m" })}
-    ${sessionListItem({ title: "Docs navigation", detail: "openclaw/docs", time: "2h" })}
+    ${sessionListItem({ title: "Carapace parity", detail: "Design system", time: "now", agent: "Mina", selected: true, active: status === "active" })}
+    ${sessionListItem({ title: "Release validation", detail: "openclaw/openclaw", time: "8m", agent: "Atlas", unread: true })}
+    ${sessionListItem({ title: "CI queue health", detail: "maintainers", time: "34m", agent: "Quinn" })}
+    ${sessionListItem({ title: "Docs navigation", detail: "openclaw/docs", time: "2h", agent: "Sora" })}
   </div>
   <footer class="oc-workspace-sessions-footer">
     <span>${agentIcon("history")} Recent</span>
@@ -615,6 +628,19 @@ function workspaceConversation(
         <summary><span>${agentIcon("terminal")} Edited application anatomy</span><small>6 files</small>${agentIcon("chevron")}</summary>
         <div><code>styles/candidate/application.css</code><span>compact parity</span></div>
       </details>
+      ${
+        status === "active"
+          ? `<article class="oc-approval-card" data-state="pending">
+        <header class="oc-approval-header">${agentIcon("shield-check")}<h3 class="oc-approval-title">Run command</h3><time>now</time></header>
+        <code class="oc-approval-command">git push origin feat/app-surface-parity</code>
+        <div class="oc-approval-actions">
+          <button class="oc-action oc-action-ghost" type="button">Deny</button>
+          <button class="oc-action oc-action-primary" type="button">Allow once</button>
+        </div>
+      </article>
+      <span class="oc-activity-indicator" role="status"><span class="oc-activity-indicator-motion" aria-hidden="true"><i></i><i></i><i></i></span>Waiting for approval</span>`
+          : `<div class="oc-compaction" data-state="complete">${agentIcon("chevrons-down")}<span>Earlier context compacted · 42k tokens summarized</span></div>`
+      }
     </article>
   </div>
   <footer class="oc-workspace-composer">
