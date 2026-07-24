@@ -858,17 +858,33 @@ Retry-After: 12s · request id req_8f31</span></div>
   "primitive-hovercard": () =>
     `${pageIntro("Component", "Hovercard", "Anchored reference context revealed from a link, and the native-dialog lightbox for inspecting a single attachment.")}
     <section data-section-kind="preview" aria-labelledby="hovercard-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="hovercard-preview">Reference context</h2></div><span class="oc-pill">.oc-hovercard</span></div>
-      <div class="specimen-frame"><div style="display: grid; gap: var(--oc-space-4); justify-items: start;">
-        <div class="oc-hovercard" role="tooltip">
+      <div class="specimen-frame"><div class="avatar-section-list">
+        <div><small>Pull request or issue — repository context with state and change counts</small><div class="oc-hovercard" role="tooltip">
           <div class="oc-hovercard-header"><i data-lucide="git-branch" aria-hidden="true"></i><span>openclaw/carapace</span><span class="oc-badge oc-badge-success">Open</span></div>
           <p class="oc-hovercard-title">feat: bring Carapace application surfaces to parity #30</p>
           <p class="oc-hovercard-copy">Adds interactive settings, operations, workspace, sessions, and Quick Chat screens with model, state, theme, and viewport controls.</p>
           <div class="oc-hovercard-meta"><span>42 files</span><span>+17,229 −2,756</span><span>Updated today</span></div>
-        </div>
-        <div class="oc-lightbox" style="position: static; display: block;">
+        </div></div>
+        <div><small>Profile — who an owner chip or mention refers to</small><div class="oc-hovercard" role="tooltip">
+          <div class="oc-hovercard-identity"><span class="oc-avatar oc-avatar-pixel" data-presence="online" aria-hidden="true"><img class="oc-avatar-image" src="${avatarFixtureUrl("Shelly")}" alt="" width="40" height="40" /></span><span><strong>Shelly</strong><small>Product · online</small></span></div>
+          <div class="oc-hovercard-facts"><span><b>3</b> running sessions</span><span><b>12</b> today</span><span>Active 2m ago</span></div>
+        </div></div>
+        <div><small>Session — where a session link or row leads</small><div class="oc-hovercard" role="tooltip">
+          <div class="oc-hovercard-header"><i data-lucide="message-square" aria-hidden="true"></i><span>Session</span><span class="oc-badge oc-badge-success">Running</span></div>
+          <p class="oc-hovercard-title">Carapace parity</p>
+          <div class="oc-hovercard-identity"><span class="oc-avatar oc-avatar-xs oc-avatar-pixel" aria-hidden="true"><img class="oc-avatar-image" src="${avatarFixtureUrl("Shelly")}" alt="" width="20" height="20" /></span><span><small>Shelly · GPT-5.5 · High</small></span></div>
+          <div class="oc-hovercard-meta"><span>41% context</span><span>Started 18m ago</span></div>
+        </div></div>
+        <div><small>Link preview — external destination before leaving the app</small><div class="oc-hovercard" role="tooltip">
+          <div class="oc-hovercard-header"><i data-lucide="globe" aria-hidden="true"></i><span>docs.openclaw.ai</span></div>
+          <p class="oc-hovercard-title">Streaming · OpenClaw Docs</p>
+          <p class="oc-hovercard-copy">How OpenClaw delivers partial responses across channels, and the limits each transport applies.</p>
+          <div class="oc-hovercard-meta"><span>External link</span></div>
+        </div></div>
+        <div><small>Attachment lightbox — a native dialog, not a hovercard: shown here inline for anatomy</small><div class="oc-lightbox" style="position: static; display: block; width: min(100%, 30rem);">
           <div class="oc-lightbox-header"><i data-lucide="image" aria-hidden="true"></i><strong>application-surface.png</strong><small>1440 × 900 · 184 KB</small><div class="oc-lightbox-actions"><button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Download"><i data-lucide="download" aria-hidden="true"></i></button><button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Close"><i data-lucide="x" aria-hidden="true"></i></button></div></div>
-          <div class="oc-lightbox-stage"><span style="display: grid; width: 14rem; height: 7rem; border: 1px dashed var(--oc-border-strong); border-radius: var(--oc-radius-inset); color: var(--oc-text-muted); font-size: var(--oc-font-size-xs); place-items: center;">Attachment preview</span></div>
-        </div>
+          <div class="oc-lightbox-stage"><span style="display: grid; width: 12rem; height: 6rem; border: 1px dashed var(--oc-border-strong); border-radius: var(--oc-radius-inset); color: var(--oc-text-muted); font-size: var(--oc-font-size-xs); place-items: center;">Attachment preview</span></div>
+        </div></div>
       </div></div>
     </section>
     <section data-section-kind="markup" aria-labelledby="hovercard-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="hovercard-markup">Surface only; anchoring stays local</h2></div></div>${codeBlock(`<div class="oc-hovercard" role="tooltip">\n  <div class="oc-hovercard-header">…<span>openclaw/carapace</span></div>\n  <p class="oc-hovercard-title">feat: application surfaces #30</p>\n  <p class="oc-hovercard-copy">Short description…</p>\n</div>\n\n<dialog class="oc-lightbox" aria-label="Attachment preview">\n  <div class="oc-lightbox-header">…</div>\n  <div class="oc-lightbox-stage"><img src="…" alt="…" /></div>\n</dialog>`, "html")}</section>

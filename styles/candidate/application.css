@@ -5362,3 +5362,32 @@
 
 /* Animated identity: motion lives inside the generated SVG so the circle
    never changes size; data-animated only marks the state for consumers. */
+
+/* Hovercard identity row: avatar plus name and role for profile and
+   session variants; facts render as a compact inline row. */
+.oc-hovercard-identity {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+}
+
+.oc-hovercard-identity strong {
+  font-size: var(--oc-font-size-sm);
+}
+
+.oc-hovercard-identity small {
+  display: block;
+  color: var(--oc-text-muted);
+}
+
+.oc-hovercard-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--oc-space-1) var(--oc-space-3);
+  color: var(--oc-text-secondary);
+}
+
+.oc-hovercard-facts span b {
+  color: var(--oc-text-primary);
+  font-weight: 600;
+}
