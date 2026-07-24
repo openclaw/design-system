@@ -62,6 +62,9 @@
 
 .oc-avatar-pixel .oc-avatar-image {
   image-rendering: pixelated;
+  /* Firefox does not reliably radius-clip pixelated SVG images; clip-path
+     guarantees the circular crop everywhere. */
+  clip-path: circle(50%);
 }
 
 .oc-avatar-fallback {

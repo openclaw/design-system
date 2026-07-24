@@ -1,4 +1,4 @@
-import { avatarFixtureUrl } from "./avatar-fixtures.js";
+import { avatarFixtureUrl, clawAvatarUrl } from "./avatar-fixtures.js";
 import { agentAvatarMarkup } from "./agent-identity.js";
 
 export { avatarFixtureUrl } from "./avatar-fixtures.js";
@@ -56,6 +56,28 @@ export const avatarWorkbenchExamples = [
   <span class="oc-avatar-fallback" aria-hidden="true">VB</span>
 </span>`,
   ),
+  {
+    id: "claw-default",
+    label: "Claw default",
+    purpose: "Deterministic pixel-claw identity for agents and surfaces without their own avatar.",
+    markup: `<span class="oc-avatar oc-avatar-pixel" role="img" aria-label="OpenClaw agent">
+  <img class="oc-avatar-image" src="claw-avatar.svg" alt="" width="40" height="40" />
+</span>`,
+    previewMarkup: `<span class="oc-avatar oc-avatar-pixel" role="img" aria-label="OpenClaw agent">
+  <img class="oc-avatar-image" src="${clawAvatarUrl()}" alt="" width="40" height="40" />
+</span>`,
+  },
+  {
+    id: "user-photo",
+    label: "User",
+    purpose: "Photo-backed identity for the signed-in person; falls back to the generator offline.",
+    markup: `<span class="oc-avatar" role="img" aria-label="Vincent">
+  <img class="oc-avatar-image" src="user.png" alt="" width="40" height="40" />
+</span>`,
+    previewMarkup: `<span class="oc-avatar" role="img" aria-label="Vincent">
+  <img class="oc-avatar-image" src="./assets/user-vincentkoc.png" alt="" width="40" height="40" />
+</span>`,
+  },
   avatarExample(
     "presence",
     "Presence",

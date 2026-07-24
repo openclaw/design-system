@@ -59,6 +59,22 @@ export function avatarFixtureUrl(seed) {
     `<rect x="16" y="26" width="8" height="3" fill="#7d3f4c"/><rect x="18" y="26" width="4" height="1" fill="#fff" opacity=".7"/>`,
     `<rect x="18" y="26" width="4" height="4" fill="#7d3f4c"/>`,
   ][expression];
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" shape-rendering="crispEdges"><rect width="40" height="40" fill="${palette[0]}"/>${backgroundPixels}<rect x="4" y="4" width="32" height="32" rx="6" fill="${palette[3]}" opacity=".18"/>${accessory}<rect x="8" y="10" width="24" height="23" fill="${skin}"/>${hairPixels}<rect x="${12 + eyeOffset}" y="19" width="4" height="4" fill="#19191d"/><rect x="${24 - eyeOffset}" y="19" width="4" height="4" fill="#19191d"/>${mouth}<rect x="5" y="33" width="30" height="7" fill="${shirt}"/></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" shape-rendering="crispEdges"><rect width="40" height="40" fill="${palette[0]}"/>${backgroundPixels}<rect x="4" y="4" width="32" height="32" rx="6" fill="${palette[3]}" opacity=".18"/>${accessory}<rect x="8" y="10" width="24" height="23" fill="${skin}"/>${hairPixels}<rect x="${12 + eyeOffset}" y="19" width="4" height="4" fill="#19191d"/><rect x="${24 - eyeOffset}" y="19" width="4" height="4" fill="#19191d"/>${mouth}<rect x="5" y="33" width="30" height="7" fill="${shirt}"/></svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
+// Default identity: a pixel claw for agents and surfaces without their own
+// avatar. Deterministic, matching the generated-people art style.
+export function clawAvatarUrl() {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" shape-rendering="crispEdges"><rect width="40" height="40" fill="#17151d"/><rect x="4" y="4" width="32" height="32" rx="6" fill="#f5654a" opacity=".14"/><rect x="12" y="6" width="2" height="6" fill="#f5654a"/><rect x="26" y="6" width="2" height="6" fill="#f5654a"/><rect x="10" y="4" width="3" height="3" fill="#ffd166"/><rect x="27" y="4" width="3" height="3" fill="#ffd166"/><rect x="10" y="14" width="20" height="14" fill="#f5654a"/><rect x="8" y="16" width="2" height="8" fill="#e05540"/><rect x="30" y="16" width="2" height="8" fill="#e05540"/><rect x="14" y="18" width="4" height="4" fill="#19191d"/><rect x="22" y="18" width="4" height="4" fill="#19191d"/><rect x="15" y="19" width="1" height="1" fill="#fff"/><rect x="23" y="19" width="1" height="1" fill="#fff"/><rect x="17" y="24" width="6" height="2" fill="#b23a28"/><rect x="4" y="24" width="6" height="8" fill="#f5654a"/><rect x="30" y="24" width="6" height="8" fill="#f5654a"/><rect x="3" y="22" width="4" height="4" fill="#f5654a"/><rect x="33" y="22" width="4" height="4" fill="#f5654a"/><rect x="12" y="28" width="16" height="6" fill="#e05540"/><rect x="14" y="34" width="3" height="3" fill="#b23a28"/><rect x="23" y="34" width="3" height="3" fill="#b23a28"/></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
+// Resolve an avatar for any identity: known people render their generated
+// portrait, everything else falls back to the claw mark.
+export function resolveAvatarUrl(name) {
+  if (!name) return clawAvatarUrl();
+  return avatarFixturePeople.some((person) => person.name === name)
+    ? avatarFixtureUrl(name)
+    : clawAvatarUrl();
 }

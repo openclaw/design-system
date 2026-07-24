@@ -352,7 +352,7 @@ const contents = {
   "effect-interaction": () =>
     `${pageIntro("Effect", "Interaction", "Small state changes that confirm hover, focus, selection, and activation without moving surrounding layout.")}
     <section data-section-kind="preview" aria-labelledby="effect-interaction-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="effect-interaction-preview">Responsive emphasis</h2></div><span class="oc-pill">State driven</span></div>
-      <div class="specimen-frame"><div class="effect-interaction-demo"><button class="oc-avatar-button" type="button" aria-label="Open agent profile"><span class="oc-avatar oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Interaction")}" alt="" /></span></button><button class="oc-provider-logo" data-brand-color style="--provider-brand-color:#ff6b45" type="button"><span class="oc-provider-logo-mark" aria-hidden="true">${icon("sparkles")}</span><span>Provider identity</span></button><a class="oc-link oc-link-standalone" href="../" data-workbench-inert-link>Continue ${icon("arrow-right")}</a></div></div>
+      <div class="specimen-frame"><div class="effect-interaction-demo"><button class="oc-avatar-button" type="button" aria-label="Open agent profile"><span class="oc-avatar oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Interaction")}" alt="" /></span></button><button class="oc-provider-logo" data-brand-color style="--provider-brand-color:#ff6b45" type="button"><span class="oc-provider-logo-mark" aria-hidden="true"><i data-lucide="sparkles" aria-hidden="true"></i></span><span>Provider identity</span></button><a class="oc-link oc-link-standalone" href="../" data-workbench-inert-link>Continue <i data-lucide="arrow-right" aria-hidden="true"></i></a></div></div>
     </section>
     <section data-section-kind="markup" aria-labelledby="effect-interaction-markup"><div class="section-heading"><div><p class="eyebrow">Contract</p><h2 id="effect-interaction-markup">Animate the changed property</h2></div></div>${codeBlock(`<button class="oc-avatar-button">\n  <span class="oc-avatar">…</span>\n</button>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="effect-interaction-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="effect-interaction-guidance">Feedback stays close to the input</h2></div></div>${guidanceList(["Prefer color, border, and small transform changes under 200ms.", "Focus feedback must remain visible without animation.", "Never use hover-only disclosure for required information."])}</section>`,
@@ -376,7 +376,7 @@ const contents = {
   "effect-transition": () =>
     `${pageIntro("Effect", "Transition", "Short reveal and replacement motion that preserves spatial context while interface state changes.")}
     <section data-section-kind="preview" aria-labelledby="effect-transition-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="effect-transition-preview">Stable position, changing state</h2></div><span class="oc-pill">No layout drift</span></div>
-      <div class="specimen-frame"><div class="effect-transition-demo">${collapsibleWorkbenchMarkup({ open: true })}<div class="effect-transition-track" role="group" aria-label="Task state transition"><span class="effect-transition-state" data-state="previous">Queued</span>${icon("arrow-right")}<span class="effect-transition-state" data-state="current">Running</span></div></div></div>
+      <div class="specimen-frame"><div class="effect-transition-demo">${collapsibleWorkbenchMarkup({ open: true })}<div class="effect-transition-track" role="group" aria-label="Task state transition"><span class="effect-transition-state" data-state="previous">Queued</span><i data-lucide="arrow-right" aria-hidden="true"></i><span class="effect-transition-state" data-state="current">Running</span></div></div></div>
     </section>
     <section data-section-kind="markup" aria-labelledby="effect-transition-markup"><div class="section-heading"><div><p class="eyebrow">Semantics</p><h2 id="effect-transition-markup">Announce the final state</h2></div></div>${codeBlock(`<div role="status" aria-live="polite">\n  Running\n</div>`, "html")}</section>
     <section data-section-kind="guidance" aria-labelledby="effect-transition-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="effect-transition-guidance">Motion connects before and after</h2></div></div>${guidanceList(["Animate opacity and a small transform without changing the element's allocated space.", "Keep disclosure summaries and composer controls pinned while content changes.", "Reduced motion switches directly to the final state."])}</section>`,
@@ -403,7 +403,7 @@ const contents = {
       <div class="specimen-frame"><div class="primitive-avatar-row primitive-avatar-variants">${avatarPreview()}</div></div>
     </section>
     <section class="avatar-generator" aria-labelledby="avatar-generator-title">
-      <div class="avatar-generator-heading"><div><p class="eyebrow">Preview fixture generator</p><h2 id="avatar-generator-title">One stable seed, one colorful identity</h2><p>Carapace hashes a local text seed into skin, hair, expression, clothing, accessories, and background pixels. No image request leaves the browser. The generator exists for documentation fixtures; the public <code>.oc-avatar</code> contract accepts uploaded images, initials, or another compatible service.</p></div><div class="avatar-generator-links"><a class="oc-link oc-link-standalone" href="https://github.com/openclaw/carapace/blob/main/preview/avatar-fixtures.js" target="_blank" rel="noreferrer">View fixture source ${icon("arrow-right")}</a><a class="oc-link oc-link-standalone" href="https://www.dicebear.com/styles/pixel-art/" target="_blank" rel="noreferrer">Production alternative: DiceBear ${icon("arrow-right")}</a></div></div>
+      <div class="avatar-generator-heading"><div><p class="eyebrow">Preview fixture generator</p><h2 id="avatar-generator-title">One stable seed, one colorful identity</h2><p>Carapace hashes a local text seed into skin, hair, expression, clothing, accessories, and background pixels. No image request leaves the browser. The generator exists for documentation fixtures; the public <code>.oc-avatar</code> contract accepts uploaded images, initials, or another compatible service.</p></div><div class="avatar-generator-links"><a class="oc-link oc-link-standalone" href="https://github.com/openclaw/carapace/blob/main/preview/avatar-fixtures.js" target="_blank" rel="noreferrer">View fixture source <i data-lucide="arrow-right" aria-hidden="true"></i></a><a class="oc-link oc-link-standalone" href="https://www.dicebear.com/styles/pixel-art/" target="_blank" rel="noreferrer">Production alternative: DiceBear <i data-lucide="arrow-right" aria-hidden="true"></i></a></div></div>
       <div class="avatar-generator-gallery" aria-label="Generated pixel identities">${avatarGeneratorGallery()}</div>
       <dl class="avatar-generator-facts"><div><dt>Input</dt><dd>Stable user or agent identifier</dd></div><div><dt>Output</dt><dd>Local SVG data URL</dd></div><div><dt>Privacy</dt><dd>No remote avatar request</dd></div><div><dt>Consumer contract</dt><dd>Generator agnostic</dd></div></dl>
     </section>
@@ -757,9 +757,9 @@ const contents = {
       <div class="specimen-frame"><div class="oc-split" data-axis="row" style="width: 100%; height: 16rem; border: 1px solid var(--oc-border-subtle); border-radius: var(--oc-radius-surface); overflow: hidden;">
         <section class="oc-split-pane" aria-label="Terminal">
           <div class="oc-panel-tab-strip" role="tablist" aria-label="Terminal sessions">
-            <button class="oc-panel-tab" type="button" role="tab" aria-selected="true">carapace <span class="oc-panel-tab-close" aria-label="Close carapace tab" role="button">${icon("x")}</span></button>
+            <button class="oc-panel-tab" type="button" role="tab" aria-selected="true">carapace <span class="oc-panel-tab-close" aria-label="Close carapace tab" role="button"><i data-lucide="x" aria-hidden="true"></i></span></button>
             <button class="oc-panel-tab" type="button" role="tab" aria-selected="false">gateway</button>
-            <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="New terminal">${icon("plus")}</button>
+            <button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="New terminal"><i data-lucide="plus" aria-hidden="true"></i></button>
           </div>
           <div class="oc-split-pane-body" style="padding: var(--oc-space-3); font-family: var(--oc-font-mono); font-size: var(--oc-font-size-xs); color: var(--oc-text-secondary);">bun run check<br />193 pass · 0 fail</div>
         </section>
@@ -800,9 +800,9 @@ Retry-After: 12s · request id req_8f31</span></div>
           <div class="oc-menu-panel-usage-row"><span class="oc-menu-panel-usage-label">Daily cost</span><div class="oc-inspector-meter" role="meter" aria-label="Daily budget used" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"><span style="width: 62%"></span></div><span class="oc-menu-panel-usage-value">$3.10</span></div>
         </div>
         <ul class="oc-menu-panel-list">
-          <li><button class="oc-menu-panel-item" type="button">${icon("sparkles")} Carapace parity<small>now</small></button></li>
-          <li><button class="oc-menu-panel-item" type="button">${icon("message-square")} Release validation<small>8m</small></button></li>
-          <li><button class="oc-menu-panel-item" type="button">${icon("plus")} New session</button></li>
+          <li><button class="oc-menu-panel-item" type="button"><i data-lucide="sparkles" aria-hidden="true"></i> Carapace parity<small>now</small></button></li>
+          <li><button class="oc-menu-panel-item" type="button"><i data-lucide="message-square" aria-hidden="true"></i> Release validation<small>8m</small></button></li>
+          <li><button class="oc-menu-panel-item" type="button"><i data-lucide="plus" aria-hidden="true"></i> New session</button></li>
         </ul>
         <footer class="oc-menu-panel-footer"><button class="oc-action oc-action-ghost" type="button">Settings</button><button class="oc-action oc-action-ghost" type="button">Quit</button></footer>
       </div></div>
@@ -816,13 +816,13 @@ Retry-After: 12s · request id req_8f31</span></div>
       <div class="specimen-frame"><div style="display: grid; gap: var(--oc-space-5); width: min(100%, 42rem); grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); align-items: start;">
         <fieldset class="oc-option-group" style="border: 0; margin: 0; padding: 0;">
           <legend class="sr-only">Choose a setup path</legend>
-          <label class="oc-option-card"><input type="radio" name="setup-path" checked /><span class="oc-option-card-icon">${icon("sparkles")}</span><span class="oc-option-card-copy"><strong>Express setup</strong><small>Recommended defaults with one provider.</small></span><span class="oc-option-card-meta">2 min</span></label>
-          <label class="oc-option-card"><input type="radio" name="setup-path" /><span class="oc-option-card-icon">${icon("sliders-horizontal")}</span><span class="oc-option-card-copy"><strong>Custom setup</strong><small>Choose providers, channels, and agents.</small></span><span class="oc-option-card-meta">10 min</span></label>
-          <label class="oc-option-card"><input type="radio" name="setup-path" /><span class="oc-option-card-icon">${icon("download")}</span><span class="oc-option-card-copy"><strong>Import</strong><small>Bring settings from another install.</small></span></label>
+          <label class="oc-option-card"><input type="radio" name="setup-path" checked /><span class="oc-option-card-icon"><i data-lucide="sparkles" aria-hidden="true"></i></span><span class="oc-option-card-copy"><strong>Express setup</strong><small>Recommended defaults with one provider.</small></span><span class="oc-option-card-meta">2 min</span></label>
+          <label class="oc-option-card"><input type="radio" name="setup-path" /><span class="oc-option-card-icon"><i data-lucide="sliders-horizontal" aria-hidden="true"></i></span><span class="oc-option-card-copy"><strong>Custom setup</strong><small>Choose providers, channels, and agents.</small></span><span class="oc-option-card-meta">10 min</span></label>
+          <label class="oc-option-card"><input type="radio" name="setup-path" /><span class="oc-option-card-icon"><i data-lucide="download" aria-hidden="true"></i></span><span class="oc-option-card-copy"><strong>Import</strong><small>Bring settings from another install.</small></span></label>
         </fieldset>
         <div class="oc-connect">
           <h3 class="oc-connect-title">Pair this device</h3>
-          <div class="oc-connect-qr" role="img" aria-label="Pairing QR code">${icon("layout-grid")}</div>
+          <div class="oc-connect-qr" role="img" aria-label="Pairing QR code"><i data-lucide="layout-grid" aria-hidden="true"></i></div>
           <code class="oc-connect-code">418 302</code>
           <p class="oc-connect-copy">Scan with the OpenClaw app or enter the code on your other device.</p>
           <span class="oc-connect-alternative">Or connect with <a href="#" data-workbench-inert-link>a gateway URL</a></span>
@@ -837,13 +837,13 @@ Retry-After: 12s · request id req_8f31</span></div>
     <section data-section-kind="preview" aria-labelledby="hovercard-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="hovercard-preview">Reference context</h2></div><span class="oc-pill">.oc-hovercard</span></div>
       <div class="specimen-frame"><div style="display: grid; gap: var(--oc-space-4); justify-items: start;">
         <div class="oc-hovercard" role="tooltip">
-          <div class="oc-hovercard-header">${icon("git-branch")}<span>openclaw/carapace</span><span class="oc-badge oc-badge-success">Open</span></div>
+          <div class="oc-hovercard-header"><i data-lucide="git-branch" aria-hidden="true"></i><span>openclaw/carapace</span><span class="oc-badge oc-badge-success">Open</span></div>
           <p class="oc-hovercard-title">feat: bring Carapace application surfaces to parity #30</p>
           <p class="oc-hovercard-copy">Adds interactive settings, operations, workspace, sessions, and Quick Chat screens with model, state, theme, and viewport controls.</p>
           <div class="oc-hovercard-meta"><span>42 files</span><span>+17,229 −2,756</span><span>Updated today</span></div>
         </div>
         <div class="oc-lightbox" style="position: static; display: block;">
-          <div class="oc-lightbox-header">${icon("image")}<strong>application-surface.png</strong><small>1440 × 900 · 184 KB</small><div class="oc-lightbox-actions"><button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Download">${icon("download")}</button><button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Close">${icon("x")}</button></div></div>
+          <div class="oc-lightbox-header"><i data-lucide="image" aria-hidden="true"></i><strong>application-surface.png</strong><small>1440 × 900 · 184 KB</small><div class="oc-lightbox-actions"><button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Download"><i data-lucide="download" aria-hidden="true"></i></button><button class="oc-action oc-action-icon oc-action-ghost" type="button" aria-label="Close"><i data-lucide="x" aria-hidden="true"></i></button></div></div>
           <div class="oc-lightbox-stage"><span style="display: grid; width: 14rem; height: 7rem; border: 1px dashed var(--oc-border-strong); border-radius: var(--oc-radius-inset); color: var(--oc-text-muted); font-size: var(--oc-font-size-xs); place-items: center;">Attachment preview</span></div>
         </div>
       </div></div>
@@ -856,10 +856,10 @@ Retry-After: 12s · request id req_8f31</span></div>
     <section data-section-kind="preview" aria-labelledby="indicators-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="indicators-preview">Collection and row signals</h2></div><span class="oc-pill">.oc-summary-strip</span></div>
       <div class="specimen-frame"><div style="display: grid; gap: var(--oc-space-4); width: min(100%, 40rem);">
         <div class="oc-summary-strip">
-          <div class="oc-summary-metric"><span class="oc-summary-metric-icon">${icon("message-square")}</span><span class="oc-summary-metric-copy"><strong>24</strong><small>Sessions</small></span></div>
-          <div class="oc-summary-metric" data-tone="success"><span class="oc-summary-metric-icon">${icon("play")}</span><span class="oc-summary-metric-copy"><strong>3</strong><small>Running</small></span></div>
-          <div class="oc-summary-metric" data-tone="warning"><span class="oc-summary-metric-icon">${icon("shield-check")}</span><span class="oc-summary-metric-copy"><strong>2</strong><small>Awaiting approval</small></span></div>
-          <div class="oc-summary-metric" data-tone="error"><span class="oc-summary-metric-icon">${icon("triangle-alert")}</span><span class="oc-summary-metric-copy"><strong>1</strong><small>Failed</small></span></div>
+          <div class="oc-summary-metric"><span class="oc-summary-metric-icon"><i data-lucide="message-square" aria-hidden="true"></i></span><span class="oc-summary-metric-copy"><strong>24</strong><small>Sessions</small></span></div>
+          <div class="oc-summary-metric" data-tone="success"><span class="oc-summary-metric-icon"><i data-lucide="play" aria-hidden="true"></i></span><span class="oc-summary-metric-copy"><strong>3</strong><small>Running</small></span></div>
+          <div class="oc-summary-metric" data-tone="warning"><span class="oc-summary-metric-icon"><i data-lucide="shield-check" aria-hidden="true"></i></span><span class="oc-summary-metric-copy"><strong>2</strong><small>Awaiting approval</small></span></div>
+          <div class="oc-summary-metric" data-tone="error"><span class="oc-summary-metric-icon"><i data-lucide="triangle-alert" aria-hidden="true"></i></span><span class="oc-summary-metric-copy"><strong>1</strong><small>Failed</small></span></div>
         </div>
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--oc-space-3);">
           <span class="oc-session-badges"><span class="oc-badge oc-badge-warning">Approval</span><span class="oc-badge oc-badge-info">Cloud</span><span class="oc-badge oc-badge-success">PR #142</span><span class="oc-badge oc-badge-neutral">Queued</span></span>

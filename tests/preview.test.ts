@@ -587,6 +587,8 @@ describe("preview contracts", () => {
       "small",
       "default",
       "large",
+      "claw-default",
+      "user-photo",
       "presence",
       "stack",
       "thinking",
@@ -595,9 +597,9 @@ describe("preview contracts", () => {
     ]);
     expect(
       allCode.match(
-        /<!-- (Inline|Small|Default|Large|Presence|Stack|Thinking|Speaking|Overflow) -->/g,
+        /<!-- (Inline|Small|Default|Large|Claw default|User|Presence|Stack|Thinking|Speaking|Overflow) -->/g,
       ),
-    ).toHaveLength(9);
+    ).toHaveLength(11);
     expect(allCode).not.toContain("...");
     expect(allCode).toContain("oc-avatar-sm");
     expect(allCode).toContain("oc-avatar-lg");
