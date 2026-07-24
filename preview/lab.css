@@ -6393,3 +6393,10 @@ details.oc-agent-tool-row[open] > .oc-agent-tool-row-summary .oc-agent-tool-row-
   gap: var(--oc-space-2);
   padding: var(--oc-space-2) var(--oc-space-2) 0;
 }
+
+/* The standalone picker specimen sits high on the page: open its menu
+   downward there; composers at the bottom of a surface keep opening up. */
+body[data-preview-page="model-picker"] .oc-model-menu {
+  top: calc(100% + var(--oc-space-2));
+  bottom: auto;
+}
