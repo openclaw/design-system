@@ -1,4 +1,6 @@
 import { agentIcon } from "./agent-icons.js";
+
+const userAvatarUrl = new URL("./assets/user-vincentkoc.png", import.meta.url).href;
 import {
   agentAvatarMarkup,
   attributedMessageMarkup,
@@ -258,10 +260,16 @@ const components = {
     className: "oc-agent-chat",
     lede: "The complete conversation surface: a scrollable message list above a composer, sharing one bounded column.",
     previewTitle: "Conversation workspace",
-    preview: `<section class="oc-agent-chat" data-layout="compact" data-attribution="participants" data-user-name="Shelly" aria-label="Agent conversation">
+    preview: `<section class="oc-agent-chat" data-layout="compact" data-attribution="participants" data-user-name="vincentkoc" aria-label="Agent conversation">
   <div class="oc-agent-message-list" role="log" aria-label="Conversation history">
     <div class="oc-agent-message-list-content">
-      ${attributedMessageMarkup({ author: "user", name: "Shelly", role: "You", message: "Summarize the pending changes and flag anything risky." })}
+      ${attributedMessageMarkup({
+        author: "user",
+        name: "vincentkoc",
+        role: "You",
+        avatar: `<span class="oc-avatar oc-avatar-xs" aria-hidden="true"><img class="oc-avatar-image" src="${userAvatarUrl}" alt="" width="24" height="24" /></span>`,
+        content: '<div class="oc-agent-user-message"><p>Summarize the pending changes and flag anything risky.</p></div>',
+      })}
       ${attributedMessageMarkup({
         name: "OpenClaw",
         role: "Assistant",

@@ -3443,6 +3443,20 @@
   gap: var(--oc-space-2);
 }
 
+/* User turns mirror the agent layout: bubble right-aligned, avatar trailing. */
+.oc-agent-attributed-message[data-author="user"] {
+  grid-template-columns: minmax(0, 1fr) 1.5rem;
+  justify-items: end;
+}
+
+.oc-agent-attributed-message[data-author="user"] .oc-agent-message-content {
+  justify-items: end;
+}
+
+.oc-agent-attributed-message[data-author="user"] .oc-agent-message-author {
+  flex-direction: row-reverse;
+}
+
 .oc-agent-message-author {
   display: inline-flex;
   align-items: baseline;

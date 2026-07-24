@@ -67,6 +67,7 @@ export function attributedMessageMarkup({
   content = "",
   activity = "",
   listItem = false,
+  avatar = "",
 } = {}) {
   const roleMarkup = role
     ? `<span class="oc-agent-message-role">${escapeHtml(role)}</span>`
@@ -75,12 +76,20 @@ export function attributedMessageMarkup({
     content ||
     `<div class="oc-agent-message-bubble"><p>${escapeHtml(message)}</p></div>`;
   const roleAttribute = listItem ? ' role="listitem"' : "";
-  return `<article class="oc-agent-attributed-message" data-author="${escapeHtml(author)}"${roleAttribute}>
-  ${agentAvatarMarkup(name, { activity })}
-  <div class="oc-agent-message-content">
+  const avatarMarkup = avatar || agentAvatarMarkup(name, { activity });
+  const contentMarkup = `<div class="oc-agent-message-content">
     <header class="oc-agent-message-author"><strong>${escapeHtml(name)}</strong>${roleMarkup}</header>
     ${body}
-  </div>
+  </div>`;
+  /* User turns mirror the layout: content first, avatar trailing on the right. */
+  const inner =
+    author === "user"
+      ? `${contentMarkup}
+  ${avatarMarkup}`
+      : `${avatarMarkup}
+  ${contentMarkup}`;
+  return `<article class="oc-agent-attributed-message" data-author="${escapeHtml(author)}"${roleAttribute}>
+  ${inner}
 </article>`;
 }
 

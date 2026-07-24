@@ -19,6 +19,12 @@ import {
 
 export const interactiveArtifactUrl = new URL("./assets/carapace-home-artwork.avif", import.meta.url).href;
 export const interactiveOpenClawMarkUrl = new URL("./assets/openclaw-mark.png", import.meta.url).href;
+const userVincentAvatarUrl = new URL("./assets/user-vincentkoc.png", import.meta.url).href;
+const userSteipeteAvatarUrl = new URL("./assets/user-steipete.png", import.meta.url).href;
+
+function userPhotoAvatarMarkup(url) {
+  return `<span class="oc-avatar oc-avatar-xs" aria-hidden="true"><img class="oc-avatar-image" src="${url}" alt="" width="24" height="24" /></span>`;
+}
 
 export const actionVariants = [
   { label: "Primary", value: "primary" },
@@ -1591,20 +1597,29 @@ export function messageListWorkbenchMarkup({
 </div>`;
   }
   if (mode === "attributed") {
-    const userMessage = `<div class="oc-agent-message-bubble"><p>Can we make the application panes feel closer to the mac app?</p></div>`;
+    const userMessage = `<div class="oc-agent-user-message"><p>Can we make the application panes feel closer to the mac app?</p></div>`;
     const user = attributedMessageMarkup({
       author: "user",
-      name: "Shelly",
+      name: "vincentkoc",
       role: "You",
+      avatar: userPhotoAvatarMarkup(userVincentAvatarUrl),
       content: `${userMessage}${media ? mediaGalleryMarkup(status) : ""}`,
     });
+    const secondUser = media
+      ? ""
+      : attributedMessageMarkup({
+          author: "user",
+          name: "Peter Steinberger",
+          avatar: userPhotoAvatarMarkup(userSteipeteAvatarUrl),
+          content: `<div class="oc-agent-user-message"><p>And keep the composer attached to the transcript while you are at it.</p></div>`,
+        });
     const agent = attributedMessageMarkup({
       name: "OpenClaw",
       role: "Assistant",
       content: `${chatResponseMarkup(status, copyToolbar, meta)}${media ? mediaStatusMarkup(status) : ""}`,
     });
     return `<div class="oc-agent-message-list" role="log" aria-label="Conversation history">
-  <div class="oc-agent-message-list-content">${user}${agent}</div>
+  <div class="oc-agent-message-list-content">${user}${secondUser}${agent}</div>
 </div>`;
   }
   return `<div class="oc-agent-message-list" role="log" aria-label="Conversation history">
@@ -1922,13 +1937,13 @@ export function agentChatWorkbenchMarkup({
   </form>`;
 
   if (isEmpty) {
-    return `<section class="oc-agent-chat oc-agent-chat-empty" data-layout="compact" data-attribution="participants" data-user-name="Shelly" aria-label="Agent conversation" data-agent-file-drop>
+    return `<section class="oc-agent-chat oc-agent-chat-empty" data-layout="compact" data-attribution="participants" data-user-name="vincentkoc" aria-label="Agent conversation" data-agent-file-drop>
   <div class="oc-agent-drop-overlay" aria-hidden="true">${agentIcon("paperclip")}<strong>Drop files to attach</strong><span>Images, video, audio, documents, and code</span></div>
   <div class="oc-agent-chat-center">${composer}${suggestions}</div>
 </section>`;
   }
 
-  return `<section class="oc-agent-chat" data-layout="compact" data-attribution="${transcriptMode === "attributed" ? "participants" : "none"}" data-user-name="Shelly" aria-label="Agent conversation" data-agent-file-drop>
+  return `<section class="oc-agent-chat" data-layout="compact" data-attribution="${transcriptMode === "attributed" ? "participants" : "none"}" data-user-name="vincentkoc" aria-label="Agent conversation" data-agent-file-drop>
   <div class="oc-agent-drop-overlay" aria-hidden="true">${agentIcon("paperclip")}<strong>Drop files to attach</strong><span>Images, video, documents, and code</span></div>
   ${messages}
   <div class="oc-agent-chat-composer">${composer}</div>

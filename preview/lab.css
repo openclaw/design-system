@@ -3472,6 +3472,27 @@ a.oc-layer-card-primary:hover {
   align-items: start;
 }
 
+/* User turns mirror the agent layout: bubble right-aligned, avatar trailing. */
+.oc-agent-attributed-message[data-author="user"] {
+  grid-template-columns: minmax(0, 1fr) 1.5rem;
+  justify-items: end;
+}
+
+.oc-agent-attributed-message[data-author="user"] .oc-agent-message-content {
+  justify-items: end;
+}
+
+.oc-agent-attributed-message[data-author="user"] .oc-agent-message-author {
+  flex-direction: row-reverse;
+}
+
+.oc-agent-attributed-message[data-author="user"] > .oc-avatar {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
 /* Stream gap comes from the grid; sibling margins would double it. */
 .oc-agent-attributed-message + .oc-agent-attributed-message {
   margin-top: 0;
@@ -3520,7 +3541,7 @@ a.oc-layer-card-primary:hover {
 }
 
 .oc-agent-attributed-message .oc-agent-user-message {
-  justify-self: start;
+  justify-self: end;
 }
 
 .oc-agent-attributed-message[data-author="agent"] .oc-agent-markdown {

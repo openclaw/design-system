@@ -387,11 +387,13 @@ describe("agent component behavior", () => {
 
     expect(message?.className).toBe("oc-agent-attributed-message");
     expect(message?.attributes.get("data-author")).toBe("user");
-    expect(message?.children[0].className).toBe("oc-avatar oc-avatar-xs oc-avatar-pixel");
-    expect(message?.children[0].children[0].className).toBe("oc-avatar-image");
-    expect(message?.children[1].children[0].children[0].textContent).toBe("Shelly");
-    expect(message?.children[1].children[0].children[1].textContent).toBe("You");
-    expect(message?.children[1].children[1].children[0].textContent).toBe(
+    expect(message?.children[0].className).toBe("oc-agent-message-content");
+    expect(message?.children[1].className).toBe("oc-avatar oc-avatar-xs oc-avatar-pixel");
+    expect(message?.children[1].children[0].className).toBe("oc-avatar-image");
+    expect(message?.children[0].children[0].children[0].textContent).toBe("Shelly");
+    expect(message?.children[0].children[0].children[1].textContent).toBe("You");
+    expect(message?.children[0].children[1].className).toBe("oc-agent-user-message");
+    expect(message?.children[0].children[1].children[0].textContent).toBe(
       "Keep the participant bubble attached.",
     );
     expect(input.value).toBe("");

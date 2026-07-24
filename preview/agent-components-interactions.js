@@ -44,14 +44,15 @@ function appendAttributedUserMessage(doc, chat, transcript, draft, userName) {
   author.append(role);
 
   const bubble = doc.createElement("div");
-  bubble.className = "oc-agent-message-bubble";
+  bubble.className = "oc-agent-user-message";
   const paragraph = doc.createElement("p");
   paragraph.textContent = draft;
   bubble.append(paragraph);
   content.append(author);
   content.append(bubble);
-  message.append(avatar);
+  /* User turns render content first with the avatar trailing on the right. */
   message.append(content);
+  message.append(avatar);
   transcript.append(message);
   return message;
 }
