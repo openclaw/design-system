@@ -44,24 +44,34 @@ function hexToHue(hex) {
   return Math.round(((h * 60) + 360) % 360);
 }
 
-export const avatarStyles = ["mosaic", "quad", "stripes"];
+export const avatarStyles = ["mosaic", "quad", "rings"];
 
 export function avatarFixtureUrl(seed, { color, style } = {}) {
   // Deterministic identity art: any stable string works as the seed — a
   // name, an email hash, or a hex color via the color option. Each seed
-  // gets its own dominant hue and one of three pattern styles, so agents
-  // stay visually distinct at a glance.
+  // owns one analogous hue family and a dense pattern, so identities read
+  // as distinct colorful discs rather than sparse cells.
   const hash = hashAvatarSeed(String(seed));
-  const hue = color ? hexToHue(color) : hash % 360;
+  // Known fixture people get evenly spaced hues so the demo cast is
+  // maximally distinct; arbitrary seeds hash across the full wheel.
+  const personIndex = avatarFixturePeople.findIndex((person) => person.name === seed);
+  const hue = color
+    ? hexToHue(color)
+    : personIndex >= 0
+      ? (personIndex * 137 + 8) % 360
+      : hash % 360;
   const selectedStyle = avatarStyles.includes(style)
     ? style
     : avatarStyles[(hash >>> 4) % avatarStyles.length];
+  // Analogous palette keeps each avatar cohesive; the accent stays in the
+  // same family so two agents never share a look but neither looks noisy.
   const c = [
-    `hsl(${hue} 85% 62%)`,
-    `hsl(${(hue + 42) % 360} 82% 55%)`,
-    `hsl(${(hue + 195) % 360} 72% 60%)`,
+    `hsl(${hue} 82% 64%)`,
+    `hsl(${(hue + 26) % 360} 78% 52%)`,
+    `hsl(${(hue + 334) % 360} 72% 44%)`,
+    `hsl(${hue} 55% 30%)`,
   ];
-  const bg = `hsl(${hue} 32% 12%)`;
+  const bg = `hsl(${hue} 42% 15%)`;
   let bits = hash || 1;
   const next = () => {
     bits ^= bits << 13;
@@ -71,46 +81,47 @@ export function avatarFixtureUrl(seed, { color, style } = {}) {
     return bits;
   };
   const cells = [];
-  const put = (x, y, w, h, fill) =>
-    cells.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}"/>`);
-  if (selectedStyle === "stripes") {
-    for (let x = 0; x < 8; x += 1) {
-      const height = 8 + (next() % 22);
-      const y = 36 - height;
-      put(4 + x * 4, y, 4, height, c[next() % 3]);
+  const put = (x, y, fill) =>
+    cells.push(`<rect x="${x * 5}" y="${y * 5}" width="5" height="5" fill="${fill}"/>`);
+  const pick = () => {
+    const roll = next() % 100;
+    if (roll < 42) return c[0];
+    if (roll < 68) return c[1];
+    if (roll < 86) return c[2];
+    return c[3];
+  };
+  if (selectedStyle === "rings") {
+    for (let y = 0; y < 8; y += 1) {
+      for (let x = 0; x < 8; x += 1) {
+        const ring = Math.max(Math.abs(x - 3.5), Math.abs(y - 3.5)) | 0;
+        const ringColor = [c[0], c[1], c[2], c[3]][(ring + (hash % 4)) % 4];
+        // per-cell jitter keeps rings lively without breaking the shape
+        put(x, y, next() % 100 < 82 ? ringColor : pick());
+      }
     }
   } else if (selectedStyle === "quad") {
     for (let y = 0; y < 4; y += 1) {
       for (let x = 0; x < 4; x += 1) {
-        if (next() % 100 < 58) {
-          const fill = c[next() % 3];
-          const px = 4 + x * 4;
-          const py = 4 + y * 4;
-          const mx = 4 + (7 - x) * 4;
-          const my = 4 + (7 - y) * 4;
-          put(px, py, 4, 4, fill);
-          put(mx, py, 4, 4, fill);
-          put(px, my, 4, 4, fill);
-          put(mx, my, 4, 4, fill);
-        }
+        const fill = pick();
+        put(x, y, fill);
+        put(7 - x, y, fill);
+        put(x, 7 - y, fill);
+        put(7 - x, 7 - y, fill);
       }
     }
   } else {
     for (let y = 0; y < 8; y += 1) {
       for (let x = 0; x < 4; x += 1) {
-        if (next() % 100 < 60) {
-          const fill = c[next() % 3];
-          const px = 4 + x * 4;
-          const py = 4 + y * 4;
-          put(px, py, 4, 4, fill);
-          put(4 + (7 - x) * 4, py, 4, 4, fill);
-        }
+        const fill = pick();
+        put(x, y, fill);
+        put(7 - x, y, fill);
       }
     }
   }
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" shape-rendering="crispEdges"><rect width="40" height="40" fill="${bg}"/>${cells.join("")}</svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
+
 
 
 

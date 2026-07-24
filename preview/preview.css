@@ -7063,3 +7063,11 @@ body[data-preview-page="primitive-command-palette"] .oc-command-palette {
   align-items: center;
   gap: var(--oc-space-5);
 }
+
+.avatar-section-list .primitive-avatar-example {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-secondary);
+  font-size: var(--oc-font-size-sm);
+}

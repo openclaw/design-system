@@ -1936,7 +1936,7 @@ export const avatarStyleOptions = [
   { label: "Auto", value: "auto" },
   { label: "Mosaic", value: "mosaic" },
   { label: "Quad", value: "quad" },
-  { label: "Stripes", value: "stripes" },
+  { label: "Rings", value: "rings" },
 ];
 
 export const avatarSizeOptions = [
@@ -1980,14 +1980,14 @@ export function avatarCatalogMarkup(state) {
         `<span class="primitive-avatar-example"><span class="oc-avatar oc-avatar-pixel" role="img" aria-label="${name}"><img class="oc-avatar-image" src="${avatarFixtureUrl(name)}" alt="" width="40" height="40" /></span><span>${name}</span></span>`,
     )
     .join("");
-  const styleRow = ["mosaic", "quad", "stripes"]
+  const styleRow = ["mosaic", "quad", "rings"]
     .map(
       (styleName) =>
         `<span class="primitive-avatar-example"><span class="oc-avatar oc-avatar-pixel" aria-hidden="true"><img class="oc-avatar-image" src="${avatarFixtureUrl(state.seed ?? "Mina", { style: styleName })}" alt="" width="40" height="40" /></span><span>${styleName}</span></span>`,
     )
     .join("");
   return `<div class="avatar-section-list">
-  <div><small>Playground — drive with the controls</small><div class="primitive-avatar-row">${avatarPlaygroundMarkup(state)}</div></div>
+  <div><small>Playground — drive with the controls</small><div class="primitive-avatar-row"><span class="primitive-avatar-example">${avatarPlaygroundMarkup(state)}<span>${escapeHtml(state.seed ?? "Mina")}${state.style && state.style !== "auto" ? ` · ${escapeHtml(state.style)}` : ""}</span></span></div></div>
   <div><small>Distinct generated identities — one hue and pattern per seed</small><div class="primitive-avatar-row">${generated}</div></div>
   <div><small>Pattern styles for the current seed</small><div class="primitive-avatar-row">${styleRow}</div></div>
   <div><small>Defaults and sources</small><div class="primitive-avatar-row"><span class="primitive-avatar-example"><span class="oc-avatar oc-avatar-pixel" role="img" aria-label="OpenClaw agent"><img class="oc-avatar-image" src="${clawAvatarUrl()}" alt="" width="40" height="40" /></span><span>Claw default</span></span><span class="primitive-avatar-example"><span class="oc-avatar" role="img" aria-label="OpenClaw"><span class="oc-avatar-fallback" aria-hidden="true">OC</span></span><span>Initials</span></span></div></div>
