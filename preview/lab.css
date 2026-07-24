@@ -3185,15 +3185,9 @@ a.oc-layer-card-primary:hover {
 }
 
 /* The model menu opens upward from the composer and can be taller than the
-   chat card; releasing overflow only while it is open keeps corner clipping
-   everywhere else but stops the menu from being cut off. */
-.oc-agent-chat:has(.oc-model-picker[open]),
-.component-workbench-stage:has(.oc-model-picker[open]),
-.component-workbench-stage:has(.oc-command-palette[open]),
-.component-workbench-stage:has(.oc-dropdown-menu:not([hidden])),
-.component-workbench-canvas:has(.oc-model-picker[open]),
-.component-workbench-canvas:has(.oc-command-palette[open]),
-.component-workbench-canvas:has(.oc-dropdown-menu:not([hidden])) {
+   chat card; release overflow while it is open (shell-level rules for other
+   popovers live in preview.css). */
+.oc-agent-chat:has(.oc-model-picker[open]) {
   overflow: visible;
 }
 

@@ -6989,3 +6989,14 @@ body:is([data-preview-page="interface-primitives"], [data-page-kind="example"])
   min-height: 0;
   padding: var(--oc-space-2);
 }
+
+/* Open popovers escape the workbench clip: stages and canvases release
+   overflow only while a palette, dropdown menu, or model picker is open. */
+.component-workbench-stage:has(.oc-model-picker[open]),
+.component-workbench-stage:has(.oc-command-palette[open]),
+.component-workbench-stage:has(.oc-dropdown-menu:not([hidden])),
+.component-workbench-canvas:has(.oc-model-picker[open]),
+.component-workbench-canvas:has(.oc-command-palette[open]),
+.component-workbench-canvas:has(.oc-dropdown-menu:not([hidden])) {
+  overflow: visible;
+}
