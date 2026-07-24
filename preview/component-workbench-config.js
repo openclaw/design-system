@@ -20,6 +20,12 @@ import {
   bindSidebars,
 } from "./sidebar.js";
 import {
+  avatarCatalogMarkup,
+  avatarPlaygroundMarkup,
+  avatarPresenceOptions,
+  avatarSeeds,
+  avatarSizeOptions,
+  avatarStyleOptions,
   actionVariants,
   actionWorkbenchMarkup,
   agentChatWorkbenchMarkup,
@@ -952,6 +958,39 @@ ${appSurfaceWorkbenchMarkup(state)}
           update("selected", button.dataset.workbenchSegmentedValue),
         );
       });
+    },
+  },
+  "primitive-avatar": {
+    defaults: { seed: "Mina", style: "auto", size: "md", presence: "none" },
+    controls: [
+      {
+        id: "seed",
+        label: "Seed",
+        type: "choice",
+        options: avatarSeeds,
+      },
+      {
+        id: "style",
+        label: "Pattern",
+        type: "choice",
+        options: avatarStyleOptions,
+      },
+      {
+        id: "size",
+        label: "Size",
+        type: "choice",
+        options: avatarSizeOptions,
+      },
+      {
+        id: "presence",
+        label: "Presence",
+        type: "choice",
+        options: avatarPresenceOptions,
+      },
+    ],
+    markup: avatarPlaygroundMarkup,
+    render(specimen, state) {
+      specimen.innerHTML = avatarCatalogMarkup(state);
     },
   },
   "primitive-banner": {

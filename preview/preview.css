@@ -7032,3 +7032,34 @@ body[data-preview-page="primitive-command-palette"] .oc-command-palette {
   color: var(--oc-text-muted);
   font-size: var(--oc-font-size-xs);
 }
+
+/* Avatar catalog sections mirror the pagination example rhythm. */
+.avatar-section-list {
+  display: grid;
+  width: 100%;
+  gap: var(--oc-space-4);
+}
+
+.avatar-section-list > div {
+  display: grid;
+  padding-top: var(--oc-space-3);
+  border-top: 1px solid var(--oc-border-subtle);
+  gap: var(--oc-space-3);
+}
+
+.avatar-section-list > div:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.avatar-section-list small {
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.avatar-section-list .primitive-avatar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--oc-space-5);
+}

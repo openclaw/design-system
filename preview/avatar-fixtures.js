@@ -28,39 +28,90 @@ function hashAvatarSeed(seed) {
   return hash >>> 0;
 }
 
-export function avatarFixtureUrl(seed) {
-  // Abstract mirrored pixel mosaic: identicon-style identity with a vivid
-  // multi-color palette. No faces; the seed fully determines the pattern.
-  const hash = hashAvatarSeed(seed);
-  const palette = avatarPalettes[hash % avatarPalettes.length];
-  const cells = [];
-  const size = 8;
-  const half = size / 2;
-  let bits = hash;
+function hexToHue(hex) {
+  const value = hex.replace("#", "");
+  const r = parseInt(value.slice(0, 2), 16) / 255;
+  const g = parseInt(value.slice(2, 4), 16) / 255;
+  const b = parseInt(value.slice(4, 6), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  if (max === min) return 0;
+  const d = max - min;
+  let h;
+  if (max === r) h = ((g - b) / d) % 6;
+  else if (max === g) h = (b - r) / d + 2;
+  else h = (r - g) / d + 4;
+  return Math.round(((h * 60) + 360) % 360);
+}
+
+export const avatarStyles = ["mosaic", "quad", "stripes"];
+
+export function avatarFixtureUrl(seed, { color, style } = {}) {
+  // Deterministic identity art: any stable string works as the seed — a
+  // name, an email hash, or a hex color via the color option. Each seed
+  // gets its own dominant hue and one of three pattern styles, so agents
+  // stay visually distinct at a glance.
+  const hash = hashAvatarSeed(String(seed));
+  const hue = color ? hexToHue(color) : hash % 360;
+  const selectedStyle = avatarStyles.includes(style)
+    ? style
+    : avatarStyles[(hash >>> 4) % avatarStyles.length];
+  const c = [
+    `hsl(${hue} 85% 62%)`,
+    `hsl(${(hue + 42) % 360} 82% 55%)`,
+    `hsl(${(hue + 195) % 360} 72% 60%)`,
+  ];
+  const bg = `hsl(${hue} 32% 12%)`;
+  let bits = hash || 1;
   const next = () => {
-    // xorshift keeps the stream deterministic per seed
     bits ^= bits << 13;
     bits ^= bits >>> 17;
     bits ^= bits << 5;
     bits >>>= 0;
     return bits;
   };
-  for (let y = 0; y < size; y += 1) {
-    for (let x = 0; x < half; x += 1) {
-      const roll = next() % 100;
-      if (roll < 62) {
-        const color = palette[1 + (next() % 3)];
-        const px = 4 + x * 4;
-        const mirrored = 4 + (size - 1 - x) * 4;
-        const py = 4 + y * 4;
-        cells.push(`<rect x="${px}" y="${py}" width="4" height="4" fill="${color}"/>`);
-        cells.push(`<rect x="${mirrored}" y="${py}" width="4" height="4" fill="${color}"/>`);
+  const cells = [];
+  const put = (x, y, w, h, fill) =>
+    cells.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}"/>`);
+  if (selectedStyle === "stripes") {
+    for (let x = 0; x < 8; x += 1) {
+      const height = 8 + (next() % 22);
+      const y = 36 - height;
+      put(4 + x * 4, y, 4, height, c[next() % 3]);
+    }
+  } else if (selectedStyle === "quad") {
+    for (let y = 0; y < 4; y += 1) {
+      for (let x = 0; x < 4; x += 1) {
+        if (next() % 100 < 58) {
+          const fill = c[next() % 3];
+          const px = 4 + x * 4;
+          const py = 4 + y * 4;
+          const mx = 4 + (7 - x) * 4;
+          const my = 4 + (7 - y) * 4;
+          put(px, py, 4, 4, fill);
+          put(mx, py, 4, 4, fill);
+          put(px, my, 4, 4, fill);
+          put(mx, my, 4, 4, fill);
+        }
+      }
+    }
+  } else {
+    for (let y = 0; y < 8; y += 1) {
+      for (let x = 0; x < 4; x += 1) {
+        if (next() % 100 < 60) {
+          const fill = c[next() % 3];
+          const px = 4 + x * 4;
+          const py = 4 + y * 4;
+          put(px, py, 4, 4, fill);
+          put(4 + (7 - x) * 4, py, 4, 4, fill);
+        }
       }
     }
   }
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" shape-rendering="crispEdges"><rect width="40" height="40" fill="${palette[0]}"/>${cells.join("")}</svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" shape-rendering="crispEdges"><rect width="40" height="40" fill="${bg}"/>${cells.join("")}</svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
+
 
 
 // Default identity: a pixel claw for agents and surfaces without their own

@@ -12,9 +12,7 @@ import {
   applicationComposerPrimaryMarkup,
   applicationTalkToggleMarkup,
 } from "./application-screens.js";
-import {
-  avatarFixtureUrl,
-} from "./avatar-fixtures.js";
+import { avatarFixtureUrl, clawAvatarUrl } from "./avatar-fixtures.js";
 import {
   buttonWorkbenchExamples,
 } from "./component-reference.js";
@@ -1925,3 +1923,73 @@ export function agentChatWorkbenchMarkup({
 </section>`;
 }
 
+
+export const avatarSeeds = [
+  { label: "Mina", value: "Mina" },
+  { label: "Atlas", value: "Atlas" },
+  { label: "Quinn", value: "Quinn" },
+  { label: "Hex #FF6B45", value: "#ff6b45" },
+  { label: "Hash req_8f31", value: "req_8f31" },
+];
+
+export const avatarStyleOptions = [
+  { label: "Auto", value: "auto" },
+  { label: "Mosaic", value: "mosaic" },
+  { label: "Quad", value: "quad" },
+  { label: "Stripes", value: "stripes" },
+];
+
+export const avatarSizeOptions = [
+  { label: "Inline", value: "xs" },
+  { label: "Small", value: "sm" },
+  { label: "Default", value: "md" },
+  { label: "Large", value: "lg" },
+];
+
+export const avatarPresenceOptions = [
+  { label: "None", value: "none" },
+  { label: "Online", value: "online" },
+  { label: "Speaking", value: "speaking" },
+  { label: "Thinking", value: "thinking" },
+];
+
+export function avatarPlaygroundMarkup({
+  seed = "Mina",
+  style = "auto",
+  size = "md",
+  presence = "none",
+} = {}) {
+  const options = {};
+  if (style !== "auto") options.style = style;
+  if (seed.startsWith("#")) options.color = seed;
+  const sizeClass = size === "md" ? "" : ` oc-avatar-${size}`;
+  const stateAttribute =
+    presence === "speaking" || presence === "thinking" ? ` data-state="${presence}"` : "";
+  const dimension = size === "xs" ? 20 : size === "sm" ? 24 : size === "lg" ? 48 : 40;
+  const avatar = `<span class="oc-avatar${sizeClass} oc-avatar-pixel"${stateAttribute} role="img" aria-label="${escapeHtml(seed)}"><img class="oc-avatar-image" src="${avatarFixtureUrl(seed, options)}" alt="" width="${dimension}" height="${dimension}" /></span>`;
+  if (presence === "online") {
+    return `<span class="primitive-avatar-presence">${avatar}<span class="primitive-avatar-presence-dot" aria-hidden="true"></span><span>${escapeHtml(seed)} · Online</span></span>`;
+  }
+  return avatar;
+}
+
+export function avatarCatalogMarkup(state) {
+  const generated = ["Mina", "Atlas", "Quinn", "Sora", "Scout", "Planner"]
+    .map(
+      (name) =>
+        `<span class="primitive-avatar-example"><span class="oc-avatar oc-avatar-pixel" role="img" aria-label="${name}"><img class="oc-avatar-image" src="${avatarFixtureUrl(name)}" alt="" width="40" height="40" /></span><span>${name}</span></span>`,
+    )
+    .join("");
+  const styleRow = ["mosaic", "quad", "stripes"]
+    .map(
+      (styleName) =>
+        `<span class="primitive-avatar-example"><span class="oc-avatar oc-avatar-pixel" aria-hidden="true"><img class="oc-avatar-image" src="${avatarFixtureUrl(state.seed ?? "Mina", { style: styleName })}" alt="" width="40" height="40" /></span><span>${styleName}</span></span>`,
+    )
+    .join("");
+  return `<div class="avatar-section-list">
+  <div><small>Playground — drive with the controls</small><div class="primitive-avatar-row">${avatarPlaygroundMarkup(state)}</div></div>
+  <div><small>Distinct generated identities — one hue and pattern per seed</small><div class="primitive-avatar-row">${generated}</div></div>
+  <div><small>Pattern styles for the current seed</small><div class="primitive-avatar-row">${styleRow}</div></div>
+  <div><small>Defaults and sources</small><div class="primitive-avatar-row"><span class="primitive-avatar-example"><span class="oc-avatar oc-avatar-pixel" role="img" aria-label="OpenClaw agent"><img class="oc-avatar-image" src="${clawAvatarUrl()}" alt="" width="40" height="40" /></span><span>Claw default</span></span><span class="primitive-avatar-example"><span class="oc-avatar" role="img" aria-label="OpenClaw"><span class="oc-avatar-fallback" aria-hidden="true">OC</span></span><span>Initials</span></span></div></div>
+</div>`;
+}
