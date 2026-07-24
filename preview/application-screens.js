@@ -428,6 +428,15 @@ export function operationsApplicationMarkup({
           <h1 class="oc-page-header-title">${channels ? "Channels" : "Automations"}</h1>
           <p class="oc-page-header-description">${channels ? `5 configured · ${state === "error" ? "3" : "4"} connected` : "3 recurring tasks · 2 enabled"}</p>
         </div>
+        <div class="oc-summary-strip oc-page-header-summary">
+          ${
+            channels
+              ? `<div class="oc-summary-metric" data-tone="success"><span class="oc-summary-metric-icon">${agentIcon("radio")}</span><span class="oc-summary-metric-copy"><strong>${state === "error" ? "3" : "4"}</strong><small>Connected</small></span></div>
+          <div class="oc-summary-metric"${state === "error" ? ' data-tone="error"' : ""}><span class="oc-summary-metric-icon">${agentIcon("triangle-alert")}</span><span class="oc-summary-metric-copy"><strong>${state === "error" ? "1" : "0"}</strong><small>Attention</small></span></div>`
+              : `<div class="oc-summary-metric" data-tone="success"><span class="oc-summary-metric-icon">${agentIcon("play")}</span><span class="oc-summary-metric-copy"><strong>2</strong><small>Enabled</small></span></div>
+          <div class="oc-summary-metric"><span class="oc-summary-metric-icon">${agentIcon("history")}</span><span class="oc-summary-metric-copy"><strong>18</strong><small>Runs this week</small></span></div>`
+          }
+        </div>
         <div class="oc-page-header-actions">
           <button class="oc-action oc-action-primary" type="button">${agentIcon("plus")} ${channels ? "Add channel" : "New automation"}</button>
         </div>

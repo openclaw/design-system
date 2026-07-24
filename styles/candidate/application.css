@@ -5275,3 +5275,10 @@
 .oc-session-cell-owner-muted {
   color: var(--oc-text-muted);
 }
+
+/* Page-header summary: a compact metric strip inline with the route
+   header on wide screens, wrapping below it when space runs out. */
+.oc-page-header-summary {
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, auto));
+  align-self: center;
+}

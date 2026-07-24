@@ -436,6 +436,7 @@ describe("CSS contract", () => {
       ".oc-page-header-content",
       ".oc-page-header-description",
       ".oc-page-header-kicker",
+      ".oc-page-header-summary",
       ".oc-page-header-title",
       ".oc-pane",
       ".oc-pane-actions",

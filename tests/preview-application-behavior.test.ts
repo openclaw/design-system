@@ -54,7 +54,7 @@ describe("application surface behavior", () => {
 
     expect(channels).toContain('class="oc-pane oc-master-detail"');
     expect(channels).toContain("Channels");
-    expect(channels).not.toContain('class="oc-summary-strip"');
+    expect(channels).toContain('class="oc-summary-strip oc-page-header-summary"');
     expect(channels).not.toContain('class="oc-app-toolbar"');
     expect(channels).toContain('class="oc-app-resource-list"');
     expect(channels).toContain("Recent delivery");
@@ -67,7 +67,7 @@ describe("application surface behavior", () => {
     expect(channelError).toContain("Discord token expired");
     expect(channelError).toContain("3 connected");
     expect(channelError).not.toContain("4 connected");
-    expect(channelError).not.toContain("oc-summary-metric");
+    expect(channelError).toContain('data-tone="error"');
     expect(channels).toContain('aria-pressed="true"');
     expect(channels).not.toContain("aria-selected");
     expect(loading).toContain("Loading Discord configuration");
