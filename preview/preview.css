@@ -2957,6 +2957,18 @@ dialog .button-row {
   margin-top: 42px;
 }
 
+.effect-interaction-item {
+  display: grid;
+  gap: var(--oc-space-2);
+  justify-items: center;
+}
+
+.effect-interaction-item small {
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+  text-align: center;
+}
+
 .effect-interaction-demo,
 .effect-loading-demo,
 .effect-attention-demo,
@@ -2977,6 +2989,11 @@ dialog .button-row {
 
 .effect-loading-demo .workbench-skeleton-demo {
   width: min(100%, 22rem);
+}
+
+.workbench-skeleton-demo {
+  display: grid;
+  gap: var(--oc-space-2);
 }
 
 .effect-attention-demo .oc-meter {

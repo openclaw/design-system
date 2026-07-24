@@ -4772,11 +4772,19 @@
 .oc-panel-tab-strip {
   display: flex;
   overflow-x: auto;
+  min-height: 2.25rem;
+  box-sizing: border-box;
   align-items: center;
   gap: var(--oc-space-1);
   padding: var(--oc-space-1) var(--oc-space-2);
   border-bottom: 1px solid var(--oc-border-subtle);
   background: var(--oc-bg-surface);
+}
+
+/* Compact strip controls so add/close affordances match tab height. */
+.oc-panel-tab-strip .oc-action {
+  min-height: 1.5rem;
+  padding: 0 var(--oc-space-1);
 }
 
 .oc-panel-tab {
@@ -5015,9 +5023,24 @@
 .oc-menu-panel-footer {
   display: flex;
   justify-content: space-between;
-  padding: var(--oc-space-2) var(--oc-space-3);
+  padding: var(--oc-space-1) var(--oc-space-2);
   border-top: 1px solid var(--oc-border-subtle);
   background: var(--oc-bg-surface);
+}
+
+/* Panel controls stay tray-scale rather than form-scale. */
+.oc-menu-panel .oc-action {
+  min-height: 1.75rem;
+  padding: 0 var(--oc-space-2);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-menu-panel-item [data-lucide],
+.oc-menu-panel-item svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex: 0 0 auto;
+  color: var(--oc-text-muted);
 }
 
 /* Option cards: mutually exclusive setup choices rendered as real radio
