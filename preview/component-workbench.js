@@ -31,6 +31,11 @@ export const workbenchViewportModes = [
 ];
 
 const workbenchViewportPageModes = new Map([
+  ["application-settings", ["desktop", "tablet", "mobile"]],
+  ["application-operations", ["desktop", "tablet", "mobile"]],
+  ["application-workspace", ["desktop", "tablet", "mobile"]],
+  ["application-sessions", ["desktop", "tablet", "mobile"]],
+  ["application-quick-chat", ["desktop", "tablet", "mobile"]],
   ["primitive-grid", ["desktop", "tablet", "mobile"]],
   ["primitive-table", ["desktop", "mobile"]],
 ]);
@@ -60,7 +65,6 @@ const inlineWorkbenchPages = new Set([
   "primitive-link",
   "primitive-loader",
   "primitive-pill",
-  "primitive-provider-logo",
   "primitive-skeleton-line",
   "primitive-tooltip",
   "spiral-loader",
@@ -88,13 +92,35 @@ const dataWorkbenchPages = new Set([
   "primitive-table",
 ]);
 
-const viewportWorkbenchPages = new Set([
+const compactWorkbenchPages = new Set([
+  "primitive-avatar",
+  "primitive-link",
+  "primitive-loader",
+  "primitive-meter",
+  "spiral-loader",
+  "text-shimmer",
+]);
+
+const wideWorkbenchPages = new Set([
+  "primitive-provider-logo",
   "agent-chat",
   "input-bar",
   "message-list",
+  "user-message",
+]);
+
+const conversationWorkbenchPages = new Set([
+  "agent-collaboration",
+]);
+
+const viewportWorkbenchPages = new Set([
+  "application-settings",
+  "application-operations",
+  "application-workspace",
+  "application-sessions",
+  "application-quick-chat",
   "primitive-app-surface",
   "primitive-sidebar",
-  "user-message",
 ]);
 
 export function getWorkbenchShellProfile(pageId) {
@@ -106,6 +132,15 @@ export function getWorkbenchShellProfile(pageId) {
   }
   if (dataWorkbenchPages.has(pageId)) {
     return { canvasPreset: "data", supportsViewport: true };
+  }
+  if (compactWorkbenchPages.has(pageId)) {
+    return { canvasPreset: "compact", supportsViewport: false };
+  }
+  if (wideWorkbenchPages.has(pageId)) {
+    return { canvasPreset: "wide", supportsViewport: false };
+  }
+  if (conversationWorkbenchPages.has(pageId)) {
+    return { canvasPreset: "conversation", supportsViewport: true };
   }
   if (viewportWorkbenchPages.has(pageId)) {
     return { canvasPreset: "viewport", supportsViewport: true };
@@ -123,7 +158,8 @@ export function isComponentWorkbenchPage(pageId) {
     page.id !== "interface-primitives";
   const isAgentComponent =
     page.areaId === "agent-components" && page.id !== "agent-components";
-  return isPrimitive || isAgentComponent;
+  const isApplication = page.areaId === "applications";
+  return isPrimitive || isAgentComponent || isApplication;
 }
 
 export function setWorkbenchViewport(workbench, viewport) {
@@ -356,21 +392,28 @@ function mountWorkbenchDefinition(workbench, pageId) {
     }
     if (controls) syncControlInputs(controls, state);
     window.lucide?.createIcons({
+      root: specimen,
       attrs: {
         "aria-hidden": "true",
         "stroke-width": "1.75",
       },
     });
   };
-  const update = (id, value) => {
+  const update = (id, value, { render = true } = {}) => {
     preserveWorkbenchScrollPosition(document.scrollingElement, () => {
       state[id] = value;
-      apply();
+      if (render) {
+        apply();
+        return;
+      }
+      if (controls) syncControlInputs(controls, state);
+      renderWorkbenchCode(code, definition.markup(state));
     });
   };
 
   if (controls) {
     for (const control of definition.controls) {
+      if (control.hidden) continue;
       if (control.type === "choice") {
         controls.append(createChoiceControl(pageId, control, state, update));
       } else if (control.type === "toggle") {
@@ -568,8 +611,9 @@ export function renderComponentWorkbench(mount, pageId) {
   const badge = intro.querySelector(".maturity-badge");
   const previewTitle = previewSection.querySelector(".section-heading h2")?.textContent;
   const definition = getWorkbenchDefinition(pageId);
-  const hasControls = Boolean(definition?.controls?.length);
+  const hasControls = Boolean(definition?.controls?.some((control) => !control.hidden));
   const shellProfile = getWorkbenchShellProfile(pageId);
+  const canvasTheme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
 
   const workbench = createElement("div", "component-workbench");
   workbench.dataset.componentWorkbench = "";
@@ -581,8 +625,11 @@ export function renderComponentWorkbench(mount, pageId) {
   titleGroup.append(title);
   if (badge) titleGroup.append(badge);
   const navigation = createWorkbenchNavigation(pageId);
-  header.append(titleGroup);
-  if (navigation) header.append(navigation);
+  const canvasTools = createCanvasTools(canvasTheme, pageId);
+  const headerActions = createElement("div", "component-workbench-header-actions");
+  headerActions.append(...canvasTools);
+  if (navigation) headerActions.append(navigation);
+  header.append(titleGroup, headerActions);
 
   const stage = createElement("section", "component-workbench-stage");
   const stageTitle = createElement("h2", "sr-only");
@@ -593,17 +640,16 @@ export function renderComponentWorkbench(mount, pageId) {
   const canvas = createElement("div", "component-workbench-canvas");
   canvas.dataset.workbenchCanvas = "";
   canvas.dataset.viewport = "desktop";
-  const canvasTheme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
   canvas.dataset.workbenchTheme = canvasTheme;
   const frame = createElement("div", "component-workbench-frame");
   frame.append(specimen);
   canvas.append(frame);
-  stage.append(stageTitle, canvas, ...createCanvasTools(canvasTheme, pageId));
+  stage.append(stageTitle, canvas);
 
   workbench.append(header, stage);
   if (hasControls) {
     const inspector = createElement("aside", "component-workbench-inspector");
-    inspector.dataset.expanded = "true";
+    inspector.dataset.expanded = "false";
     inspector.setAttribute("aria-labelledby", `${pageId}-workbench-controls`);
     const inspectorHeader = createElement("header", "component-workbench-inspector-header");
     const inspectorTitle = createElement("h2");
@@ -612,9 +658,9 @@ export function renderComponentWorkbench(mount, pageId) {
     const inspectorToggle = createElement("button", "component-workbench-inspector-toggle");
     inspectorToggle.type = "button";
     inspectorToggle.dataset.workbenchControlsToggle = "";
-    inspectorToggle.setAttribute("aria-expanded", "true");
+    inspectorToggle.setAttribute("aria-expanded", "false");
     inspectorToggle.setAttribute("aria-controls", `${pageId}-workbench-controls-panel`);
-    inspectorToggle.setAttribute("aria-label", "Collapse controls");
+    inspectorToggle.setAttribute("aria-label", "Expand controls");
     inspectorToggle.innerHTML =
       '<i data-lucide="sliders-horizontal" aria-hidden="true"></i>';
     inspectorHeader.append(inspectorTitle, inspectorToggle);
@@ -627,12 +673,6 @@ export function renderComponentWorkbench(mount, pageId) {
   workbench.append(createDock(markupSection, guidanceSection, pageId));
   mountWorkbenchDefinition(workbench, pageId);
   mount.replaceChildren(workbench);
-  window.lucide?.createIcons({
-    attrs: {
-      "aria-hidden": "true",
-      "stroke-width": "1.75",
-    },
-  });
   mount.dataset.componentWorkbenchRoot = "";
   document.body.dataset.referenceLayout = "workbench";
   document.body.dataset.shellMode = "workbench";

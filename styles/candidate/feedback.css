@@ -263,3 +263,38 @@
     animation: none;
   }
 }
+
+/* Banner variants: an adjacent action and an opt-in dismiss affordance.
+   The dismiss control is last in DOM and visual order so the action
+   stays primary; sticky update banners compose these pieces. */
+.oc-banner-action {
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.oc-banner-dismiss {
+  display: inline-grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: var(--oc-radius-inset);
+  background: none;
+  color: var(--oc-text-muted);
+  cursor: pointer;
+  place-items: center;
+}
+
+.oc-banner-dismiss:hover {
+  background: var(--oc-surface-interactive);
+  color: var(--oc-text-primary);
+}
+
+.oc-banner-dismiss:focus-visible {
+  outline: 2px solid var(--oc-focus-ring);
+  outline-offset: 1px;
+}
+
+.oc-banner-action + .oc-banner-dismiss {
+  margin-left: var(--oc-space-1);
+}

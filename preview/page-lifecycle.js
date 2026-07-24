@@ -1,17 +1,15 @@
 import { bindAgentComponentDemos } from "./agent-components-interactions.js";
+import { avatarFixtureUrl } from "./avatar-fixtures.js";
 import { bindCombobox } from "./combobox.js";
 import { bindCommandPalettes } from "./command-palette.js";
-import { bindComponentWorkbenches } from "./component-workbench.js";
 import { bindDialogs } from "./dialog.js";
 import { bindDropdowns } from "./dropdown.js";
 import { bindExampleDialog } from "./interaction.js";
 import { bindMenuBars } from "./menu-bar.js";
 import { getReferenceMaturity, referencePages } from "./navigation.js";
-import { renderReferenceContent } from "./reference-content.js";
 import { bindSensitiveInputs } from "./sensitive-input.js";
 import { bindSidebars } from "./sidebar.js";
 import { bindTabs } from "./tabs.js";
-import { bindTablesOfContents } from "./table-of-contents.js";
 import {
   groupTokenDefinitions,
   resolveTokenHash,
@@ -334,6 +332,14 @@ function bindHomeSegmentedControls(root) {
   }
 }
 
+function hydrateAvatarFixtures(root) {
+  for (const image of root.querySelectorAll("img[data-avatar-seed]")) {
+    image.src = avatarFixtureUrl(image.dataset.avatarSeed || "OpenClaw", {
+      animated: image.hasAttribute("data-avatar-animated"),
+    });
+  }
+}
+
 function observePreviewSections(root) {
   const document = root.ownerDocument;
   const view = document.defaultView;
@@ -492,7 +498,6 @@ export function bindCopyActions(root, reportFeedback) {
 }
 
 function bindPageInteractions(root) {
-  bindComponentWorkbenches(root);
   bindAgentComponentDemos(root);
   bindCombobox(root);
   bindCommandPalettes(root);
@@ -503,10 +508,51 @@ function bindPageInteractions(root) {
   bindSensitiveInputs(root);
   bindSidebars(root);
   bindTabs(root);
-  bindTablesOfContents(root);
+  let active = true;
+  const hasTableOfContents = Boolean(
+    root.querySelector(".oc-table-of-contents, .introduction-toc"),
+  );
+  const tableOfContents = import("./table-of-contents.js");
+  void tableOfContents.then(({ bindTablesOfContents, disconnectTablesOfContents }) => {
+    disconnectTablesOfContents(root);
+    if (active && hasTableOfContents && root.isConnected) bindTablesOfContents(root);
+  });
   bindToolbars(root);
   bindToasts(root);
   bindTooltips(root);
+  return () => {
+    active = false;
+    void tableOfContents.then(({ disconnectTablesOfContents }) => {
+      disconnectTablesOfContents(root);
+    });
+  };
+}
+
+function renderPageIcons(root, view) {
+  let active = true;
+  const frame = view.requestAnimationFrame(() => {
+    void import("./lucide.js")
+      .then(({ lucide }) => {
+        if (!active || root.isConnected === false) return;
+        view.lucide = lucide;
+        lucide.createIcons({
+          root,
+          attrs: {
+            "aria-hidden": "true",
+            "stroke-width": "1.75",
+          },
+        });
+      })
+      .catch(() => {
+        // Icons are progressive enhancement. Keep the route usable if its
+        // deferred chunk fails while navigating or reloading.
+      });
+  });
+
+  return () => {
+    active = false;
+    view.cancelAnimationFrame(frame);
+  };
 }
 
 export function mountPage(
@@ -523,21 +569,21 @@ export function mountPage(
 
   const document = root.ownerDocument;
   const view = document.defaultView;
-  delete document.body.dataset.referenceLayout;
-  delete document.body.dataset.shellMode;
-  renderReferenceContent(root, pageId);
+  // renderComponentWorkbench marks the body before mountPage runs; clearing
+  // unconditionally here stripped the workbench full-width layout right after
+  // it was applied. Only reset when this route did not mount a workbench.
+  if (!root.querySelector("[data-component-workbench]")) {
+    delete document.body.dataset.referenceLayout;
+    delete document.body.dataset.shellMode;
+  }
   addHomeMaturityBadges(root);
+  hydrateAvatarFixtures(root);
   root.querySelectorAll("[data-preview-indeterminate]").forEach((input) => {
     input.indeterminate = true;
   });
   bindHomeSegmentedControls(root);
-  bindPageInteractions(root);
-  view.lucide?.createIcons({
-    attrs: {
-      "aria-hidden": "true",
-      "stroke-width": "1.75",
-    },
-  });
+  const stopPageInteractions = bindPageInteractions(root);
+  const stopIcons = renderPageIcons(root, view);
 
   const tokenCatalog = createTokenCatalog(root, resolvedTheme);
   const stopObservingSections = observePreviewSections(root);
@@ -551,6 +597,8 @@ export function mountPage(
       if (!active) return;
       active = false;
       tokenCatalog.cleanup();
+      stopPageInteractions();
+      stopIcons();
       stopObservingSections();
       stopCopy();
       feedback.cleanup();

@@ -1,22 +1,26 @@
-export const introductionPage = {
+export const homePage = {
   id: "overview",
   label: "Home",
   path: "",
   keywords: "home overview carapace visual contract",
 };
 
+// Kept for the preview shell while consumers migrate to the literal Home name.
+export const introductionPage = homePage;
+
 export const referenceAreas = [
   {
     id: "foundations",
-    label: "Foundations",
-    description: "Tokens, type, layout, and visual properties",
-    path: "foundations/",
+    label: "Introduction",
+    description: "Project purpose, principles, adoption, and foundations",
+    path: "introduction/",
     pages: [
       {
-        id: "foundations",
+        id: "introduction",
         label: "Introduction",
-        path: "foundations/",
-        keywords: "visual foundation system",
+        path: "introduction/",
+        keywords:
+          "introduction project purpose visual contract adoption architecture maturity consumers accessibility",
       },
       {
         id: "foundation-tokens",
@@ -125,6 +129,12 @@ export const referenceAreas = [
         keywords: "oc-clipboard-text copy code value clipboard",
       },
       {
+        id: "primitive-code-block",
+        label: "Code Block",
+        path: "interface/primitives/code-block/",
+        keywords: "oc-code-block pre code copy header language monospace",
+      },
+      {
         id: "primitive-code-highlighted",
         label: "Code Highlighted",
         path: "interface/primitives/code-highlighted/",
@@ -197,10 +207,22 @@ export const referenceAreas = [
         keywords: "oc-link navigation inline standalone muted disabled",
       },
       {
+        id: "primitive-log-viewer",
+        label: "Log Viewer",
+        path: "interface/primitives/log-viewer/",
+        keywords: "oc-log-stream diagnostics level time subsystem message rows",
+      },
+      {
         id: "primitive-loader",
         label: "Loader",
         path: "interface/primitives/loader/",
         keywords: "oc-loader spinner loading progress busy status",
+      },
+      {
+        id: "primitive-menu-panel",
+        label: "Menu Panel",
+        path: "interface/primitives/menu-panel/",
+        keywords: "oc-menu-panel tray menu bar extra dropdown usage sessions shortcuts",
       },
       {
         id: "primitive-menu-bar",
@@ -213,6 +235,12 @@ export const referenceAreas = [
         label: "Meter",
         path: "interface/primitives/meter/",
         keywords: "oc-meter measurement range capacity score native",
+      },
+      {
+        id: "primitive-option-card",
+        label: "Option Card",
+        path: "interface/primitives/option-card/",
+        keywords: "oc-option-card onboarding setup choice radio connect pair qr code",
       },
       {
         id: "primitive-pagination",
@@ -243,6 +271,12 @@ export const referenceAreas = [
         label: "Skeleton Line",
         path: "interface/primitives/skeleton-line/",
         keywords: "oc-skeleton-line loading placeholder progress content",
+      },
+      {
+        id: "primitive-split-pane",
+        label: "Split Pane",
+        path: "interface/primitives/split-pane/",
+        keywords: "oc-split divider panel tab strip dock resize terminal browser",
       },
       {
         id: "primitive-table",
@@ -291,6 +325,18 @@ export const referenceAreas = [
         label: "App surface",
         path: "interface/primitives/app-surface/",
         keywords: "oc-app-surface root wrapper background color font",
+      },
+      {
+        id: "primitive-hovercard",
+        label: "Hovercard",
+        path: "interface/primitives/hovercard/",
+        keywords: "oc-hovercard oc-lightbox link preview reference attachment dialog",
+      },
+      {
+        id: "primitive-brand-banner",
+        label: "Brand Banner",
+        path: "interface/primitives/brand-banner/",
+        keywords: "oc-brand-banner artwork band hero strip fade wash grid mosaic mark",
       },
       {
         id: "primitive-hero",
@@ -365,6 +411,12 @@ export const referenceAreas = [
         keywords: "oc-textarea multiline resize form message",
       },
       {
+        id: "primitive-indicators",
+        label: "Indicators",
+        path: "interface/primitives/indicators/",
+        keywords: "oc-summary-strip oc-owner-chip oc-unread-dot oc-run-spinner session badges metrics",
+      },
+      {
         id: "primitive-label",
         label: "Label",
         path: "interface/primitives/label/",
@@ -399,10 +451,28 @@ export const referenceAreas = [
     path: "agent-components/agent-chat/",
     pages: [
       {
+        id: "transcript-anatomy",
+        label: "Transcript Anatomy",
+        path: "agent-components/transcript-anatomy/",
+        keywords: "oc-work-group oc-tool-kv oc-json-collapse oc-compaction oc-turn-recap oc-activity-indicator",
+      },
+      {
+        id: "approval",
+        label: "Approval",
+        path: "agent-components/approval/",
+        keywords: "oc-approval-card permission allow deny exec command queue risk",
+      },
+      {
         id: "agent-chat",
         label: "Agent Chat",
         path: "agent-components/agent-chat/",
         keywords: "oc-agent-chat conversation messages suggestions input",
+      },
+      {
+        id: "agent-collaboration",
+        label: "Multi-agent Activity",
+        path: "agent-components/agent-collaboration/",
+        keywords: "multi agent collaboration subagent avatars thinking activity leader",
       },
       {
         id: "attachment-button",
@@ -411,10 +481,10 @@ export const referenceAreas = [
         keywords: "oc-agent-attachment-button attach upload file composer",
       },
       {
-        id: "bash-tool",
-        label: "Bash Tool",
-        path: "agent-components/bash-tool/",
-        keywords: "oc-agent-bash-tool terminal command output status",
+        id: "interactive-tool",
+        label: "Interactive Tool",
+        path: "agent-components/interactive-tool/",
+        keywords: "oc-agent-interactive-tool terminal command preview browser media output status",
       },
       {
         id: "error-message",
@@ -551,6 +621,44 @@ export const referenceAreas = [
     ],
   },
   {
+    id: "effects",
+    label: "Effects",
+    description: "State-driven motion, loading, attention, and transitions",
+    path: "effects/",
+    pages: [
+      {
+        id: "effects",
+        label: "Overview",
+        path: "effects/",
+        keywords: "effects animation motion transition reduced motion",
+      },
+      {
+        id: "effect-interaction",
+        label: "Interaction",
+        path: "effects/interaction/",
+        keywords: "hover focus press selection movement interaction",
+      },
+      {
+        id: "effect-loading",
+        label: "Loading",
+        path: "effects/loading/",
+        keywords: "loader shimmer skeleton progress streaming pending",
+      },
+      {
+        id: "effect-attention",
+        label: "Attention",
+        path: "effects/attention/",
+        keywords: "pulse meter presence agent activity status attention",
+      },
+      {
+        id: "effect-transition",
+        label: "Transition",
+        path: "effects/transition/",
+        keywords: "reveal collapse enter exit replace spatial continuity transition",
+      },
+    ],
+  },
+  {
     id: "charts",
     label: "Charts",
     description: "Data visualization components",
@@ -618,37 +726,61 @@ export const referenceAreas = [
         path: "interface/blocks/delete-resource/",
         keywords: "oc-delete-resource destructive confirmation danger irreversible",
       },
-    ],
-  },
-  {
-    id: "compositions",
-    label: "Compositions",
-    description: "Product, content, and public surfaces",
-    path: "compositions/",
-    pages: [
-      {
-        id: "compositions",
-        label: "Overview",
-        path: "compositions/",
-        keywords: "layouts surfaces patterns",
-      },
       {
         id: "composition-product",
-        label: "Product surfaces",
+        label: "Product Surfaces",
         path: "compositions/product/",
-        keywords: "application app workflow",
+        keywords: "application app workflow composition dense tools filters status data",
       },
       {
         id: "composition-content",
-        label: "Content surfaces",
+        label: "Content Surfaces",
         path: "compositions/content/",
-        keywords: "documentation article prose",
+        keywords: "documentation article prose composition technical code guidance",
       },
       {
         id: "composition-public",
-        label: "Public surfaces",
+        label: "Public Surfaces",
         path: "compositions/public/",
-        keywords: "marketing website landing",
+        keywords: "marketing website landing composition open layouts actions",
+      },
+    ],
+  },
+  {
+    id: "applications",
+    label: "Applications",
+    description: "Compact app shells, model controls, settings, sessions, and workspaces",
+    path: "applications/settings/",
+    pages: [
+      {
+        id: "application-settings",
+        label: "Settings",
+        path: "applications/settings/",
+        keywords: "application settings preferences toggle switch form pane",
+      },
+      {
+        id: "application-operations",
+        label: "Operations",
+        path: "applications/operations/",
+        keywords: "application channels automation master detail status pane",
+      },
+      {
+        id: "application-workspace",
+        label: "Workspace",
+        path: "applications/workspace/",
+        keywords: "application agent workspace inspector dock split pane session model picker",
+      },
+      {
+        id: "application-sessions",
+        label: "Sessions",
+        path: "applications/sessions/",
+        keywords: "application sessions table search filter status bulk actions",
+      },
+      {
+        id: "application-quick-chat",
+        label: "Quick Chat",
+        path: "applications/quick-chat/",
+        keywords: "application quick chat mac spotlight composer model picker capture context",
       },
     ],
   },
@@ -754,6 +886,16 @@ const stableReferenceIds = new Set([
 
 const candidateReferenceIds = new Set([
   "block-resource-list",
+  "approval",
+  "transcript-anatomy",
+  "primitive-code-block",
+  "primitive-command-palette",
+  "primitive-indicators",
+  "primitive-split-pane",
+  "primitive-log-viewer",
+  "primitive-menu-panel",
+  "primitive-option-card",
+  "primitive-hovercard",
   "primitive-badge",
   "primitive-banner",
   "primitive-checkbox",
@@ -767,9 +909,21 @@ const candidateReferenceIds = new Set([
   "primitive-skeleton-line",
   "primitive-switch",
   "primitive-table",
+  "application-settings",
+  "application-operations",
+  "application-workspace",
+  "application-sessions",
+  "application-quick-chat",
 ]);
 
-const labAreaIds = new Set(["interface", "agent-components", "charts", "blocks"]);
+const labAreaIds = new Set([
+  "interface",
+  "agent-components",
+  "effects",
+  "charts",
+  "blocks",
+  "applications",
+]);
 
 export function getReferenceMaturity(id) {
   if (stableReferenceIds.has(id)) return "Stable";
@@ -781,8 +935,10 @@ const sequencedAreaIds = new Set([
   "foundations",
   "interface",
   "agent-components",
+  "effects",
   "charts",
   "blocks",
+  "applications",
 ]);
 
 const adjacentReferenceSequences = referenceAreas

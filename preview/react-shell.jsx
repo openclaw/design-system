@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createPortal, flushSync } from "react-dom";
-import { useGlimm } from "glimm/react";
+import { createPortal } from "react-dom";
 
 import { icon } from "./icons.js";
 import {
@@ -23,7 +22,6 @@ const pageKinds = {
   interface: "index",
   charts: "index",
   blocks: "index",
-  compositions: "index",
   resources: "index",
   "foundation-tokens": "catalog",
   "foundation-colors": "catalog",
@@ -455,9 +453,13 @@ function Sidebar({ currentPageId, siteRoot, onNavigate, mobile, open, onClose, c
   const syncScrollState = useCallback(() => {
     const nav = navRef.current;
     if (!nav) return;
-    setScrollState({
+    const next = {
       up: nav.scrollTop > 1,
       down: nav.scrollTop + nav.clientHeight < nav.scrollHeight - 1,
+    };
+    setScrollState((current) => {
+      if (current.up === next.up && current.down === next.down) return current;
+      return next;
     });
   }, []);
 
@@ -671,7 +673,6 @@ export function ReactShell({
   const closeNavigationRef = useRef(null);
   const mobile = useMobileNavigation();
   const [navigationOpen, setNavigationOpen] = useState(false);
-  const { sweep } = useGlimm();
 
   useEffect(() => {
     document.body.dataset.pageKind = pageKinds[currentPageId] || "reference";
@@ -719,14 +720,7 @@ export function ReactShell({
     event.preventDefault();
 
     const homeHref = hrefFor(siteRoot);
-    if (currentPageId === introductionPage.id) {
-      onNavigate(homeHref, { pageId: introductionPage.id });
-      return;
-    }
-
-    sweep(() => {
-      flushSync(() => onNavigate(homeHref, { pageId: introductionPage.id }));
-    });
+    onNavigate(homeHref, { pageId: introductionPage.id });
   };
 
   return (
@@ -771,7 +765,6 @@ export function ReactShell({
             </span>
             <span className="brand-wordmark">Carapace</span>
           </span>
-          <span className="brand-context">Design System</span>
         </a>
         <GlobalSearch currentPageId={currentPageId} siteRoot={siteRoot} onNavigate={onNavigate} />
         <div className="topbar-actions">

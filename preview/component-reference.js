@@ -1,5 +1,9 @@
-const avatarPreviewUrl =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f5654a'/%3E%3Ccircle cx='20' cy='15' r='7' fill='%23101012'/%3E%3Cpath d='M7 40c1-9 6-14 13-14s12 5 13 14' fill='%23101012'/%3E%3C/svg%3E";
+import { avatarFixtureUrl, clawAvatarUrl } from "./avatar-fixtures.js";
+
+const userAvatarUrl = new URL("./assets/user-vincentkoc.png", import.meta.url).href;
+import { agentAvatarMarkup } from "./agent-identity.js";
+
+export { avatarFixtureUrl } from "./avatar-fixtures.js";
 
 function avatarExample(id, label, purpose, markup) {
   return {
@@ -7,7 +11,7 @@ function avatarExample(id, label, purpose, markup) {
     label,
     purpose,
     markup,
-    previewMarkup: markup.replaceAll('src="avatar.jpg"', `src="${avatarPreviewUrl}"`),
+    previewMarkup: markup.replaceAll('src="avatar.jpg"', `src="${avatarFixtureUrl(label)}"`),
   };
 }
 
@@ -16,6 +20,14 @@ function componentExample(id, label, purpose, markup) {
 }
 
 export const avatarWorkbenchExamples = [
+  avatarExample(
+    "inline",
+    "Inline",
+    "Tiny identity marker attached to an author or participant label.",
+    `<span class="oc-avatar oc-avatar-xs oc-avatar-pixel">
+  <img class="oc-avatar-image" src="avatar.jpg" alt="" width="20" height="20" />
+</span>`,
+  ),
   avatarExample(
     "small",
     "Small",
@@ -26,9 +38,9 @@ export const avatarWorkbenchExamples = [
   ),
   avatarExample(
     "default",
-    "Default",
+    "Image",
     "Image-backed identity at the standard interface size.",
-    `<span class="oc-avatar">
+    `<span class="oc-avatar oc-avatar-pixel">
   <img
     class="oc-avatar-image"
     src="avatar.jpg"
@@ -46,12 +58,34 @@ export const avatarWorkbenchExamples = [
   <span class="oc-avatar-fallback" aria-hidden="true">VB</span>
 </span>`,
   ),
+  {
+    id: "claw-default",
+    label: "Default",
+    purpose: "Deterministic pixel-claw identity for agents and surfaces without their own avatar.",
+    markup: `<span class="oc-avatar oc-avatar-pixel" role="img" aria-label="OpenClaw agent">
+  <img class="oc-avatar-image" src="claw-avatar.svg" alt="" width="40" height="40" />
+</span>`,
+    previewMarkup: `<span class="oc-avatar oc-avatar-pixel" role="img" aria-label="OpenClaw agent">
+  <img class="oc-avatar-image" src="${clawAvatarUrl()}" alt="" width="40" height="40" />
+</span>`,
+  },
+  {
+    id: "user-photo",
+    label: "User",
+    purpose: "Photo-backed identity for the signed-in person; falls back to the generator offline.",
+    markup: `<span class="oc-avatar" role="img" aria-label="Vincent">
+  <img class="oc-avatar-image" src="user.png" alt="" width="40" height="40" />
+</span>`,
+    previewMarkup: `<span class="oc-avatar" role="img" aria-label="Vincent">
+  <img class="oc-avatar-image" src="${userAvatarUrl}" alt="" width="40" height="40" />
+</span>`,
+  },
   avatarExample(
     "presence",
     "Presence",
     "Status-enhanced identity paired with an explicit text state.",
     `<span class="primitive-avatar-presence">
-  <span class="oc-avatar">
+  <span class="oc-avatar oc-avatar-pixel">
     <img
       class="oc-avatar-image"
       src="avatar.jpg"
@@ -64,6 +98,64 @@ export const avatarWorkbenchExamples = [
   <span>OpenClaw · Online</span>
 </span>`,
   ),
+  {
+    id: "stack",
+    label: "Stack",
+    purpose: "Overlapping participant identity for compact collaborative activity.",
+    markup: `<span class="oc-avatar-stack" role="img" aria-label="Shelly, Barnacle, and Review">
+  <span class="oc-avatar oc-avatar-sm"><img class="oc-avatar-image" src="mina.jpg" alt="Shelly" /></span>
+  <span class="oc-avatar oc-avatar-sm"><img class="oc-avatar-image" src="atlas.jpg" alt="Barnacle" /></span>
+  <span class="oc-avatar oc-avatar-sm"><img class="oc-avatar-image" src="review.jpg" alt="Review" /></span>
+</span>`,
+    previewMarkup: `<span class="oc-avatar-stack" role="img" aria-label="Shelly, Barnacle, and Review">
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Shelly")}" alt="Shelly" /></span>
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Barnacle")}" alt="Barnacle" /></span>
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Review")}" alt="Review" /></span>
+</span>`,
+  },
+  {
+    id: "thinking",
+    label: "Thinking",
+    purpose: "Animated participant stack for active multi-agent collaboration.",
+    markup: `<span class="oc-avatar-stack" data-state="thinking" aria-hidden="true">…</span>`,
+    previewMarkup: `<span class="oc-avatar-stack" data-state="thinking" aria-hidden="true">
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Pincer", { animated: true })}" alt="" /></span>
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Scuttle", { animated: true })}" alt="" /></span>
+  <span class="oc-avatar oc-avatar-sm oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl("Mantis", { animated: true })}" alt="" /></span>
+</span>`,
+  },
+  {
+    id: "speaking",
+    label: "Speaking",
+    purpose: "Active speaker identity with a restrained motion ring and explicit text state.",
+    markup: `<span class="primitive-avatar-presence">
+  <span class="oc-avatar oc-avatar-sm" data-state="speaking">
+    <img class="oc-avatar-image" src="agent.jpg" alt="" />
+  </span>
+  <span>OpenClaw · Speaking</span>
+</span>`,
+    previewMarkup: `<span class="primitive-avatar-presence">
+  ${agentAvatarMarkup("OpenClaw", { size: "sm", activity: "speaking" })}
+  <span>OpenClaw · Speaking</span>
+</span>`,
+  },
+  {
+    id: "overflow",
+    label: "Overflow",
+    purpose: "Bounded participant context that summarizes collaborators beyond the visible stack.",
+    markup: `<span class="oc-avatar-stack" role="img" aria-label="Shelly, Barnacle, Scampi, and 3 more participants">
+  <span class="oc-avatar oc-avatar-sm">…</span>
+  <span class="oc-avatar oc-avatar-sm">…</span>
+  <span class="oc-avatar oc-avatar-sm">…</span>
+  <span class="oc-avatar oc-avatar-sm oc-avatar-overflow" aria-hidden="true">+3</span>
+</span>`,
+    previewMarkup: `<span class="oc-avatar-stack" role="img" aria-label="Shelly, Barnacle, Scampi, and 3 more participants">
+  ${agentAvatarMarkup("Shelly", { size: "sm" })}
+  ${agentAvatarMarkup("Barnacle", { size: "sm" })}
+  ${agentAvatarMarkup("Scampi", { size: "sm" })}
+  <span class="oc-avatar oc-avatar-sm oc-avatar-overflow" aria-hidden="true">+3</span>
+</span>`,
+  },
 ];
 
 export const buttonWorkbenchExamples = [

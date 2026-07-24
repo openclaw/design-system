@@ -1,3 +1,12 @@
+import { agentIcon } from "./agent-icons.js";
+
+const userAvatarUrl = new URL("./assets/user-vincentkoc.png", import.meta.url).href;
+import {
+  agentAvatarMarkup,
+  attributedMessageMarkup,
+  collaborationTranscriptMarkup,
+} from "./agent-identity.js";
+
 function escapeHtml(value) {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 }
@@ -6,39 +15,10 @@ function codeBlock(code) {
   return `<div class="code-block"><div class="code-block-header"><span>HTML</span><button type="button" data-copy-code>Copy</button></div><pre><code>${escapeHtml(code)}</code></pre></div>`;
 }
 
+export { agentIcon } from "./agent-icons.js";
+
 function guidanceList(items) {
   return `<ul class="guidance-list">${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
-}
-
-const agentLucideNames = {
-  "arrow-up": "arrow-up",
-  "arrow-right": "arrow-right",
-  check: "check",
-  chevron: "chevron-down",
-  "chevron-right": "chevron-right",
-  "chevron-up": "chevron-up",
-  "chevrons-down": "chevrons-down",
-  close: "x",
-  copy: "copy",
-  file: "file-text",
-  "file-code": "file-code",
-  image: "image",
-  mode: "mouse-pointer-2",
-  model: "box",
-  paperclip: "paperclip",
-  plus: "plus",
-  question: "circle-help",
-  search: "search",
-  sparkle: "sparkles",
-  spinner: "loader-circle",
-  stop: "square",
-  terminal: "terminal",
-  write: "pen-line",
-};
-
-export function agentIcon(name) {
-  const lucideName = agentLucideNames[name] || name;
-  return `<i class="oc-agent-icon" data-lucide="${lucideName}" aria-hidden="true"></i>`;
 }
 
 function renderAgentComponent(component) {
@@ -68,6 +48,10 @@ function sendButton(state = "idle") {
   return `<button class="oc-agent-send-button" type="submit" data-state="${state}" aria-label="Send message"${disabled}>${agentIcon("arrow-up")}</button>`;
 }
 
+function collaborationAvatar(name) {
+  return agentAvatarMarkup(name);
+}
+
 function composerMarkup({ id, rows = 1, tools = "", suggestions = "", attachments = "", statusAttr = "data-agent-compose-status", formAttr = "data-agent-compose-form", send = sendButton("idle") } = {}) {
   return `<form class="oc-agent-input-bar" ${formAttr}>
   <div class="oc-agent-input-container">
@@ -83,24 +67,42 @@ function composerMarkup({ id, rows = 1, tools = "", suggestions = "", attachment
 }
 
 const components = {
-  "bash-tool": {
-    slug: "bash-tool",
-    title: "Bash Tool",
-    className: "oc-agent-bash-tool",
-    lede: "A terminal card that names the executed command in its header and renders the prompt and output in a mono body.",
-    previewTitle: "Command execution",
-    preview: `<div class="oc-agent-tool-card oc-agent-bash-tool" data-status="complete">
-  <header class="oc-agent-tool-card-header"><span class="oc-agent-tool-card-title">Ran command: bun</span></header>
-  <div class="oc-agent-tool-card-body oc-agent-bash-terminal"><div class="oc-agent-bash-command"><span aria-hidden="true">$ </span><code>bun run check</code></div><pre class="oc-agent-bash-output" role="region" aria-label="Command output" tabindex="0"><code>29 pass · 0 fail\nFinished in 312ms</code></pre></div>
+  "interactive-tool": {
+    slug: "interactive-tool",
+    title: "Interactive Tool",
+    className: "oc-agent-interactive-tool",
+    lede: "A shared activity surface for terminal output, live previews, and generated artifacts with compact status rows and optional inspectable panels.",
+    previewTitle: "Terminal, preview, and artifact results",
+    preview: `<div class="oc-agent-tool-row-list">
+  ${toolRow({
+    icon: agentIcon("terminal"),
+    label: "Ran command",
+    detail: "bun run check",
+    meta: "312 ms",
+    panel: `<div class="oc-agent-tool-card oc-agent-interactive-tool oc-agent-bash-tool" data-variant="terminal" data-status="complete"><div class="oc-agent-tool-card-body oc-agent-bash-terminal"><div class="oc-agent-bash-command"><span aria-hidden="true">$ </span><code>bun run check</code></div><pre class="oc-agent-bash-output" role="region" aria-label="Command output" tabindex="0"><code>29 pass · 0 fail\nFinished in 312ms</code></pre></div></div>`,
+  })}
+  ${toolRow({
+    icon: agentIcon("globe"),
+    label: "Preview ready",
+    detail: "127.0.0.1:4173",
+    panel: `<div class="oc-agent-tool-card oc-agent-interactive-tool" data-variant="browser"><header class="oc-agent-interactive-header"><span>${agentIcon("globe")} Preview</span><code>127.0.0.1:4173</code><button type="button" aria-label="Open preview">${agentIcon("external-link")}</button></header><div class="oc-agent-interactive-preview" role="img" aria-label="Compact application preview"><span class="oc-agent-interactive-preview-sidebar"></span><span class="oc-agent-interactive-preview-content"><i></i><i></i><i></i></span></div></div>`,
+    open: false,
+  })}
+  ${toolRow({
+    icon: agentIcon("image"),
+    label: "Artifact ready",
+    detail: "application-surface.png",
+    panel: `<div class="oc-agent-tool-card oc-agent-interactive-tool" data-variant="artifact"><header class="oc-agent-interactive-header"><span>${agentIcon("image")} Generated artifact</span><span>PNG</span><button type="button" aria-label="Download artifact">${agentIcon("download")}</button></header></div>`,
+    open: false,
+  })}
 </div>`,
-    markup: `<div class="oc-agent-tool-card oc-agent-bash-tool" data-status="complete">
-  <header class="oc-agent-tool-card-header"><span class="oc-agent-tool-card-title">Ran command: bun</span></header>
-  <div class="oc-agent-tool-card-body oc-agent-bash-terminal">
-    <div class="oc-agent-bash-command"><span aria-hidden="true">$ </span><code>bun run check</code></div>
-    <pre class="oc-agent-bash-output" role="region" aria-label="Command output" tabindex="0"><code>…</code></pre>
+    markup: `<details class="oc-agent-tool-row" open>
+  <summary class="oc-agent-tool-row-summary">Tool status and summary</summary>
+  <div class="oc-agent-tool-row-panel">
+    <div class="oc-agent-tool-card oc-agent-interactive-tool" data-variant="terminal|browser|artifact">…</div>
   </div>
-</div>`,
-    guidance: ["Summarize the command in the header and keep the exact command in the mono body.", "While running, shimmer the header label and show a spinner instead of output.", "Require consumer-controlled approval for commands with meaningful side effects."],
+</details>`,
+    guidance: ["Use one compact activity row regardless of the underlying tool type.", "Open a panel only when the result benefits from inspection, interaction, copying, or download.", "Keep execution, sandboxing, iframe permissions, media lifecycle, and destructive-action approval consumer-owned."],
   },
   "generic-tool": {
     slug: "generic-tool",
@@ -119,6 +121,84 @@ const components = {
   <span class="oc-agent-tool-row-detail">styles/components.css</span>
 </div>`,
     guidance: ["Keep the row to one line: icon, name, then truncated detail.", "Swap the label for a text shimmer while the call is pending.", "The consumer owns approval, cancellation, execution, streaming, and error handling."],
+  },
+  approval: {
+    slug: "approval",
+    title: "Approval",
+    className: "oc-approval-card",
+    lede: "A decision card for agent permission requests: command preview, risk framing, and explicit allow or deny actions, with additional requests queued below.",
+    previewTitle: "Pending approval with a queue",
+    preview: `<div class="oc-approval-queue" style="max-width: 34rem;">
+  <article class="oc-approval-card" data-state="pending">
+    <header class="oc-approval-header">${agentIcon("shield-check")}<h3 class="oc-approval-title">Run command</h3><time>now</time></header>
+    <p class="oc-approval-sub">Personal agent · session Carapace parity</p>
+    <code class="oc-approval-command">git push origin feat/app-surface-parity</code>
+    <dl class="oc-approval-meta">
+      <dt>Host</dt><dd>vincent-mbp.local</dd>
+      <dt>Directory</dt><dd>~/Projects/carapace</dd>
+    </dl>
+    <div class="oc-approval-warning">${agentIcon("triangle-alert")}<span>Pushes to a shared remote branch.</span></div>
+    <div class="oc-approval-actions">
+      <button class="oc-action oc-action-ghost" type="button">Deny</button>
+      <button class="oc-action oc-action-secondary" type="button">Allow always</button>
+      <button class="oc-action oc-action-primary" type="button">Allow once</button>
+    </div>
+    <p class="oc-approval-resolution">${agentIcon("check")}<span>Approved by Vincent · applies to this session</span></p>
+  </article>
+  <div class="oc-approval-queue-header"><span>2 more waiting</span><button class="oc-action oc-action-ghost" type="button">Review all</button></div>
+  <div class="oc-approval-queue-item">${agentIcon("terminal")}<code>bun run check</code><time>12s</time></div>
+  <div class="oc-approval-queue-item">${agentIcon("globe")}<code>fetch https://docs.openclaw.ai/tools</code><time>31s</time></div>
+</div>`,
+    markup: `<article class="oc-approval-card" data-state="pending">
+  <header class="oc-approval-header">…<h3 class="oc-approval-title">Run command</h3><time>now</time></header>
+  <p class="oc-approval-sub">Personal agent · session Carapace parity</p>
+  <code class="oc-approval-command">git push origin feat/app-surface-parity</code>
+  <div class="oc-approval-warning">…<span>Pushes to a shared remote branch.</span></div>
+  <div class="oc-approval-actions">
+    <button class="oc-action oc-action-ghost" type="button">Deny</button>
+    <button class="oc-action oc-action-primary" type="button">Allow once</button>
+  </div>
+</article>`,
+    guidance: ["State exactly what will run; never summarize the command away.", "Keep deny reachable without scrolling and visually quieter than allow.", "Resolved cards keep the command visible as the transcript record.", "Queue further requests below the active decision instead of stacking modals.", "The consumer owns approval policy, scope persistence, and transport."],
+  },
+  "transcript-anatomy": {
+    slug: "transcript-anatomy",
+    title: "Transcript Anatomy",
+    className: "oc-work-group",
+    lede: "Structural pieces inside a working transcript: grouped tool activity, key-value parameters, collapsible payloads, compaction markers, turn recaps, and the shared activity indicator.",
+    previewTitle: "A working turn",
+    preview: `<div style="display: grid; gap: var(--oc-space-3); width: min(100%, 34rem);">
+  <div class="oc-work-group">
+    <div class="oc-work-group-header">${agentIcon("terminal")}<strong>Working</strong><span>4 tool calls</span><time>1m 12s</time></div>
+    <dl class="oc-tool-kv">
+      <dt>command</dt><dd>bun run check</dd>
+      <dt>cwd</dt><dd>~/Projects/carapace</dd>
+      <dt>exit</dt><dd>0</dd>
+    </dl>
+    <details class="oc-json-collapse">
+      <summary>result.json<span class="oc-json-collapse-size">1.2 KB</span></summary>
+      <pre>{
+  "pass": 193,
+  "fail": 0
+}</pre>
+    </details>
+  </div>
+  <div class="oc-compaction" data-state="complete">${agentIcon("chevrons-down")}<span>Earlier context compacted · 42k tokens summarized</span></div>
+  <div class="oc-compaction" data-state="fallback">${agentIcon("triangle-alert")}<span>Compaction unavailable · oldest turns trimmed instead</span></div>
+  <span class="oc-activity-indicator" role="status"><span class="oc-activity-indicator-motion" aria-hidden="true"><i></i><i></i><i></i></span>Reading styles/candidate/agent.css</span>
+  <div class="oc-turn-recap"><span>Turn complete · 6 files changed · 2 checks green</span></div>
+</div>`,
+    markup: `<div class="oc-work-group">
+  <div class="oc-work-group-header">…<strong>Working</strong><span>4 tool calls</span><time>1m 12s</time></div>
+  <dl class="oc-tool-kv"><dt>command</dt><dd>bun run check</dd></dl>
+  <details class="oc-json-collapse">
+    <summary>result.json<span class="oc-json-collapse-size">1.2 KB</span></summary>
+    <pre>…</pre>
+  </details>
+</div>
+<div class="oc-compaction" data-state="complete">…<span>Earlier context compacted</span></div>
+<span class="oc-activity-indicator" role="status">…Reading files</span>`,
+    guidance: ["Group consecutive tool calls under one labeled header with elapsed time.", "Key-value rows truncate values; expansion is a consumer behavior.", "Closed payload disclosures still name the payload and its size.", "Compaction markers show active, complete, and fallback states distinctly.", "The activity indicator names what is happening; the motion slot is swappable."],
   },
   "error-message": {
     slug: "error-message",
@@ -180,38 +260,60 @@ const components = {
     className: "oc-agent-chat",
     lede: "The complete conversation surface: a scrollable message list above a composer, sharing one bounded column.",
     previewTitle: "Conversation workspace",
-    preview: `<section class="oc-agent-chat" aria-label="Agent conversation">
+    preview: `<section class="oc-agent-chat" data-layout="compact" data-attribution="participants" data-user-name="vincentkoc" aria-label="Agent conversation">
   <div class="oc-agent-message-list" role="log" aria-label="Conversation history">
     <div class="oc-agent-message-list-content">
-      <div class="oc-agent-turn">
-        <div class="oc-agent-user-message-stack"><div class="oc-agent-user-message"><p>Summarize the pending changes and flag anything risky.</p></div></div>
-        <div class="oc-agent-assistant-turn">
-          ${toolRow({ icon: agentIcon("search"), label: "Found 3 results", detail: "semantic tokens" })}
-          <div class="oc-agent-markdown"><p>Three component files changed. The exported package contract and every existing token remain intact.</p></div>
-        </div>
-      </div>
+      ${attributedMessageMarkup({
+        author: "user",
+        name: "vincentkoc",
+        role: "You",
+        avatar: `<span class="oc-avatar oc-avatar-xs" aria-hidden="true"><img class="oc-avatar-image" src="${userAvatarUrl}" alt="" width="24" height="24" /></span>`,
+        content: '<div class="oc-agent-user-message"><p>Summarize the pending changes and flag anything risky.</p></div>',
+      })}
+      ${attributedMessageMarkup({
+        name: "OpenClaw",
+        role: "Assistant",
+        content: `<div class="oc-agent-assistant-turn">
+        ${toolRow({ icon: agentIcon("search"), label: "Found 3 results", detail: "semantic tokens" })}
+        <div class="oc-agent-markdown"><p>Three component files changed. The exported package contract and every existing token remain intact.</p></div>
+      </div>`,
+      })}
     </div>
   </div>
   <div class="oc-agent-chat-suggestions" aria-label="Suggested prompts"><button class="oc-agent-suggestion" type="button" data-agent-suggestion-value="Review the pending changes" data-agent-suggestion-target="agent-chat-message">Review changes</button><button class="oc-agent-suggestion" type="button" data-agent-suggestion-value="Run the validation checks" data-agent-suggestion-target="agent-chat-message">Run checks</button></div>
-  <form class="oc-agent-input-bar" data-agent-chat-form>
-    <div class="oc-agent-input-container">
-      <label class="sr-only" for="agent-chat-message">Message</label>
-      <textarea id="agent-chat-message" class="oc-agent-input" rows="1" placeholder="Send a message..."></textarea>
-      <div class="oc-agent-input-toolbar">
-        <div class="oc-agent-input-tools"><button class="oc-agent-attachment-button" type="button" aria-label="Attach">${agentIcon("plus")}</button></div>
-        <div class="oc-agent-input-actions">${sendButton("idle")}</div>
-      </div>
-    </div>
-    <span class="sr-only" data-agent-chat-status aria-live="polite"></span>
-  </form>
+  ${composerMarkup({
+    id: "agent-chat-message",
+    formAttr: "data-agent-chat-form",
+    statusAttr: "data-agent-chat-status",
+    tools: `<button class="oc-agent-attachment-button" type="button" aria-label="Capture screenshot">${agentIcon("camera")}</button><button class="oc-agent-attachment-button" type="button" aria-label="Dictate">${agentIcon("mic")}</button><button class="oc-agent-attachment-button" type="button" aria-label="Talk mode">${agentIcon("audio-lines")}</button>`,
+  })}
 </section>`,
-    markup: `<section class="oc-agent-chat" aria-label="Agent conversation">
+    markup: `<section class="oc-agent-chat" data-layout="compact" data-attribution="participants" aria-label="Agent conversation">
   <div class="oc-agent-message-list" role="log" aria-label="Conversation history">…</div>
   <div class="oc-agent-chat-suggestions">…</div>
   <form class="oc-agent-input-bar">…</form>
   <span class="sr-only" aria-live="polite">Message sent</span>
 </section>`,
-    guidance: ["Keep the message list as the primary flexible region above the composer.", "Expose streamed updates through a polite live region without repeatedly announcing the entire transcript.", "The consumer owns message data, submission, stopping, attachments, and tool execution."],
+    guidance: ["Use data-layout=\"compact\" in reference and embedded surfaces; use data-layout=\"viewport\" only when the chat owns a full application pane.", "Keep each 20px avatar beside its author and message content instead of in a detached transcript rail.", "Expose streamed updates through a polite live region without repeatedly announcing the entire transcript.", "The consumer owns message data, submission, stopping, attachments, media capture, and tool execution."],
+  },
+  "agent-collaboration": {
+    slug: "agent-collaboration",
+    title: "Agent Collaboration",
+    className: "oc-agent-collaboration",
+    lede: "A transcript-native multi-agent surface that keeps the active facepile, shared objective, named specialists, and their contributions in one compact conversational flow.",
+    previewTitle: "Agents thinking and collaborating",
+    preview: collaborationTranscriptMarkup(),
+    markup: `<section class="oc-agent-collaboration" data-variant="transcript" data-state="thinking" aria-label="Multi-agent collaboration">
+  <header class="oc-agent-collaboration-presence" role="status">
+    <span class="oc-avatar-stack oc-agent-collaboration-facepile" data-state="thinking" aria-hidden="true">…</span>
+    <strong>Agents thinking</strong><span aria-hidden="true">·</span><time aria-hidden="true">5s</time>
+  </header>
+  <p class="oc-agent-collaboration-summary">Collaborating with the team on application parity</p>
+  <div class="oc-agent-collaboration-stream" role="list">
+    <article class="oc-agent-attributed-message" data-author="agent">…</article>
+  </div>
+</section>`,
+    guidance: ["Name every participant and mark exactly one coordinating leader.", "Keep the active facepile, shared objective, and named contributions in the transcript instead of a second task dashboard.", "Keep author identity compact with a 20px avatar bubble beside its message.", "Do not announce the elapsed timer every second; the visible status text carries the accessible state.", "Animate only active avatars with transform and opacity, honor reduced motion, and let the consumer own orchestration, permissions, cancellation, and result acceptance."],
   },
   "attachment-button": {
     slug: "attachment-button",
@@ -313,7 +415,7 @@ const components = {
     previewTitle: "Structured response content",
     preview: `<article class="oc-agent-markdown">
   <h3>Validation complete</h3>
-  <p>The component contract is ready for review. Inspect the <a href="../../foundations/tokens/" data-workbench-inert-link>token reference</a> before adoption.</p>
+  <p>The component contract is ready for review. Inspect the <a class="oc-link" href="../../foundations/tokens/" data-workbench-inert-link>token reference</a> before adoption.</p>
   <ul><li>Keyboard behavior is preserved.</li><li>Colors resolve from <code>--oc-*</code> semantic tokens.</li></ul>
   <blockquote><p>Review the rendered state in both themes before adoption.</p></blockquote>
   <div class="oc-agent-markdown-table" tabindex="0" role="region" aria-label="Validation results"><table><thead><tr><th scope="col">Check</th><th scope="col">Result</th></tr></thead><tbody><tr><td>CSS contract</td><td>Passed</td></tr><tr><td>Preview build</td><td>Passed</td></tr></tbody></table></div>
@@ -321,7 +423,7 @@ const components = {
 </article>`,
     markup: `<article class="oc-agent-markdown">
   <h3>Validation complete</h3>
-  <p>The component contract is ready for review. Inspect the <a href="../../foundations/tokens/">token reference</a>.</p>
+  <p>The component contract is ready for review. Inspect the <a class="oc-link" href="../../foundations/tokens/">token reference</a>.</p>
   <ul><li>Keyboard behavior is preserved.</li></ul>
   <blockquote><p>Review the rendered state before adoption.</p></blockquote>
   <div class="oc-agent-markdown-table" tabindex="0"><table>…</table></div>
@@ -503,8 +605,9 @@ const components = {
     lede: "A delegated-work row that names the subagent objective, tracks elapsed time, and expands into its nested tool activity.",
     previewTitle: "Delegated agent work",
     preview: `<div class="oc-agent-subagent-tool">${toolRow({
+      icon: collaborationAvatar("Barnacle"),
       label: "Completed Subagent",
-      detail: "Audit component accessibility",
+      detail: '<span class="oc-agent-subagent-name"><strong>Barnacle</strong><small>Audit component accessibility</small></span>',
       meta: "6s",
       panel: `<div class="oc-agent-tool-row-list">
         ${toolRow({ icon: agentIcon("file"), label: "Read file", detail: "styles/components.css" })}
@@ -512,10 +615,10 @@ const components = {
       </div>`,
     })}</div>`,
     markup: `<details class="oc-agent-tool-row" open>
-  <summary class="oc-agent-tool-row-summary"><span class="oc-agent-tool-row-label">Completed Subagent</span><span class="oc-agent-tool-row-detail">Audit component accessibility</span><span class="oc-agent-tool-row-meta">6s</span><span class="oc-agent-tool-row-chevron" aria-hidden="true">…</span></summary>
+  <summary class="oc-agent-tool-row-summary"><span class="oc-avatar oc-avatar-xs">…</span><span class="oc-agent-tool-row-label">Completed Subagent</span><span class="oc-agent-tool-row-detail"><span class="oc-agent-subagent-name"><strong>Barnacle</strong><small>Audit component accessibility</small></span></span><span class="oc-agent-tool-row-meta">6s</span><span class="oc-agent-tool-row-chevron" aria-hidden="true">…</span></summary>
   <div class="oc-agent-tool-row-panel"><div class="oc-agent-tool-row-list">…nested tool rows…</div></div>
 </details>`,
-    guidance: ["Identify delegated work by objective rather than an opaque identifier.", "Shimmer the label and surface the latest nested call while running.", "The parent consumer owns delegation, interruption, permissions, and acceptance of results."],
+    guidance: ["Name the delegated agent and its objective instead of showing an opaque identifier.", "Shimmer the label and surface the latest nested call while running.", "The parent consumer owns delegation, interruption, permissions, and acceptance of results."],
   },
   "spiral-loader": {
     slug: "spiral-loader",

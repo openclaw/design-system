@@ -69,6 +69,7 @@
 
 .oc-check {
   display: inline-flex;
+  user-select: none;
   min-height: var(--oc-control-min-height);
   align-items: center;
   gap: var(--oc-space-3);
@@ -158,10 +159,17 @@
 
 .oc-radio-group {
   display: grid;
-  gap: var(--oc-space-3);
+  gap: var(--oc-space-1);
   padding: 0;
   border: 0;
   margin: 0;
+}
+
+/* Stacked choice lists read as one group: rows keep their full touch
+   target through padding while the visual line spacing stays dense. */
+.oc-radio-group .oc-check,
+.oc-check + .oc-check {
+  min-height: 2rem;
 }
 
 .oc-radio-group legend {

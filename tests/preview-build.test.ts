@@ -36,6 +36,8 @@ describe("preview route build", () => {
     expect(source.slice(0, headEnd)).toContain(
       '<script type="module" src="./preview.js"></script>',
     );
+    expect(source).not.toContain("cdn.jsdelivr.net");
+    expect(source).not.toContain("unpkg.com");
     expect(source.slice(bodyStart)).not.toContain("<script");
   });
 
@@ -56,7 +58,7 @@ describe("preview route build", () => {
 
   test("derives route roots from manifest depth", () => {
     expect(getRouteRoot("")).toBe("./");
-    expect(getRouteRoot("foundations/")).toBe("../");
+    expect(getRouteRoot("introduction/")).toBe("../");
     expect(getRouteRoot("interface/primitives/button/")).toBe("../../../");
   });
 
@@ -88,13 +90,27 @@ describe("preview route build", () => {
     expect(html).not.toContain(">Home</main>");
   });
 
+  test("serves deep development routes without parsing the Home grid", async () => {
+    const plugin = createPreviewRouteStubsPlugin();
+    const source = await readFile("preview/index.html", "utf8");
+    const html = await plugin.transformIndexHtml?.(source, {
+      path: "/index.html",
+      originalUrl: "/interface/primitives/button/",
+      server: {},
+    } as never);
+
+    expect(html).toContain('data-preview-page="primitive-button"');
+    expect(html).toContain('<div id="preview-app"></div>');
+    expect(html).not.toContain("home-component-grid");
+  });
+
   test("uses area names for overview document titles", async () => {
     const source = '<title>Carapace</title><script type="module" src="./app.js"></script><body data-preview-route="overview" data-preview-page="overview" data-preview-root="./"></body>';
 
     for (const [id, title] of [
-      ["foundations", "Foundations · Carapace"],
+      ["introduction", "Introduction · Carapace"],
       ["interface", "Components · Carapace"],
-      ["compositions", "Compositions · Carapace"],
+      ["effects", "Effects · Carapace"],
       ["resources", "Resources · Carapace"],
     ]) {
       const route = previewRoutes.find((entry) => entry.id === id);
@@ -122,7 +138,7 @@ describe("preview route build", () => {
           type: "asset",
           fileName: "index.html",
           source:
-            '<title>Carapace</title><script src="./assets/app.js"></script><body data-preview-route="overview" data-preview-page="overview" data-preview-root="./"></body>',
+            '<title>Carapace</title><link rel="canonical" href="https://carapace.design/"><script src="./assets/app.js"></script><body data-preview-route="overview" data-preview-page="overview" data-preview-root="./"></body>',
         },
       },
     );
@@ -135,6 +151,24 @@ describe("preview route build", () => {
     );
     expect(emitted.map(({ fileName }) => fileName)).toContain(
       "interface/primitives/button/index.html",
+    );
+    expect(emitted.map(({ fileName }) => fileName)).toContain("introduction/index.html");
+    expect(emitted.map(({ fileName }) => fileName)).toContain("foundations/index.html");
+    const foundationsAlias = emitted.find(
+      ({ fileName }) => fileName === "foundations/index.html",
+    );
+    expect(foundationsAlias?.source).toContain('data-preview-page="introduction"');
+    expect(foundationsAlias?.source).toContain(
+      'rel="canonical" href="https://carapace.design/introduction/"',
+    );
+    expect(emitted.map(({ fileName }) => fileName)).toContain(
+      "agent-components/bash-tool/index.html",
+    );
+    const bashAlias = emitted.find(
+      ({ fileName }) => fileName === "agent-components/bash-tool/index.html",
+    );
+    expect(bashAlias?.source).toContain(
+      'rel="canonical" href="https://carapace.design/agent-components/interactive-tool/"',
     );
   });
 
@@ -175,7 +209,36 @@ describe("preview route build", () => {
         expect(deepRouteHtml).toContain("<title>Button · Carapace</title>");
         expect(deepRouteHtml).toContain('<div id="preview-app"></div>');
         expect(deepRouteHtml).not.toContain("home-component-grid");
-        expect(deepRouteHtml.length).toBeLessThan(2_500);
+        expect(deepRouteHtml.length).toBeLessThan(3_000);
+
+        const scripts = [...deepRouteHtml.matchAll(/<script[^>]+src="([^"]+)"/g)].map(
+          ([, value]) => value,
+        );
+        const entryScript = scripts.find((value) => value.includes("/assets/index-"));
+        expect(entryScript).toBeDefined();
+        const entryPath = resolve(dirname(deepRoutePath), entryScript);
+        const entryStats = await stat(entryPath);
+        // Guards order-of-magnitude entry bloat; nav metadata for new
+        // reference pages grows this slowly and legitimately.
+        expect(entryStats.size).toBeLessThan(165_000);
+        expect(await readFile(entryPath, "utf8")).not.toContain(
+          "One visual contract for the OpenClaw product family",
+        );
+        const builtScripts = (await readdir(join(outputDirectory, "assets")))
+          .filter((fileName) => fileName.endsWith(".js"));
+        const lazyIntroductionChunks = await Promise.all(
+          builtScripts.map(async (fileName) => ({
+            fileName,
+            source: await readFile(join(outputDirectory, "assets", fileName), "utf8"),
+          })),
+        );
+        expect(
+          lazyIntroductionChunks.some(({ source }) =>
+            source.includes("One visual contract for the OpenClaw product family"),
+          ),
+        ).toBe(true);
+        expect(deepRouteHtml).not.toContain("preview-reference");
+        expect(deepRouteHtml).not.toContain("preview-components");
 
         const assetUrls = [...deepRouteHtml.matchAll(/(?:href|src)="([^"]+)"/g)]
           .map(([, value]) => value)

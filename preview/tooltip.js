@@ -18,6 +18,7 @@ function registerView(view) {
 
 export function bindTooltips(root = document) {
   const tooltips = [...root.querySelectorAll("[data-tooltip]")];
+  if (tooltips.length === 0) return 0;
   const view = root.defaultView || globalThis.window;
   registerView(view);
 

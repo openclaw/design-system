@@ -24,7 +24,6 @@ const pageKinds = {
   interface: "index",
   charts: "index",
   blocks: "index",
-  compositions: "index",
   resources: "index",
   "foundation-tokens": "catalog",
   "foundation-colors": "catalog",
@@ -188,7 +187,6 @@ function renderTopbar() {
           </span>
           <span class="brand-wordmark">Carapace</span>
         </span>
-        <span class="brand-context">Design System</span>
       </a>
       <button class="search-trigger shell-command-field shell-control" type="button" data-open-search aria-label="Search routes, tokens, and primitives" aria-haspopup="dialog">
         <span class="search-trigger-label">${icon("search")}<span>Search routes, tokens, and primitives…</span></span><kbd>⌘ K</kbd>

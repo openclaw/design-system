@@ -7,7 +7,7 @@ import {
   shouldInterceptPreviewLink,
   updatePreviewHistoryScroll,
 } from "../preview/router.js";
-import { introductionPage, referencePages } from "../preview/navigation.js";
+import { homePage, referencePages } from "../preview/navigation.js";
 
 function click(overrides = {}) {
   return {
@@ -60,10 +60,25 @@ describe("preview router", () => {
   test("maps canonical, extensionless, index, and hashed URLs to known pages", () => {
     const siteRoot = "https://openclaw.github.io/design-system/";
 
+    expect(resolvePreviewRoute(`${siteRoot}introduction`, siteRoot)).toMatchObject({
+      pageId: "introduction",
+      path: "introduction/",
+      hash: "",
+    });
+    expect(resolvePreviewRoute(`${siteRoot}foundations/`, siteRoot)).toMatchObject({
+      pageId: "introduction",
+      path: "introduction/",
+      href: `${siteRoot}introduction/`,
+    });
     expect(resolvePreviewRoute(`${siteRoot}foundations/colors`, siteRoot)).toMatchObject({
       pageId: "foundation-colors",
       path: "foundations/colors/",
       hash: "",
+    });
+    expect(resolvePreviewRoute(`${siteRoot}agent-components/bash-tool/`, siteRoot)).toMatchObject({
+      pageId: "interactive-tool",
+      path: "agent-components/interactive-tool/",
+      href: `${siteRoot}agent-components/interactive-tool/`,
     });
     expect(
       resolvePreviewRoute(`${siteRoot}interface/primitives/action/index.html#usage`, siteRoot),
@@ -93,7 +108,7 @@ describe("preview router", () => {
   test("resolves every page published by the navigation manifest", () => {
     const siteRoot = "https://openclaw.github.io/design-system/";
 
-    for (const page of [introductionPage, ...referencePages]) {
+    for (const page of [homePage, ...referencePages]) {
       expect(resolvePreviewRoute(new URL(page.path, siteRoot), siteRoot)?.pageId).toBe(page.id);
     }
   });

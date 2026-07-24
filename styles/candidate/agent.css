@@ -1,0 +1,377 @@
+/*
+ * Opt-in candidate agent anatomy. Import explicitly after the canonical
+ * foundations, stable components, and candidate controls.
+ *
+ * This layer owns the visual structure of agent-facing surfaces: approval
+ * prompts and, as they are validated, deeper transcript anatomy. Consumers
+ * keep approval policy, transport, and framework state.
+ */
+
+/* Approval prompt: an agent asks permission for a side-effectful action.
+   The card must read as a decision, so the command preview, risk framing,
+   and actions stay dimensionally stable across pending and resolved states. */
+.oc-approval-card {
+  display: grid;
+  gap: var(--oc-space-3);
+  padding: var(--oc-space-4);
+  border: 1px solid var(--oc-border-strong);
+  border-radius: var(--oc-radius-surface);
+  background: var(--oc-surface-card);
+  color: var(--oc-text-primary);
+}
+
+.oc-approval-card[data-state="approved"],
+.oc-approval-card[data-state="denied"] {
+  border-color: var(--oc-border-subtle);
+  background: var(--oc-bg-surface);
+}
+
+.oc-approval-header {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+}
+
+.oc-approval-header .oc-agent-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--oc-status-warning-fg);
+}
+
+.oc-approval-card[data-state="approved"] .oc-approval-header .oc-agent-icon {
+  color: var(--oc-status-success-fg);
+}
+
+.oc-approval-card[data-state="denied"] .oc-approval-header .oc-agent-icon {
+  color: var(--oc-status-error-fg);
+}
+
+.oc-approval-title {
+  margin: 0;
+  font-size: var(--oc-font-size-sm);
+  font-weight: 600;
+}
+
+.oc-approval-header time {
+  margin-left: auto;
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-approval-sub {
+  margin: 0;
+  color: var(--oc-text-secondary);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-approval-command {
+  display: block;
+  overflow-x: auto;
+  padding: var(--oc-space-2) var(--oc-space-3);
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-inset);
+  background: var(--oc-bg-recessed);
+  color: var(--oc-text-primary);
+  font-family: var(--oc-font-mono);
+  font-size: var(--oc-font-size-xs);
+  line-height: 1.6;
+  white-space: pre;
+}
+
+.oc-approval-meta {
+  display: grid;
+  margin: 0;
+  gap: var(--oc-space-1) var(--oc-space-3);
+  grid-template-columns: auto minmax(0, 1fr);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-approval-meta dt {
+  color: var(--oc-text-muted);
+}
+
+.oc-approval-meta dd {
+  margin: 0;
+  overflow: hidden;
+  color: var(--oc-text-secondary);
+  font-family: var(--oc-font-mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-approval-warning {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  padding: var(--oc-space-2) var(--oc-space-3);
+  border-radius: var(--oc-radius-inset);
+  background: var(--oc-status-warning-bg);
+  color: var(--oc-status-warning-fg);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-approval-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--oc-space-2);
+}
+
+/* Resolved cards collapse the decision into a single status row while
+   keeping the command visible for the transcript record. */
+.oc-approval-resolution {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-secondary);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-approval-card[data-state="pending"] .oc-approval-resolution {
+  display: none;
+}
+
+.oc-approval-card[data-state="approved"] .oc-approval-actions,
+.oc-approval-card[data-state="denied"] .oc-approval-actions {
+  display: none;
+}
+
+/* Queue: additional pending approvals stack beneath the active card as
+   compact rows so one decision stays primary. */
+.oc-approval-queue {
+  display: grid;
+  gap: var(--oc-space-2);
+}
+
+.oc-approval-queue-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-approval-queue-item {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  padding: var(--oc-space-2) var(--oc-space-3);
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-control);
+  background: var(--oc-bg-surface);
+  color: var(--oc-text-secondary);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-approval-queue-item code {
+  overflow: hidden;
+  flex: 1;
+  font-family: var(--oc-font-mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .oc-approval-card,
+  .oc-approval-queue-item {
+    border-color: CanvasText;
+  }
+}
+
+/* Tool key-value rows: structured call parameters and results inside a
+   tool card. Keys stay narrow and muted; values truncate until the
+   consumer expands them. */
+.oc-tool-kv {
+  display: grid;
+  margin: 0;
+  gap: 2px var(--oc-space-3);
+  grid-template-columns: minmax(5rem, auto) minmax(0, 1fr);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-tool-kv dt {
+  color: var(--oc-text-muted);
+  font-family: var(--oc-font-mono);
+}
+
+.oc-tool-kv dd {
+  overflow: hidden;
+  margin: 0;
+  color: var(--oc-text-secondary);
+  font-family: var(--oc-font-mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-tool-kv dd[data-expanded="true"] {
+  white-space: pre-wrap;
+}
+
+/* Collapsible JSON: a native disclosure whose summary names the payload
+   and size so the closed state still communicates. */
+.oc-json-collapse {
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-inset);
+  background: var(--oc-bg-recessed);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-json-collapse summary {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  padding: var(--oc-space-1) var(--oc-space-2);
+  color: var(--oc-text-secondary);
+  cursor: pointer;
+  font-family: var(--oc-font-mono);
+  list-style: none;
+}
+
+.oc-json-collapse summary::-webkit-details-marker {
+  display: none;
+}
+
+.oc-json-collapse summary::before {
+  content: "▸";
+  color: var(--oc-text-muted);
+}
+
+.oc-json-collapse[open] summary::before {
+  content: "▾";
+}
+
+.oc-json-collapse-size {
+  margin-left: auto;
+  color: var(--oc-text-muted);
+}
+
+.oc-json-collapse pre {
+  overflow-x: auto;
+  margin: 0;
+  padding: var(--oc-space-2);
+  border-top: 1px solid var(--oc-border-subtle);
+  font-family: var(--oc-font-mono);
+  line-height: 1.6;
+}
+
+/* Work grouping: consecutive tool activity folds into one labeled group
+   so conversation turns stay scannable; the recap row summarizes a
+   finished turn. */
+.oc-work-group {
+  display: grid;
+  padding: var(--oc-space-2);
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-control);
+  background: var(--oc-bg-surface);
+  gap: var(--oc-space-1);
+}
+
+.oc-work-group-header {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-work-group-header strong {
+  color: var(--oc-text-secondary);
+  font-weight: 600;
+}
+
+.oc-work-group-header time {
+  margin-left: auto;
+}
+
+.oc-turn-recap {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-turn-recap::before,
+.oc-turn-recap::after {
+  flex: 1;
+  border-top: 1px solid var(--oc-border-subtle);
+  content: "";
+}
+
+/* Compaction indicator: context was summarized. The states mirror the
+   product contract: active while compacting, complete when the summary
+   replaced older turns, fallback when compaction could not run. */
+.oc-compaction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--oc-space-2);
+  padding: var(--oc-space-1) var(--oc-space-3);
+  border: 1px dashed var(--oc-border-subtle);
+  border-radius: var(--oc-radius-control);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-compaction[data-state="active"] {
+  color: var(--oc-text-secondary);
+}
+
+.oc-compaction[data-state="complete"] {
+  border-style: solid;
+}
+
+.oc-compaction[data-state="fallback"] {
+  border-color: var(--oc-status-warning-fg);
+  color: var(--oc-status-warning-fg);
+}
+
+/* Activity indicator: one contract for "the agent is doing something",
+   with a swappable animation slot so consumers can keep their own
+   personality without inventing new anatomy. */
+.oc-activity-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-activity-indicator-motion {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.oc-activity-indicator-motion i {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--oc-radius-round);
+  animation: oc-activity-pulse 1.2s ease-in-out infinite;
+  background: currentcolor;
+}
+
+.oc-activity-indicator-motion i:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.oc-activity-indicator-motion i:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes oc-activity-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-activity-indicator-motion i {
+    animation: none;
+    opacity: 0.7;
+  }
+}
