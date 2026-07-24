@@ -1388,8 +1388,9 @@ export function toolWorkbenchMarkup({
   <div class="oc-agent-subagent-progress"><span style="width: ${complete ? "100" : failed || timedOut ? "72" : "58"}%"></span></div>
   <div class="oc-agent-tool-row-list">${agentToolRow({ icon: agentIcon("file"), label: "Last tool", detail: "Read styles/components.css" })}${agentToolRow({ icon: agentIcon(failed || timedOut ? "x" : "search"), label: complete ? "Transcript ready" : failed ? "Stopped after error" : timedOut ? "Stopped at timeout" : "Reviewing selectors", shimmer: !complete && !failed && !timedOut, detail: "application surfaces" })}</div>
 </div>`;
+    const running = !complete && !failed && !timedOut;
     return `<div class="oc-agent-subagent-tool">${agentToolRow({
-      icon: `<span class="oc-avatar oc-avatar-xs oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl(agentName)}" alt="" /></span>`,
+      icon: `<span class="oc-avatar oc-avatar-xs oc-avatar-pixel"><img class="oc-avatar-image" src="${avatarFixtureUrl(agentName, { animated: running })}" alt="" /></span>`,
       label: escapeHtml(taskTitle),
       shimmer: !complete && !failed && !timedOut,
       detail: `<span class="oc-agent-subagent-name"><span class="oc-agent-subagent-owner">${escapeHtml(agentName)}</span><small>${statusLabel}</small></span>`,
