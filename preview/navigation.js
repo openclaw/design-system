@@ -129,6 +129,12 @@ export const referenceAreas = [
         keywords: "oc-clipboard-text copy code value clipboard",
       },
       {
+        id: "primitive-code-block",
+        label: "Code Block",
+        path: "interface/primitives/code-block/",
+        keywords: "oc-code-block pre code copy header language monospace",
+      },
+      {
         id: "primitive-code-highlighted",
         label: "Code Highlighted",
         path: "interface/primitives/code-highlighted/",

@@ -737,6 +737,20 @@ const contents = {
     )}</section>
     <section data-section-kind="guidance" aria-labelledby="input-area-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="input-area-guidance">Reserve space for meaningful text</h2></div></div>${guidanceList(["Use for content that naturally spans multiple lines.", "Keep vertical resizing available unless layout constraints make it unsafe.", "Provide character limits before submission when they exist.", "Use Input for short single-line values."])}</section>`,
 
+  "primitive-code-block": () =>
+    `${pageIntro("Component", "Code Block", "A read-only code surface with an identifying header, horizontal scrolling, and a copy affordance.")}
+    <section data-section-kind="preview" aria-labelledby="code-block-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="code-block-preview">Identified snippet</h2></div><span class="oc-pill">.oc-code-block</span></div>
+      <div class="specimen-frame"><div class="oc-code-block" style="width: min(100%, 36rem);">
+        <div class="oc-code-block-header"><span>openclaw.json</span><button class="oc-action oc-action-ghost" type="button" data-copy-code>Copy</button><span class="sr-only" aria-live="polite" data-copy-code-status></span></div>
+        <pre tabindex="0" aria-label="Configuration example"><code>{
+  "agents": { "default": "personal" },
+  "channels": { "discord": { "enabled": true } }
+}</code></pre>
+      </div></div>
+    </section>
+    <section data-section-kind="markup" aria-labelledby="code-block-markup"><div class="section-heading"><div><p class="eyebrow">Markup</p><h2 id="code-block-markup">Name the source in the header</h2></div></div>${codeBlock(`<div class="oc-code-block">\n  <div class="oc-code-block-header"><span>openclaw.json</span><button class="oc-action oc-action-ghost" type="button">Copy</button></div>\n  <pre tabindex="0" aria-label="Configuration example"><code>…</code></pre>\n</div>`, "html")}</section>
+    <section data-section-kind="guidance" aria-labelledby="code-block-guidance"><div class="section-heading"><div><p class="eyebrow">Guidance</p><h2 id="code-block-guidance">Structure only; highlighting stays consumer-owned</h2></div></div>${guidanceList(["Name the file, language, or command in the header.", "Make the scrollable region keyboard focusable with an accessible name.", "Announce copy results through a polite live region.", "Token or syntax coloring belongs to the consumer's highlighter."])}</section>`,
+
   "primitive-indicators": () =>
     `${pageIntro("Component", "Indicators", "Compact signals for sessions and collections: metric strips, owner chips, unread dots, run spinners, and toned badges.")}
     <section data-section-kind="preview" aria-labelledby="indicators-preview"><div class="section-heading"><div><p class="eyebrow">Preview</p><h2 id="indicators-preview">Collection and row signals</h2></div><span class="oc-pill">.oc-summary-strip</span></div>

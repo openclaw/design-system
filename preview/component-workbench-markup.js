@@ -1,6 +1,4 @@
-import {
-  agentIcon,
-} from "./agent-components.js";
+import { agentIcon } from "./agent-icons.js";
 import {
   attributedMessageMarkup,
   collaborationTranscriptMarkup,
@@ -521,7 +519,7 @@ export function bannerWorkbenchMarkup({ tone = "warning", action = true } = {}) 
 </div>`;
 }
 
-export function tableWorkbenchMarkup({ interactive = false } = {}) {
+export function tableWorkbenchMarkup({ interactive = false, chrome = false, selected = false } = {}) {
   const records = [
     { component: "Button", status: "Stable", updated: "Today" },
     { component: "Dialog", status: "Stable", updated: "Yesterday" },
@@ -541,15 +539,26 @@ export function tableWorkbenchMarkup({ interactive = false } = {}) {
     ? "Component status, most recent update, and available actions"
     : "Component status and most recent update";
 
-  return `<div class="oc-table-wrap" role="region" aria-label="Component status" tabindex="0">
+  const toolbar = !chrome
+    ? ""
+    : selected
+      ? `<div class="oc-table-bulk-bar"><span class="oc-table-bulk-count">2 selected</span><span>of ${records.length} components</span><div class="oc-table-bulk-actions"><button class="oc-action oc-action-ghost" type="button">Archive</button><button class="oc-action oc-action-secondary" type="button">Export</button></div></div>\n  `
+      : `<div class="oc-table-toolbar"><label class="oc-search-field"><span class="sr-only">Search components</span><input type="search" placeholder="Search components" /></label><button class="oc-action oc-action-ghost" type="button">Filters</button></div>\n  `;
+  const sortableHeader = chrome
+    ? `<th scope="col" aria-sort="ascending"><button class="oc-table-sort" type="button">Component<span class="oc-table-sort-icon" aria-hidden="true">↑</span></button></th>`
+    : '<th scope="col">Component</th>';
+  const footer = chrome
+    ? `\n  <div class="oc-table-footer"><span>${records.length} of 24 components</span><nav class="oc-pagination" aria-label="Table pages"><ol class="oc-pagination-list"><li><a class="oc-pagination-link" href="?page=1" aria-current="page" data-workbench-inert-link>1</a></li><li><a class="oc-pagination-link" href="?page=2" data-workbench-inert-link>2</a></li></ol></nav></div>`
+    : "";
+  return `${toolbar}<div class="oc-table-wrap" role="region" aria-label="Component status" tabindex="0">
   <table class="oc-table${modifier}">
     <caption class="sr-only">${caption}</caption>
-    <thead><tr><th scope="col">Component</th><th scope="col">Status</th><th scope="col">Updated</th>${actionHeader}</tr></thead>
+    <thead><tr>${sortableHeader}<th scope="col">Status</th><th scope="col">Updated</th>${actionHeader}</tr></thead>
     <tbody>
       ${rows}
     </tbody>
   </table>
-</div>`;
+</div>${footer}`;
 }
 
 export function gridWorkbenchMarkup({ columns = "3", items = "3" } = {}) {

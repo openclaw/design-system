@@ -1,3 +1,4 @@
+import { agentIcon } from "./agent-icons.js";
 import {
   agentAvatarMarkup,
   attributedMessageMarkup,
@@ -12,39 +13,10 @@ function codeBlock(code) {
   return `<div class="code-block"><div class="code-block-header"><span>HTML</span><button type="button" data-copy-code>Copy</button></div><pre><code>${escapeHtml(code)}</code></pre></div>`;
 }
 
+export { agentIcon } from "./agent-icons.js";
+
 function guidanceList(items) {
   return `<ul class="guidance-list">${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
-}
-
-const agentLucideNames = {
-  "arrow-up": "arrow-up",
-  "arrow-right": "arrow-right",
-  check: "check",
-  chevron: "chevron-down",
-  "chevron-right": "chevron-right",
-  "chevron-up": "chevron-up",
-  "chevrons-down": "chevrons-down",
-  close: "x",
-  copy: "copy",
-  file: "file-text",
-  "file-code": "file-code",
-  image: "image",
-  mode: "mouse-pointer-2",
-  model: "box",
-  paperclip: "paperclip",
-  plus: "plus",
-  question: "circle-help",
-  search: "search",
-  sparkle: "sparkles",
-  spinner: "loader-circle",
-  stop: "square",
-  terminal: "terminal",
-  write: "pen-line",
-};
-
-export function agentIcon(name) {
-  const lucideName = agentLucideNames[name] || name;
-  return `<i class="oc-agent-icon" data-lucide="${lucideName}" aria-hidden="true"></i>`;
 }
 
 function renderAgentComponent(component) {

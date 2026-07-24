@@ -156,18 +156,29 @@ describe("workbench schema contracts", () => {
       ],
     });
   });
-  test("models Table interactive rows as an opt-in behavior", () => {
+  test("models Table interactive rows and chrome as opt-in behavior", () => {
     const definition = getWorkbenchDefinition("primitive-table");
 
     expect(definition?.controls).toMatchObject([
       { id: "interactive", label: "Interactive rows", type: "toggle" },
+      { id: "chrome", label: "Toolbar and footer", type: "toggle" },
+      { id: "selected", label: "Rows selected", type: "toggle" },
     ]);
     expect(normalizeWorkbenchState(definition, { interactive: true })).toEqual({
       interactive: true,
+      chrome: false,
+      selected: false,
     });
-    expect(normalizeWorkbenchState(definition, { interactive: "yes" })).toEqual({
+    expect(normalizeWorkbenchState(definition, { interactive: "yes" })).toMatchObject({
       interactive: false,
     });
+    const chrome = definition.markup({ interactive: false, chrome: true, selected: false });
+    expect(chrome).toContain("oc-table-toolbar");
+    expect(chrome).toContain("oc-table-sort");
+    expect(chrome).toContain("oc-table-footer");
+    const bulk = definition.markup({ interactive: false, chrome: true, selected: true });
+    expect(bulk).toContain("oc-table-bulk-bar");
+    expect(bulk).not.toContain("oc-table-toolbar\"");
   });
   test("models native Select values and disabled state without synthetic variants", () => {
     const definition = getWorkbenchDefinition("primitive-select");

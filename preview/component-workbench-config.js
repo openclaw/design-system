@@ -1,6 +1,4 @@
-import {
-  agentIcon,
-} from "./agent-components.js";
+import { agentIcon } from "./agent-icons.js";
 import {
   appendAgentUserMessage,
 } from "./agent-components-interactions.js";
@@ -1000,11 +998,21 @@ ${appSurfaceWorkbenchMarkup(state)}
     },
   },
   "primitive-table": {
-    defaults: { interactive: false },
+    defaults: { interactive: false, chrome: false, selected: false },
     controls: [
       {
         id: "interactive",
         label: "Interactive rows",
+        type: "toggle",
+      },
+      {
+        id: "chrome",
+        label: "Toolbar and footer",
+        type: "toggle",
+      },
+      {
+        id: "selected",
+        label: "Rows selected",
         type: "toggle",
       },
     ],

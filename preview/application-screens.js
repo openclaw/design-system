@@ -1,4 +1,4 @@
-import { agentIcon } from "./agent-components.js";
+import { agentIcon } from "./agent-icons.js";
 import {
   applicationModelControlsMarkup,
   escapeAttribute,
