@@ -5360,26 +5360,5 @@
   opacity: 0.6;
 }
 
-/* Animated identity: an opt-in living shimmer for active agents. The art
-   itself breathes; speaking and thinking rings still come from data-state. */
-.oc-avatar[data-animated="true"] .oc-avatar-image {
-  animation: oc-avatar-live 3.2s var(--oc-ease-out) infinite;
-}
-
-@keyframes oc-avatar-live {
-  0%,
-  100% {
-    filter: saturate(1) brightness(1);
-    transform: scale(1);
-  }
-  50% {
-    filter: saturate(1.25) brightness(1.1);
-    transform: scale(1.04);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .oc-avatar[data-animated="true"] .oc-avatar-image {
-    animation: none;
-  }
-}
+/* Animated identity: motion lives inside the generated SVG so the circle
+   never changes size; data-animated only marks the state for consumers. */
