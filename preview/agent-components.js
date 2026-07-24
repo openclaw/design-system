@@ -159,6 +159,45 @@ const components = {
 </article>`,
     guidance: ["State exactly what will run; never summarize the command away.", "Keep deny reachable without scrolling and visually quieter than allow.", "Resolved cards keep the command visible as the transcript record.", "Queue further requests below the active decision instead of stacking modals.", "The consumer owns approval policy, scope persistence, and transport."],
   },
+  "transcript-anatomy": {
+    slug: "transcript-anatomy",
+    title: "Transcript Anatomy",
+    className: "oc-work-group",
+    lede: "Structural pieces inside a working transcript: grouped tool activity, key-value parameters, collapsible payloads, compaction markers, turn recaps, and the shared activity indicator.",
+    previewTitle: "A working turn",
+    preview: `<div style="display: grid; gap: var(--oc-space-3); width: min(100%, 34rem);">
+  <div class="oc-work-group">
+    <div class="oc-work-group-header">${agentIcon("terminal")}<strong>Working</strong><span>4 tool calls</span><time>1m 12s</time></div>
+    <dl class="oc-tool-kv">
+      <dt>command</dt><dd>bun run check</dd>
+      <dt>cwd</dt><dd>~/Projects/carapace</dd>
+      <dt>exit</dt><dd>0</dd>
+    </dl>
+    <details class="oc-json-collapse">
+      <summary>result.json<span class="oc-json-collapse-size">1.2 KB</span></summary>
+      <pre>{
+  "pass": 193,
+  "fail": 0
+}</pre>
+    </details>
+  </div>
+  <div class="oc-compaction" data-state="complete">${agentIcon("chevrons-down")}<span>Earlier context compacted · 42k tokens summarized</span></div>
+  <div class="oc-compaction" data-state="fallback">${agentIcon("triangle-alert")}<span>Compaction unavailable · oldest turns trimmed instead</span></div>
+  <span class="oc-activity-indicator" role="status"><span class="oc-activity-indicator-motion" aria-hidden="true"><i></i><i></i><i></i></span>Reading styles/candidate/agent.css</span>
+  <div class="oc-turn-recap"><span>Turn complete · 6 files changed · 2 checks green</span></div>
+</div>`,
+    markup: `<div class="oc-work-group">
+  <div class="oc-work-group-header">…<strong>Working</strong><span>4 tool calls</span><time>1m 12s</time></div>
+  <dl class="oc-tool-kv"><dt>command</dt><dd>bun run check</dd></dl>
+  <details class="oc-json-collapse">
+    <summary>result.json<span class="oc-json-collapse-size">1.2 KB</span></summary>
+    <pre>…</pre>
+  </details>
+</div>
+<div class="oc-compaction" data-state="complete">…<span>Earlier context compacted</span></div>
+<span class="oc-activity-indicator" role="status">…Reading files</span>`,
+    guidance: ["Group consecutive tool calls under one labeled header with elapsed time.", "Key-value rows truncate values; expansion is a consumer behavior.", "Closed payload disclosures still name the payload and its size.", "Compaction markers show active, complete, and fallback states distinctly.", "The activity indicator names what is happening; the motion slot is swappable."],
+  },
   "error-message": {
     slug: "error-message",
     title: "Error Message",

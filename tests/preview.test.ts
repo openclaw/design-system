@@ -337,6 +337,7 @@ describe("preview contracts", () => {
     expect(candidate).toEqual(
       [
         "approval",
+        "transcript-anatomy",
         "block-resource-list",
         "primitive-badge",
         "primitive-banner",

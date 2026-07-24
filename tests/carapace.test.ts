@@ -160,6 +160,8 @@ describe("CSS contract", () => {
     const lab = await readFile("preview/lab.css", "utf8");
 
     expectClasses(agent, [
+      ".oc-activity-indicator",
+      ".oc-activity-indicator-motion",
       ".oc-agent-icon",
       ".oc-approval-actions",
       ".oc-approval-card",
@@ -173,6 +175,13 @@ describe("CSS contract", () => {
       ".oc-approval-sub",
       ".oc-approval-title",
       ".oc-approval-warning",
+      ".oc-compaction",
+      ".oc-json-collapse",
+      ".oc-json-collapse-size",
+      ".oc-tool-kv",
+      ".oc-turn-recap",
+      ".oc-work-group",
+      ".oc-work-group-header",
     ]);
 
     expectClasses(controls, [

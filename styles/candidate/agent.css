@@ -176,3 +176,202 @@
     border-color: CanvasText;
   }
 }
+
+/* Tool key-value rows: structured call parameters and results inside a
+   tool card. Keys stay narrow and muted; values truncate until the
+   consumer expands them. */
+.oc-tool-kv {
+  display: grid;
+  margin: 0;
+  gap: 2px var(--oc-space-3);
+  grid-template-columns: minmax(5rem, auto) minmax(0, 1fr);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-tool-kv dt {
+  color: var(--oc-text-muted);
+  font-family: var(--oc-font-mono);
+}
+
+.oc-tool-kv dd {
+  overflow: hidden;
+  margin: 0;
+  color: var(--oc-text-secondary);
+  font-family: var(--oc-font-mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-tool-kv dd[data-expanded="true"] {
+  white-space: pre-wrap;
+}
+
+/* Collapsible JSON: a native disclosure whose summary names the payload
+   and size so the closed state still communicates. */
+.oc-json-collapse {
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-inset);
+  background: var(--oc-bg-recessed);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-json-collapse summary {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  padding: var(--oc-space-1) var(--oc-space-2);
+  color: var(--oc-text-secondary);
+  cursor: pointer;
+  font-family: var(--oc-font-mono);
+  list-style: none;
+}
+
+.oc-json-collapse summary::-webkit-details-marker {
+  display: none;
+}
+
+.oc-json-collapse summary::before {
+  content: "▸";
+  color: var(--oc-text-muted);
+}
+
+.oc-json-collapse[open] summary::before {
+  content: "▾";
+}
+
+.oc-json-collapse-size {
+  margin-left: auto;
+  color: var(--oc-text-muted);
+}
+
+.oc-json-collapse pre {
+  overflow-x: auto;
+  margin: 0;
+  padding: var(--oc-space-2);
+  border-top: 1px solid var(--oc-border-subtle);
+  font-family: var(--oc-font-mono);
+  line-height: 1.6;
+}
+
+/* Work grouping: consecutive tool activity folds into one labeled group
+   so conversation turns stay scannable; the recap row summarizes a
+   finished turn. */
+.oc-work-group {
+  display: grid;
+  padding: var(--oc-space-2);
+  border: 1px solid var(--oc-border-subtle);
+  border-radius: var(--oc-radius-control);
+  background: var(--oc-bg-surface);
+  gap: var(--oc-space-1);
+}
+
+.oc-work-group-header {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-work-group-header strong {
+  color: var(--oc-text-secondary);
+  font-weight: 600;
+}
+
+.oc-work-group-header time {
+  margin-left: auto;
+}
+
+.oc-turn-recap {
+  display: flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-turn-recap::before,
+.oc-turn-recap::after {
+  flex: 1;
+  border-top: 1px solid var(--oc-border-subtle);
+  content: "";
+}
+
+/* Compaction indicator: context was summarized. The states mirror the
+   product contract: active while compacting, complete when the summary
+   replaced older turns, fallback when compaction could not run. */
+.oc-compaction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--oc-space-2);
+  padding: var(--oc-space-1) var(--oc-space-3);
+  border: 1px dashed var(--oc-border-subtle);
+  border-radius: var(--oc-radius-control);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-compaction[data-state="active"] {
+  color: var(--oc-text-secondary);
+}
+
+.oc-compaction[data-state="complete"] {
+  border-style: solid;
+}
+
+.oc-compaction[data-state="fallback"] {
+  border-color: var(--oc-status-warning-fg);
+  color: var(--oc-status-warning-fg);
+}
+
+/* Activity indicator: one contract for "the agent is doing something",
+   with a swappable animation slot so consumers can keep their own
+   personality without inventing new anatomy. */
+.oc-activity-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oc-space-2);
+  color: var(--oc-text-muted);
+  font-size: var(--oc-font-size-xs);
+}
+
+.oc-activity-indicator-motion {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.oc-activity-indicator-motion i {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--oc-radius-round);
+  animation: oc-activity-pulse 1.2s ease-in-out infinite;
+  background: currentcolor;
+}
+
+.oc-activity-indicator-motion i:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.oc-activity-indicator-motion i:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes oc-activity-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-activity-indicator-motion i {
+    animation: none;
+    opacity: 0.7;
+  }
+}

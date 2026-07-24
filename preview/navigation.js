@@ -439,6 +439,12 @@ export const referenceAreas = [
     path: "agent-components/agent-chat/",
     pages: [
       {
+        id: "transcript-anatomy",
+        label: "Transcript Anatomy",
+        path: "agent-components/transcript-anatomy/",
+        keywords: "oc-work-group oc-tool-kv oc-json-collapse oc-compaction oc-turn-recap oc-activity-indicator",
+      },
+      {
         id: "approval",
         label: "Approval",
         path: "agent-components/approval/",
@@ -883,6 +889,7 @@ const stableReferenceIds = new Set([
 const candidateReferenceIds = new Set([
   "block-resource-list",
   "approval",
+  "transcript-anatomy",
   "primitive-code-block",
   "primitive-command-palette",
   "primitive-indicators",
